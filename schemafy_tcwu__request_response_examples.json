@@ -1,0 +1,122 @@
+{
+    "$schema" : "http://json-schema.org/draft-07/schema#",
+
+    "definitions" : {
+        "relay" : {
+            "type" : "object",
+            "properties": {
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "pwmProfile" : {
+            "type" : "object",
+            "properties": {
+                "currentEntryIndex" : { "type" : "integer" },
+                "linkedProfiles" : { "type" : "array" },
+                "state" : { 
+                    "type" : "string",
+                    "enum": [ "active", "inactive" ]
+                },
+                "steps" : { "type" : "array" }
+            }
+        },
+        "pwm" : {
+            "type" : "object",
+            "properties" : {
+                "activeConfiguration" : {
+                    "type" : "string",
+                    "enum": [ "high", "low" ]
+                },
+                "dutyCycle" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" },
+                "profile" : { "$ref": "#/definitions/pwmProfile" }
+            }
+        },
+        "actuatorInput" : {
+            "type" : "object",
+            "properties": {
+                "faulty" : { "type" : "boolean" },
+                "measuredCurrent" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "adcInput" : {
+            "type" : "object",
+            "properties": {
+                "measuredVoltage" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "digitalInput" : {
+            "type" : "object",
+            "properties": {
+                "high" : { "type" : "boolean" }
+            }
+        },
+        "frequencyInput" : {
+            "type" : "object",
+            "properties": {
+                "measuredFrequency" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        }
+    },
+    "relayController" : {
+        "properties" : {
+            "relays" : { "$ref": "#/definitions/relay" }
+        }
+    },
+    "pwmController" : {
+        "bankA" : {
+            "type" : "object",
+            "properties" : {
+                "frequency" : { "type" : "number" },
+                "pwms" : {
+                    "type" : "array",
+                    "contains" : { "$ref": "#/definitions/pwm" }
+                }
+            }
+        }
+    },
+    "actuatorInputController" : {
+        "type" : "object",
+        "properties" : {
+            "actuatorUpdateRate" : { "type" : "integer" },
+            "actuatorCurrentThreshold" : { "type" : "integer" },            
+            "actuatorInputs" : {
+                "type" : "array",
+                "contains" : { "$ref": "#/definitions/actuatorInput" }
+            }
+        }
+    },
+    "adInputController" : {
+        "type" : "object",
+        "properties": {
+            "adcInputUpdateRate" : { "type" : "integer" },
+            "adcInputs" : {
+                "type" : "array",
+                "contains" : { "$ref": "#/definitions/adcInput" }
+            }
+        }
+    },
+    "digitalInputController" : {
+        "type" : "object",
+        "properties" : {
+            "digitalInputUpdateRate" : { "type" : "integer" },
+            "digitalInputs" : {
+                "type" : "array",
+                "contains" : { "$ref": "#/definitions/digitalInput" }
+            }
+        }
+    },
+    "frequencyInputController" : {
+        "type" : "object",
+        "properties" : {
+            "frequencyUpdateRate" : { "type" : "integer" },
+            "frequencyInputs" : {
+                "type" : "array",
+                "contains" : { "$ref": "#/definitions/frequencyInput" }
+            }
+        }
+    }
+}

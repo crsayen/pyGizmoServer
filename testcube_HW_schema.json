@@ -1,0 +1,178 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "definitions" : {
+        "relay" : {
+            "type" : "object",
+            "properties": {
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "pwmProfile" : {
+            "type" : "object",
+            "properties": {
+                "currentEntryIndex" : { "type" : "integer" },
+                "linkedProfiles" : { "type" : "array" },
+                "state" : { 
+                    "type" : "string",
+                    "enum": [ "active", "inactive" ]
+                },
+                "steps" : { "type" : "array" }
+            }
+        },
+        "pwm" : {
+            "type" : "object",
+            "properties" : {
+                "activeConfiguration" : {
+                    "type" : "string",
+                    "enum": [ "high", "low" ]
+                },
+                "dutyCycle" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" },
+                "profile" : { "$ref": "#/definitions/pwmProfile" },
+                "currentMonitor" : { "$ref": "#/definitions/pwmCurrentMonitor" }
+            }
+        },
+        "pwmCurrentMonitor" : {
+            "type" : "object",
+            "properties": {
+                "pwmCurrentMonitorUpdateRate" : { "type" : "integer" },
+                "faultThreshold" : { "type" : "integer" },
+                "faultDelay" : { "type" : "number" },
+                "faulty" : { "type" : "boolean" },
+                "measuredCurrent" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "adcInput" : {
+            "type" : "object",
+            "properties": {
+                "measuredVoltage" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        },
+        "digitalInput" : {
+            "type" : "object",
+            "properties": {
+                "high" : { "type" : "boolean" }
+            }
+        },
+        "frequencyInput" : {
+            "type" : "object",
+            "properties": {
+                "measuredFrequency" : { "type" : "number" },
+                "enabled" : { "type" : "boolean" }
+            }
+        }
+    },
+    "type" : "object",
+    "properties" : {
+        "relayController" : {
+            "properties" : {
+                "relays" : {
+                    "type" : "array",
+                    "items" : [
+                        { "$ref": "#/definitions/relay" },
+                        { "$ref": "#/definitions/relay" },
+                        { "$ref": "#/definitions/relay" },
+                        { "$ref": "#/definitions/relay" },
+                        { "$ref": "#/definitions/relay" },
+                        { "$ref": "#/definitions/relay" }
+                    ]
+                }
+            }
+        },
+        "pwmController" : {
+            "bankA" : {
+                "type" : "object",
+                "properties" : {
+                    "frequency" : { "type" : "number" },
+                    "pwms" : {
+                        "type" : "array",
+                        "items" : [
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" }
+                        ]
+                    }
+                }
+            },
+            "bankB" : {
+                "type" : "object",
+                "properties" : {
+                    "frequency" : { "type" : "number" },
+                    "pwms" : {
+                        "type" : "array",
+                        "items" : [
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" },
+                            { "$ref": "#/definitions/pwm" }
+                        ]
+                    }
+                }
+            }
+        },
+        "adcInputController" : {
+            "type" : "object",
+            "properties": {
+                "adcInputMonitorRate" : { "type" : "integer" },
+                "adcInputs" : {
+                    "type" : "array",
+                    "items" : [
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" },
+                        { "$ref": "#/definitions/adcInput" }
+                    ]
+                }
+            }
+        },
+        "digitalInputController" : {
+            "type" : "object",
+            "properties" : {
+                "digitalInputMonitorRate" : { "type" : "integer" },
+                "digitalInputs" : {
+                    "type" : "array",
+                    "items" : [
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" },
+                        { "$ref": "#/definitions/digitalInput" }
+                    ]
+                }
+            }
+        },
+        "frequencyInputController" : {
+            "type" : "object",
+            "properties" : {
+                "frequencyMonitorRate" : { "type" : "integer" },
+                "frequencyInputs" : {
+                    "type" : "array",
+                    "items" : [
+                        { "$ref": "#/definitions/frequencyInput" },
+                        { "$ref": "#/definitions/frequencyInput" },
+                        { "$ref": "#/definitions/frequencyInput" },
+                        { "$ref": "#/definitions/frequencyInput" }
+                    ]
+                }
+            }
+        }
+    }
+}

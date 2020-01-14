@@ -1,0 +1,376 @@
+{
+    "relays" : {
+        "data": [
+          [
+            {
+              "enabled": false
+            },
+            {
+              "enabled": false
+            },
+            {
+              "enabled": false
+            },
+            {
+              "enabled": false
+            },
+            {
+              "enabled": false
+            },
+            {
+              "enabled": false
+            }
+          ]
+        ],
+        "module": "testcube.relayController",
+        "path": "$.relays",
+        "status": "success",
+        "timestamp": 1578995587341
+      },
+      "pwms" : {
+        "data": [
+          [
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            },
+            {
+              "activeConfiguration": "High",
+              "dutyCycle": 50,
+              "profile": {
+                "currentEntryIndex": 0,
+                "linkedProfiles": [],
+                "state": "Inactive",
+                "steps": []
+              },
+              "enabled": false
+            }
+          ]
+        ],
+        "module": "testcube.pwmController",
+        "path": "$.pwms",
+        "status": "success",
+        "timestamp": 1578995676368
+      },
+      "pwmControllers" : {
+        "data": [
+          [
+            {
+              "frequency": 100
+            },
+            {
+              "frequency": 100
+            }
+          ]
+        ],
+        "module": "testcube.pwmController",
+        "path": "$.pwmControllers",
+        "status": "success",
+        "timestamp": 1578995736456
+      },
+      "actuatorInputController" : {
+        "data": [
+            {
+                "actuatorCurrentThreshold": 6000,
+                "actuatorInputs": [
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 9.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 40.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 9.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 3.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 31.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 50.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 18.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 20.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 32.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 25.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 15.0,
+                        "enabled": true
+                    },
+                    {
+                        "faulty": false,
+                        "measuredCurrent": 18.0,
+                        "enabled": true
+                    }
+                ],
+                "actuatorUpdateRate": 0
+            }
+        ],
+        "module": "testcube.actuatorInputController",
+        "path": "",
+        "status": "success",
+        "timestamp": 1578995849584
+    },
+    "adInputs" : {
+        "data": [
+          [
+            {
+              "measuredVoltage": 33.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 25.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 21.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 43.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 6713.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 21.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 21.0,
+              "enabled": true
+            },
+            {
+              "measuredVoltage": 23.0,
+              "enabled": true
+            }
+          ]
+        ],
+        "module": "testcube.adcInputController",
+        "path": "$.adcInputs",
+        "status": "success",
+        "timestamp": 1578996139438
+      },
+      "digitalInputs" : {
+        "data": [
+          [
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            },
+            {
+              "high": false
+            }
+          ]
+        ],
+        "module": "testcube.digitalInputController",
+        "path": "$.digitalInputs",
+        "status": "success",
+        "timestamp": 1578996222619
+      },
+      "frequencyInputs" : {
+        "data": [
+          [
+            {
+              "measuredFrequency": 0.0,
+              "enabled": true
+            },
+            {
+              "measuredFrequency": 0.0,
+              "enabled": true
+            },
+            {
+              "measuredFrequency": 0.0,
+              "enabled": true
+            },
+            {
+              "measuredFrequency": 0.0,
+              "enabled": true
+            }
+          ]
+        ],
+        "module": "testcube.frequencyInputController",
+        "path": "$.frequencyInputs",
+        "status": "success",
+        "timestamp": 1578996266068
+      }
+}
