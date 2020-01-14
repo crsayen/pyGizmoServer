@@ -20,7 +20,7 @@ class MyServer(BaseHTTPRequestHandler):
         self._set_headers()
         self.wfile.write(self._html(f"did get: {self.requestline}"))
 
-    def do_GET(self):
+    def do_PATCH(self):
         self._set_headers()
         self.wfile.write(self._html(f"did patch: {self.requestline}"))
 
