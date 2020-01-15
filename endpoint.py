@@ -5,5 +5,5 @@ class Endpoint:
     def start(self):
         print("start")
 
-    def yell(self, msg):
-        print(f"{msg}".upper())
+    def setRelay(self, msg):
+        print(f"set relay: {msg}")

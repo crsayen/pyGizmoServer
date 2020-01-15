@@ -1,10 +1,10 @@
 {
     "relays" : [
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 0 } },
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 1 } },
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 2 } },
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 3 } },
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 4 } },
-        { "enabled": { "r": "getRelay", "w": "setRelay", "args": 5 } }
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [0] } },
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [1] } },
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [2] } },
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [3] } },
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [4] } },
+        { "enabled": { "r": "getRelay", "w": "setRelay", "args": [5] } }
     ]
 }
