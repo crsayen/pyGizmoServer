@@ -12,7 +12,7 @@ hostPort = 8020
 class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
     pass
 
-with open('schemas/testcube_HW_schema.json') as f:
+with open('schemas/testcube_UI_schema.json') as f:
     hwschema = json.load(f)
 modification_handler = ModificationHandler(Endpoint, hwschema)
 gizmoServer = ThreadedHTTPServer((hostName, hostPort), PyGizmoRequestHandler)

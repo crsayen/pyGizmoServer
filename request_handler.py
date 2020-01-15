@@ -26,7 +26,6 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.wfile.write(self._html(f"did get: {self.requestline}"))
         
-
     def do_PATCH(self):
         self.response = None
         handle =  threading.currentThread().getName()
