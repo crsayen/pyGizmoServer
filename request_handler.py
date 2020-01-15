@@ -1,7 +1,9 @@
-import socket, jsonpatch, patch_validation, json, time
+import socket, patch_validation, json, time, threading
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 from pubsub import pub
+
+mock_model = {"state": "michigan"}
 
 
 class PyGizmoRequestHandler(BaseHTTPRequestHandler):
@@ -26,7 +28,9 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
         
 
     def do_PATCH(self):
-        s = time.time()
+        self.response = None
+        handle =  threading.currentThread().getName()
+        pub.subscribe(self.post_response, handle)
         content = self.rfile.read(int(self.headers.get('Content-Length')))
         content = json.loads(content)
         requests = content if isinstance(content,list) else [content]
@@ -38,9 +42,12 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
                     HTTPStatus.BAD_REQUEST,
                     f"invalid PATCH request format: {request}"
                 )
-        patch = jsonpatch.JsonPatch(requests)
-        result = jsonpatch.apply_patch(mock_model, patch)
-        pub.sendMessage('modification_request_recieved', requests=requests)
-        self.wfile.write(self._json(json.dumps(result)))
+        pub.sendMessage('modification_request_recieved', requests=requests, response_handle=handle)
+        while self.response is None: pass
+            
+    def post_response(self, response):
+        self.response = response
+        self.wfile.write(self._json(f"{json.dumps(response)}"))
+
         
     
