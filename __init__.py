@@ -6,14 +6,16 @@ from endpoint import Endpoint
 import time, json
 
 mock_model = {
-    "relays" : [
-        { "enabled": False },
-        { "enabled": False },
-        { "enabled": False },
-        { "enabled": False },
-        { "enabled": False },
-        { "enabled": False }
-    ]
+    "relayController": {
+        "relays" : [
+            { "enabled": False },
+            { "enabled": False },
+            { "enabled": False },
+            { "enabled": False },
+            { "enabled": False },
+            { "enabled": False }
+        ]
+    }
 }
 
 hostName = ""
