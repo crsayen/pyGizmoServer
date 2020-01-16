@@ -1,8 +1,8 @@
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
-from request_handler import PyGizmoRequestHandler
-from modification_handler import ModificationHandler
-from endpoint import Endpoint
+from pyGizmoServer.request_handler import PyGizmoRequestHandler
+from pyGizmoServer.modification_handler import ModificationHandler
+from controllers.testcube_usb_controller import TestCubeUSB
 import time, json
 
 mock_model = {
@@ -24,9 +24,9 @@ hostPort = 8020
 class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
     pass
 
-with open('schemas/testcube_UI_schema.json') as f:
+with open('schemas/testcube_HW.json') as f:
     hwschema = json.load(f)
-modification_handler = ModificationHandler(Endpoint, hwschema, model=mock_model)
+modification_handler = ModificationHandler(TestCubeUSB, hwschema, model=mock_model)
 gizmoServer = ThreadedHTTPServer((hostName, hostPort), PyGizmoRequestHandler)
 print(time.asctime(), "Server started - %s:%s" % (hostName, hostPort))
 

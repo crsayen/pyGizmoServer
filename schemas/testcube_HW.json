@@ -1,8 +1,8 @@
 {
     "relayController": {
-        "relays" : [
-            { "enabled": { "r": "getRelay", "w": "setRelay", "args": [] } }
-        ]
+        "relays" : {
+            "enabled": { "r": "getRelay", "w": "setRelay", "args": [] }
+        }
     },
     "pwmController" : {
         "bankA" : {
@@ -44,6 +44,7 @@
         "adcInputs" : {
             "measuredVoltage" : { "r": "getAdcMeasuredVoltage", "args": [] },
             "enabled" : { "w" : "setAdcEnabled", "r" : "getAdcEnabled", "args": [] }
+        }
     },
     "digitalInputController" : {
         "digitalInputMonitorRate" : { "type" : "integer" },

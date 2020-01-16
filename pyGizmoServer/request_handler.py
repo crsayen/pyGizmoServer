@@ -1,6 +1,7 @@
-import socket, patch_validation, json, time, threading
+import socket, json, time, threading
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
+#from pyGizmoServer import patch_validation
 from pubsub import pub
 
 
@@ -31,14 +32,14 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
         content = self.rfile.read(int(self.headers.get('Content-Length')))
         content = json.loads(content)
         requests = content if isinstance(content,list) else [content]
-        for request in requests:
-            try:
-                    patch_validation.patch_validation_from_dict(request)
-            except AssertionError:
-                self.send_error(
-                    HTTPStatus.BAD_REQUEST,
-                    f"invalid PATCH request format: {request}"
-                )
+        # for request in requests:
+        #     try:
+        #         patch_validation.patch_validation_from_dict(request)
+        #     except AssertionError:
+        #         self.send_error(
+        #             HTTPStatus.BAD_REQUEST,
+        #             f"invalid PATCH request format: {request}"
+        #         )
         pub.sendMessage('modification_request_recieved', requests=requests, response_handle=handle)
         while self.response is None: pass
             

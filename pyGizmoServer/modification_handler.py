@@ -1,21 +1,22 @@
-import jsonpatch, patch_validation, json
+import jsonpatch, json
+import copy
 from pubsub import pub 
 
 class ModificationHandler:
-"""
-This class takes requests and calls hardware related functions on
-an 'Endpoint' object written for specific hardware
+    """
+    This class takes requests and calls hardware related functions on
+    an 'controller' object written for specific hardware
 
-Attributes:
-endpoint (Endpoint): A controller for some pice of hardware
-schema (dict): A description of the hardware that endpoint is based on
-default_model (dict): An in-memory model of the hardware
-"""
-    def __init__(self, endpoint, schema, model=None):
-        self.endpoint = endpoint()
+    Attributes:
+    controller (controller): A controller for some pice of hardware
+    schema (dict): A description of the hardware that controller is based on
+    default_model (dict): An in-memory model of the hardware
+    """
+    def __init__(self, controller, schema, model=None):
+        self.controller = controller()
         self.schema = schema
         self.model = model
-        self.endpoint.start()
+        self.controller.start()
         pub.subscribe(self.handle_patch, 'modification_request_recieved')
     
     """
@@ -34,7 +35,7 @@ default_model (dict): An in-memory model of the hardware
             method will call
             """
             index = None
-            data = self.schema
+            data = copy.deepcopy(self.schema)
             paths = r["path"].replace('/', '.').split('.')
             for i, path in enumerate(paths):
                 if path == '': continue
@@ -56,25 +57,25 @@ default_model (dict): An in-memory model of the hardware
                 if path.isnumeric():
                     index = int(path)
                     continue
-
                 data = data[path]
             routine = data['w']
-            args = data['args']
+            args = data.get('args')
             if index is not None: args.append(index)
             value = r.get("value")
             if value is not None: args.append(value)
             # call the specified function with the associated parameters
-            getattr(self.endpoint, routine)(*args)
+            getattr(self.controller, routine)(*args)
             """
             rebuild the path. This corrects any index-notation issues 
             that the original path may have had
             """
             r["path"] = "/".join(paths)
+        self.controller.xmit()
         """
         create and apply the requested PATCH to the model
         """
         patch = jsonpatch.JsonPatch(requests)
-        result = jsonpatch.apply_patch(model, patch)
+        result = jsonpatch.apply_patch(self.model, patch)
         """
         if someone is subscribed to response events, raise an event
         """
