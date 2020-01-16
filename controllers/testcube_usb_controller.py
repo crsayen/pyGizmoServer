@@ -23,15 +23,10 @@ class TestCubeUSB:
         }
 
     def start(self):
-        #be = libusb1.get_backend()
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
         self.dev.set_configuration()
-        # try:
-        #     self.dev.set_interface_altsetting(interface=0,alternate_setting=0)
-        # except Exception as e:
-        #     print(f"{e}")
 
     def setRelay(self, relay, state):
         if self.messages["relay"] is None:
@@ -41,9 +36,8 @@ class TestCubeUSB:
         msg.setstate(relay, state)
 
     def xmit(self):
-        for m in self.messages:
-            if self.messages[m] is not None:
-                self.dev.write(2,self.messages[m].get_message_string())
-                # make a USB message and send it
-                self.messages[m] = None
+        for key, value in self.messages.items():
+            if value is not None:
+                self.dev.write(2, value.get_message_string())
+                self.messages[key] = None
 
