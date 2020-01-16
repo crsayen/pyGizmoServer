@@ -7,13 +7,23 @@ import time
 class RelayMessage:
     def __init__(self):
         self.states = [None,None,None,None,None,None]
-
+        
     def setstate(self, relay, state):
         self.states[relay] = state
-        print(self.states)
 
     def get_message_string(self):
-        return "00000012FF00"
+        mask = 0
+        val = 0
+        print(self.states)
+        for i in range(0,len(self.states)): 
+            print(i,self.states[i])
+            if self.states[i] != None:
+                mask |= (1<<i)
+                if self.states[i]:
+                    val |= (1<<i)   
+        r = "{:08x}{:02x}{:02x}".format(0x12,mask,val)
+        print(r)
+        return r
 
 class TestCubeUSB:
     def __init__(self):
