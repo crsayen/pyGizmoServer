@@ -7,7 +7,7 @@ setup(
     packages=[
         "controllers",
         "pyGizmoServer",
-        "schemas"
+        "schemas",
     ],
     install_requires=["jsonpatch", "pypubsub"],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},

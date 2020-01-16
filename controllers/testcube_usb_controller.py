@@ -14,15 +14,12 @@ class RelayMessage:
     def get_message_string(self):
         mask = 0
         val = 0
-        print(self.states)
         for i in range(0,len(self.states)): 
-            print(i,self.states[i])
             if self.states[i] != None:
                 mask |= (1<<i)
                 if self.states[i]:
                     val |= (1<<i)   
         r = "{:08x}{:02x}{:02x}".format(0x12,mask,val)
-        print(r)
         return r
 
 class TestCubeUSB:
@@ -42,7 +39,6 @@ class TestCubeUSB:
         if self.messages["relay"] is None:
             self.messages["relay"] = RelayMessage()
         msg = self.messages["relay"]
-        print(f"stat: {state} Rel: {relay}")
         msg.setstate(relay, state)
 
     def xmit(self):
