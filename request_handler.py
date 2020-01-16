@@ -3,8 +3,6 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 from pubsub import pub
 
-mock_model = {"state": "michigan"}
-
 
 class PyGizmoRequestHandler(BaseHTTPRequestHandler):
     def _set_headers(self, content_type="text/html"):

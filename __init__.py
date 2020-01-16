@@ -5,6 +5,16 @@ from modification_handler import ModificationHandler
 from endpoint import Endpoint
 import time, json
 
+mock_model = {
+    "relays" : [
+        { "enabled": False },
+        { "enabled": False },
+        { "enabled": False },
+        { "enabled": False },
+        { "enabled": False },
+        { "enabled": False }
+    ]
+}
 
 hostName = ""
 hostPort = 8020
@@ -14,7 +24,7 @@ class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
 
 with open('schemas/testcube_UI_schema.json') as f:
     hwschema = json.load(f)
-modification_handler = ModificationHandler(Endpoint, hwschema)
+modification_handler = ModificationHandler(Endpoint, hwschema, model=mock_model)
 gizmoServer = ThreadedHTTPServer((hostName, hostPort), PyGizmoRequestHandler)
 print(time.asctime(), "Server started - %s:%s" % (hostName, hostPort))
 
@@ -24,4 +34,4 @@ except KeyboardInterrupt:
     pass
 
 gizmoServer.server_close()
-print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
+print(time.asctime(), "Server Stopped - %s:%s" % (hostName, hostPort))

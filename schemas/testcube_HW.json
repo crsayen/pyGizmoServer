@@ -1,0 +1,61 @@
+{
+    "relayController": {
+        "relays" : [
+            { "enabled": { "r": "getRelay", "w": "setRelay", "args": [] } }
+        ]
+    },
+    "pwmController" : {
+        "bankA" : {
+            "frequency" : { "w" : "setPwmFrequency", "r" : "getPwmFrequency", "args": [] },
+            "pwms" : {
+                "bankA" : {
+                    "activeConfiguration" : {},
+                    "dutyCycle" : { "w" : "setPwmDutyCycle", "r" : "getPwmDutyCycle", "args": [] },
+                    "enabled" : { "w" : "setPwmEnabled", "r" : "getPwmEnabled", "args": [] },
+                    "profile" : {},
+                    "currentMonitor" : {
+                        "pwmCurrentMonitorUpdateRate" : { "w" : "setPwmCurrentMonitorUpdateRate", "r" : "getPwmCurrentMonitorUpdateRate", "args": [] },
+                        "faultThreshold" : { "w" : "setPwmFaultThreshold", "r" : "getPwmFaultThreshold", "args": [] },
+                        "faultDelay" : { "w" : "setPwmFaultDelay", "r" : "getPwmFaultDelay", "args": [] },
+                        "faulty" : { "r" : "getPwmFaultThreshold", "args": [] },
+                        "measuredCurrent" : { "r" : "getPwmMeasuredCurrent", "args": [] },
+                        "enabled" : { "w" : "setPwmCurrentMonitorEnabled", "r" : "getPwmCurrentMonitorEnabled", "args": [] }
+                    } 
+                },
+                "bankB" : {
+                    "activeConfiguration" : {},
+                    "dutyCycle" : { "w" : "setPwmDutyCycle", "r" : "getPwmDutyCycle", "args": [] },
+                    "enabled" : { "w" : "setPwmEnabled", "r" : "getPwmEnabled", "args": [] },
+                    "profile" : {},
+                    "currentMonitor" : {
+                        "pwmCurrentMonitorUpdateRate" : { "w" : "setPwmCurrentMonitorUpdateRate", "r" : "getPwmCurrentMonitorUpdateRate", "args": [] },
+                        "faultThreshold" : { "w" : "setPwmFaultThreshold", "r" : "getPwmFaultThreshold", "args": [] },
+                        "faultDelay" : { "w" : "setPwmFaultDelay", "r" : "getPwmFaultDelay", "args": [] },
+                        "faulty" : { "r" : "getPwmFaultThreshold", "args": [] },
+                        "measuredCurrent" : { "r" : "getPwmMeasuredCurrent", "args": [] },
+                        "enabled" : { "w" : "setPwmCurrentMonitorEnabled", "r" : "getPwmCurrentMonitorEnabled", "args": [] }
+                    } 
+                }
+            }
+        }
+    },
+    "adcInputController" : {
+        "adcInputMonitorRate" : { "w" : "setAdcMonitorUpdateRate", "r" : "getAdcMonitorUpdateRate", "args": [] },
+        "adcInputs" : {
+            "measuredVoltage" : { "r": "getAdcMeasuredVoltage", "args": [] },
+            "enabled" : { "w" : "setAdcEnabled", "r" : "getAdcEnabled", "args": [] }
+    },
+    "digitalInputController" : {
+        "digitalInputMonitorRate" : { "type" : "integer" },
+        "digitalInputs" :{
+            "high" : { "w" : "setDigitalInput", "r" : "getDigitalInput", "args": [] }
+        }
+    },
+    "frequencyInputController" : {
+        "frequencyMonitorRate" : { "type" : "integer" },
+        "frequencyInputs" :{
+            "measuredFrequency" : { "r" : "getFrequencyInputMeasuredFrequency", "args": [] },
+            "enabled" : { "w" : "setFrequencyInputEnabled", "r" : "getFrequencyInputEnabled", "args": [] }
+        }
+    }
+}
