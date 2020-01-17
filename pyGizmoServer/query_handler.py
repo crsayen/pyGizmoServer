@@ -21,7 +21,7 @@ class QueryHandler:
         self.model = model
         self.err = None
         self.address = address
-        self.subscritpion_server = SubscriptionServer(self.address)
+        self.subscription_server = SubscriptionServer(self.address)
         self.subscribers = {}
         pub.subscribe(self.handle_get, 'query_request_recieved')
         pub.subscribe(self.handle_updates, 'received_update')
@@ -33,7 +33,7 @@ class QueryHandler:
             response = f"Invalid path: {path}"
             pub.sendMessage(response_handle, response=response, fmt="HTML")
             return
-        self.subscritpion_server.add(result["subscribable_path"], address)
+        self.subscription_server.add(result["subscribable_path"], address)
         if response_handle is not None:
             response = json.dumps({
                 "path": result["query_path"],
@@ -69,4 +69,4 @@ class QueryHandler:
 
     def handle_updates(self, message):
         print(f"message:\n{message}\n\n")
-        self.subscritpion_server.publish(message)
+        self.subscription_server.publish(message)

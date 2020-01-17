@@ -36,6 +36,7 @@ class ModificationHandler:
             """
             index = None
             data = copy.deepcopy(self.schema)
+            response = []
             paths = r["path"].replace('/', '.').split('.')
             for i, path in enumerate(paths):
                 if path == '': continue
@@ -69,8 +70,10 @@ class ModificationHandler:
             rebuild the path. This corrects any index-notation issues 
             that the original path may have had
             """
-            r["path"] = "/".join(paths)
-        self.controller.xmit()
+            path = "/".join(paths)
+            r["path"] = path
+            response.append({"path": "/" + path, "data": value})
+        self.controller.finished()
         """
         create and apply the requested PATCH to the model
         """
@@ -80,7 +83,7 @@ class ModificationHandler:
         if someone is subscribed to response events, raise an event
         """
         if response_handle is not None:
-            pub.sendMessage(response_handle, response=result)
+            pub.sendMessage(response_handle, response=response)
 
     
 

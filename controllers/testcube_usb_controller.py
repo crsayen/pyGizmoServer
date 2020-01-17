@@ -86,9 +86,9 @@ class PwmMessage:
 
 class RelayMessage:
     def __init__(self):
-        self.states = [None,None,None,None,None,None]        
+        self.RelayStates = [None,None,None,None,None,None]        
         
-    def setstate(self, relay, state):
+    def setRelay(self, relay, state):
         self.states[relay] = state
 
     def get_message_string(self):
@@ -104,28 +104,14 @@ class RelayMessage:
         r = "{:08x}{:02x}{:02x}".format(0x12,mask,val)
         return r
 
-class TestCubeUSB:
-    def __init__(self):
-        self.messages = {
-            "relay": None,
-            "pwm": None
-        }
-
+class TestCubeUSB(RelayMessage):
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
         self.dev.set_configuration()
 
-    def setRelay(self, relay, state):
-        if self.messages["relay"] is None:
-            self.messages["relay"] = RelayMessage()
-        msg = self.messages["relay"]
-        msg.setstate(relay, state)
-
-    def xmit(self):
-        for key, value in self.messages.items():
-            if value is not None:
-                self.dev.write(2, value.get_message_string())
-                self.messages[key] = None
+    """ this is automatically called by the owner of this controller """
+    def finished(self):
+        self.dev.write(2, 'message string')
 
