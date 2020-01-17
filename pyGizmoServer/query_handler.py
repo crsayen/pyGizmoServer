@@ -1,7 +1,7 @@
 import jsonpatch, json
 import copy
 from pubsub import pub
-import io, copy, re
+import io, copy, re, time
 from pyGizmoServer.subscription_server import SubscriptionServer
 
 class QueryHandler:
@@ -25,6 +25,7 @@ class QueryHandler:
         self.subscribers = {}
         pub.subscribe(self.handle_get, 'query_request_recieved')
         pub.subscribe(self.handle_updates, 'received_update')
+        self.x = 0
     
     def handle_get(self, path, address, response_handle=None):
         # ensure the path is valid, and formatted properly
@@ -66,7 +67,7 @@ class QueryHandler:
             "query_path": '/'.join(paths),
             "query_data": location            
         }
-
+    
     def handle_updates(self, message):
-        print(f"message:\n{message}\n\n")
+        print(f"message:\n{json.dumps(message,indent=2)}\n{'-'*106}")
         self.subscription_server.publish(message)

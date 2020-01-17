@@ -19,9 +19,10 @@ class MockUSB:
 
     def send_updates(self):
         n = 0
-        while True:
-            time.sleep(1)
+        time.sleep(3)
+        for i in range(10001):
             message = {}
             message["path"] = f"/adcController/adcs/",
             message["data"] = [{"measuredVoltage":x}for x in range(n,10+n)]
             pub.sendMessage("received_update", message=message)
+            n+=1
