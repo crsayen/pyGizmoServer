@@ -124,7 +124,7 @@ class TestCubeUSB(RelayMessage,PwmMessage):
         msgs = (self.get_relay_messages()
             + self.get_pwm_messages())
         for msg in msgs:
-            self.dev.write(2, value.msg)
+            self.dev.write(2, msg)
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
 
