@@ -6,7 +6,7 @@ import time
 
 class RelayMessage:
     def __init__(self):
-        self.states = [None,None,None,None,None,None]
+        self.states = [None,None,None,None,None,None]        
         
     def setstate(self, relay, state):
         self.states[relay] = state
