@@ -9,38 +9,38 @@ class PwmMessage:
         self.Freq = [None] * 2
         self.Hiconf = [None] * 12
 
-        self.Enabled = [None] * 12
+        self.PwmEnabled = [None] * 12
         self.Duty = [None] * 12
         
-    def setfreq(self, bank: int, hz: int):
+    def setPwmFrequency(self, bank: int, hz: int):
         self.Freq[bank] = hz
 
     def sethiconf(self, idx: int, activehi: bool):
         self.Hiconf[idx] = activehi
 
-    def setduty(self, idx: int, duty: int):
+    def setPwmDutyCycle(self, idx: int, duty: int):
         self.Duty[idx] = duty
 
-    def setenabled(self, idx: int, enabled: bool):
-        self.Enabled[idx] = enabled
+    def setPwmEnabled(self, idx: int, enabled: bool):
+        self.PwmEnabled[idx] = enabled
 
     def getUsbMsg8(self):
-        if self.Enabled == [None] * 12:
-            return None
+        if self.PwmEnabled == [None] * 12:
+            return []
         mask = 0
         val = 0
-        for i in range(0,len(self.Enabled)): 
-            if self.Enabled[i] != None:
+        for i in range(0,len(self.PwmEnabled)): 
+            if self.PwmEnabled[i] != None:
                 mask |= (1<<i)
-                if self.Enabled[i]:
+                if self.PwmEnabled[i]:
                     val |= (1<<i)           
         r = "{:08x}{:04x}{:04x}".format(
             0x08,mask,val)
-        return r
-        
+        return [r]
+
     def getUsbMsg6(self,bank:int):
         if self.Duty[bank*6:bank*6+6] == ([None] * 6):
-            return None
+            return []
         
         dutymask = 0
         for i in range(6):
@@ -50,12 +50,12 @@ class PwmMessage:
             0x06,bank,dutymask) 
         for i in range(6): 
             r += "{:02x}".format(self.Duty[i+bank*6] or 0) 
-        return r           
+        return [r]           
                     
 
     def getUsbMsg4(self):
         if (self.Freq == [None]*2) and (self.Hiconf == [None]*12):
-            return None
+            return []
         freqmask=0x0
         hilomask=0x000
         hiloval=0x000
@@ -78,38 +78,41 @@ class PwmMessage:
 
         r = "{:08x}{:01x}{:03x}0{:03x}{:04x}{:04x}".format(
             0x04,freqmask,hilomask,hiloval,self.Freq[0] or 0,self.Freq[1] or 0)
-        return r
+        return [r]
 
 
-    def get_message_string(self):
-        return self.getUsbMsg4()
+    def get_pwm_messages(self):
+        return (self.getUsbMsg4() +
+         self.getUsbMsg6(0) + 
+         self.getUsbMsg6(1) + 
+         self.getUsbMsg8())
 
 class RelayMessage:
     def __init__(self):
-        self.states = [None,None,None,None,None,None]
+        self.Relaystates = [None,None,None,None,None,None]
         
-    def setstate(self, relay, state):
-        self.states[relay] = state
+    def setRelay(self, relay, state):
+        self.Relaystates[relay] = state
 
-    def get_message_string(self):
-        if self.states == [None] * 6:
-            return None
+    def get_relay_messages(self):
+        if self.Relaystates == [None] * 6:
+            return []
         mask = 0
         val = 0
-        for i in range(0,len(self.states)): 
-            if self.states[i] != None:
+        for i in range(0,len(self.Relaystates)): 
+            if self.Relaystates[i] != None:
                 mask |= (1<<i)
-                if self.states[i]:
+                if self.Relaystates[i]:
                     val |= (1<<i)   
-        r = "{:08x}{:02x}{:02x}".format(0x12,mask,val)
-        return r
+        r = "{:08x}{:02x}{:02x}".format(
+               0x12,mask,val)
+        return [r]
 
-class TestCubeUSB:
+class TestCubeUSB(RelayMessage,PwmMessage):
+    
     def __init__(self):
-        self.messages = {
-            "relay": None,
-            "pwm": None
-        }
+        RelayMessage.__init__(self)
+        PwmMessage.__init__(self)
 
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
@@ -117,15 +120,12 @@ class TestCubeUSB:
             raise ValueError('Device not found')
         self.dev.set_configuration()
 
-    def setRelay(self, relay, state):
-        if self.messages["relay"] is None:
-            self.messages["relay"] = RelayMessage()
-        msg = self.messages["relay"]
-        msg.setstate(relay, state)
+    def finish(self):
+        msgs = (self.get_relay_messages()
+            + self.get_pwm_messages())
+        for msg in msgs:
+            self.dev.write(2, value.msg)
+        RelayMessage.__init__(self)
+        PwmMessage.__init__(self)
 
-    def xmit(self):
-        for key, value in self.messages.items():
-            if value is not None:
-                self.dev.write(2, value.get_message_string())
-                self.messages[key] = None
 
