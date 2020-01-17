@@ -80,7 +80,7 @@ class ModificationHandler:
         if someone is subscribed to response events, raise an event
         """
         if response_handle is not None:
-            pub.sendMessage(response_handle, response=result)
+            pub.sendMessage(response_handle, response=result, fmt="JSON")
 
     
 
