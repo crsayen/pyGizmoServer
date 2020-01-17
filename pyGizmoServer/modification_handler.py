@@ -1,6 +1,7 @@
 import jsonpatch, json
 import copy
-from pubsub import pub 
+from pubsub import pub
+import asyncio
 
 class ModificationHandler:
     """
@@ -13,10 +14,9 @@ class ModificationHandler:
     default_model (dict): An in-memory model of the hardware
     """
     def __init__(self, controller, schema, model=None):
-        self.controller = controller()
+        self.controller = controller
         self.schema = schema
         self.model = model
-        self.controller.start()
         pub.subscribe(self.handle_patch, 'modification_request_recieved')
     
     """
@@ -81,3 +81,8 @@ class ModificationHandler:
         """
         if response_handle is not None:
             pub.sendMessage(response_handle, response=result)
+
+    
+
+
+    

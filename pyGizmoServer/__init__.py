@@ -2,7 +2,9 @@ from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 from pyGizmoServer.request_handler import PyGizmoRequestHandler
 from pyGizmoServer.modification_handler import ModificationHandler
+from pyGizmoServer.query_handler import QueryHandler
 from controllers.testcube_usb_controller import TestCubeUSB
+from controllers.mock_controller import MockUSB
 import time, json
 
 mock_model = {
@@ -15,20 +17,36 @@ mock_model = {
             { "enabled": False },
             { "enabled": False }
         ]
+    },
+    "adcController": {
+        "adcs" : [
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 },
+            { "measuredCurrent": 0 }
+        ]
     }
 }
-
-hostName = ""
-hostPort = 8020
+address = ('', 8020)
 
 class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
     pass
 
 with open('schemas/testcube_HW.json') as f:
     hwschema = json.load(f)
-modification_handler = ModificationHandler(TestCubeUSB, hwschema, model=mock_model)
-gizmoServer = ThreadedHTTPServer((hostName, hostPort), PyGizmoRequestHandler)
-print(time.asctime(), "Server started - %s:%s" % (hostName, hostPort))
+#controller = TestCubeUSB()
+controller = MockUSB()
+controller.start()
+modification_handler = ModificationHandler(controller, hwschema, model=mock_model)
+query_handler = QueryHandler(address, controller, hwschema, model=mock_model)
+gizmoServer = ThreadedHTTPServer(address, PyGizmoRequestHandler)
+print(time.asctime(), f"Server started - {address}")
 
 try:
     gizmoServer.serve_forever()
@@ -36,4 +54,4 @@ except KeyboardInterrupt:
     pass
 
 gizmoServer.server_close()
-print(time.asctime(), "Server Stopped - %s:%s" % (hostName, hostPort))
+print(time.asctime(), f"Server started - {address}")
