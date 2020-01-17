@@ -13,7 +13,7 @@ setup(
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={
         "console_scripts": [
-            "gizmo=pyGizmoServer.__init__:main"
+            "gizmo=pyGizmoServer.run:main"
         ]
     },
 )

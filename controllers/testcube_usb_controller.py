@@ -89,20 +89,20 @@ class PwmMessage:
 
 class RelayMessage:
     def __init__(self):
-        self.Relaystates = [None,None,None,None,None,None]
+        self.RelayStates = [None,None,None,None,None,None]        
         
     def setRelay(self, relay, state):
-        self.Relaystates[relay] = state
+        self.RelayStates[relay] = state
 
     def get_relay_messages(self):
-        if self.Relaystates == [None] * 6:
+        if self.RelayStates == [None] * 6:
             return []
         mask = 0
         val = 0
-        for i in range(0,len(self.Relaystates)): 
-            if self.Relaystates[i] != None:
+        for i in range(0,len(self.RelayStates)): 
+            if self.RelayStates[i] != None:
                 mask |= (1<<i)
-                if self.Relaystates[i]:
+                if self.RelayStates[i]:
                     val |= (1<<i)   
         r = "{:08x}{:02x}{:02x}".format(
                0x12,mask,val)

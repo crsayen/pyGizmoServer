@@ -1,3 +1,0 @@
-[console_scripts]
-gizmo = pyGizmoServer.__init__:main
-
