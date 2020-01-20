@@ -58,9 +58,19 @@ class TestUtility:
         self.path = "///relayController....relays[10]/enabled"
         result = Utility.parse_path_against_schema_and_model(self.model, self.schema, self.path, read_write='w')
         assert(result["error"] == 'PATH ERROR: /relayController/relays/10')
+        assert(result["path_up_to_array_index"] is None)
+        assert(result["path_string"] is None)
+        assert(result["model_data"] is None)
+        assert(result["routine"] is None)
+        assert(result["args"] is None)
 
     def test_parse_path_against_schema_and_model_bad_path_2(self):
         self.get_instance()
         self.path = "./.relayController.misspelled[10]/enabled"
         result = Utility.parse_path_against_schema_and_model(self.model, self.schema, self.path, read_write='w')
         assert(result["error"] == 'PATH ERROR: /relayController/misspelled')
+        assert(result["path_up_to_array_index"] is None)
+        assert(result["path_string"] is None)
+        assert(result["model_data"] is None)
+        assert(result["routine"] is None)
+        assert(result["args"] is None)
