@@ -19,22 +19,42 @@ mock_model = {
             { "enabled": False }
         ]
     },
-    "adcController": {
-        "adcs" : [
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 },
-            { "measuredCurrent": 0 }
+    "pwmController": {
+        "bankA": {
+            "frequency": 0,
+        },
+        "bankB": {
+            "frequency": 0,
+        },
+        "pwms" : [
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False },
+            { "dutyCycle": 0,
+            "enabled": False }
         ]
     }
 }
-address = ('', 8020)
+address = ('', 36364)
 
 def main():
     class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
@@ -50,6 +70,8 @@ def main():
     controller.start()
     modification_handler = ModificationHandler(controller, hwschema, model=mock_model)
     query_handler = QueryHandler(address, controller, hwschema, model=mock_model)
+    modification_handler.start()
+    query_handler.start()
     gizmoServer = ThreadedHTTPServer(address, PyGizmoRequestHandler)
     print(time.asctime(), f"Server started - {address}")
 
