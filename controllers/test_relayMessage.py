@@ -1,5 +1,6 @@
 from controllers.testcube_usb_controller import RelayMessage
 from controllers.testcube_usb_controller import PwmMessage
+from controllers.testcube_usb_controller import DiMessage
 
 def test_init():
     rm = RelayMessage()
@@ -22,7 +23,7 @@ def test_pwmfreq():
     pm = PwmMessage()
     assert(pm.get_pwm_messages()==[])
     pm.setPwmFrequency(0,100)
-    assert(pm.get_pwm_messages()==["000000044000000000640000"])    
+    assert(pm.get_pwm_messages()==["000000048000000000640000"])    
     pm.setPwmFrequency(1,0x1234)
     assert(pm.get_pwm_messages()==["00000004c000000000641234"])
 
@@ -46,3 +47,9 @@ def test_pwmenable():
     pm.setPwmEnabled(0,True)
     pm.setPwmEnabled(8,False)
     assert(pm.get_pwm_messages()==["0000000801010001"])
+
+def test_dirate():
+    dm = DiMessage()
+    assert(dm.get_di_messages()==[])
+    dm.setDiMonitorUpdateRate(1)
+    assert(dm.get_di_messages()==["0000000a01"])

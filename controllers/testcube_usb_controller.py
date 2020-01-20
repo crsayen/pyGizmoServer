@@ -61,7 +61,7 @@ class PwmMessage:
         hiloval=0x000
         for i in range(0,len(self.Freq)): 
             if self.Freq[i] != None:
-                freqmask |= (1<<i+2)
+                freqmask |= (8>>i)
 
         for i in range(0,len(self.Hiconf)): 
             if self.Hiconf[i] != None:
@@ -108,11 +108,31 @@ class RelayMessage:
                0x12,mask,val)
         return [r]
 
-class TestCubeUSB(RelayMessage,PwmMessage):
+class DiMessage:
+    def __init__(self):
+        self.dimonitorrate = None 
+
+    def setDiMonitorUpdateRate(self,rate:int):
+        self.dimonitorrate = rate
+
+    def get_di_messages(self):
+        if self.dimonitorrate == None:
+            return []
+        r = "{:08x}{:02}".format(
+            0xa,self.dimonitorrate
+        ) 
+        return [r]
+
+class TestCubeUSB(
+    RelayMessage,
+    PwmMessage,
+    DiMessage
+    ):
     
     def __init__(self):
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
+        DiMessage.__init__(self)
 
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
@@ -122,10 +142,13 @@ class TestCubeUSB(RelayMessage,PwmMessage):
 
     def finish(self):
         msgs = (self.get_relay_messages()
-            + self.get_pwm_messages())
+            + self.get_pwm_messages()
+            + self.get_di_messages()
+        )
         for msg in msgs:
             self.dev.write(2, msg)
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
+        DiMessage.__init__(self)
 
 
