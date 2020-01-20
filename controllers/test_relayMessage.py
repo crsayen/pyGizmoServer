@@ -1,6 +1,9 @@
 from controllers.testcube_usb_controller import RelayMessage
 from controllers.testcube_usb_controller import PwmMessage
 from controllers.testcube_usb_controller import DiMessage
+from controllers.testcube_usb_controller import ActCurMessage
+from controllers.testcube_usb_controller import UsbMessage
+from controllers.testcube_usb_controller import FrequencyMessage
 
 def test_init():
     rm = RelayMessage()
@@ -53,3 +56,21 @@ def test_dirate():
     assert(dm.get_di_messages()==[])
     dm.setDiMonitorUpdateRate(1)
     assert(dm.get_di_messages()==["0000000a01"])
+
+def test_actCur():
+    am = ActCurMessage()
+    am.setPwmCurrentMonitorUpdateRate(1)
+    am.setPwmCurrentMonitorChannels(0x555)
+    am.setPwmFaultThreshold(0x22)
+    assert(am.get_actcur_messages()==["0000000c05550122"])
+
+def test_sendUsbMsg():
+    um = UsbMessage()
+    um.sendrawusb('1234')     
+    assert(um.get_sendusb_messages()==['1234'])
+
+def test_freq():
+    fm = FrequencyMessage()
+    fm.setFrequencyInputEnabled(0x5)
+    fm.setFrequencyMonitorRate(0x1)
+    assert(fm.get_freq_messages()==['0000000e0501'])

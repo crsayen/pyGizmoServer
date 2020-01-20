@@ -47,9 +47,9 @@
         }
     },
     "digitalInputController" : {
-        "digitalInputMonitorRate" : { "type" : "integer" },
+        "digitalInputMonitorRate" : { "w" : "setDiMonitorUpdateRate", "args": [] },
         "digitalInputs" :{
-            "high" : { "w" : "setDigitalInput", "r" : "getDigitalInput", "args": [] }
+            "high" : { "r" : "getDigitalInput", "args": [] }
         }
     },
     "frequencyInputController" : {
@@ -61,6 +61,6 @@
     },
     "usb":{
         "message":
-         {"w": "sendusb"}
+         {"w": "sendrawusb"}
     }
 }

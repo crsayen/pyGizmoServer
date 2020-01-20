@@ -123,16 +123,87 @@ class DiMessage:
         ) 
         return [r]
 
+class ActCurMessage:
+    def __init__(self):
+        self.actmonitorRate = None 
+        self.actmonitorChannels = None
+        self.actmonitorThreshold = None
+
+    def setPwmCurrentMonitorUpdateRate(self,rate:int):
+        self.actmonitorRate = rate
+    
+    def setPwmFaultThreshold(self,Threshold:int):
+        self.actmonitorThreshold = Threshold
+
+#    def setPwmFaultDelay(self):
+
+    def setPwmCurrentMonitorChannels(self,channelMask:int):
+        self.actmonitorChannels = channelMask
+
+    def get_actcur_messages(self):
+        if self.actmonitorChannels == None:
+            return []
+        if self.actmonitorRate == None:
+            return []
+        if self.actmonitorThreshold == None:
+            return []
+
+        r = "{:08x}{:04x}{:02x}{:02x}".format(
+            0xc,self.actmonitorChannels,self.actmonitorRate,self.actmonitorThreshold
+        ) 
+        return [r]            
+
+class FrequencyMessage:
+    def __init__(self):
+        self.freqmonitorRate = None 
+        self.freqmonitorChannels = None
+
+    def setFrequencyInputEnabled(self,freqmask:int):
+        self.freqmonitorChannels = freqmask
+        
+    def setFrequencyMonitorRate(self,rate):
+        self.freqmonitorRate = rate
+
+    def get_freq_messages(self):
+        if self.freqmonitorRate == None:
+            return []
+        if self.freqmonitorChannels == None:
+            return []   
+
+        r = "{:08x}{:02x}{:02x}".format(
+            0xe,self.freqmonitorChannels,self.freqmonitorRate
+        ) 
+        return [r]          
+
+class UsbMessage:
+    def __init__(self):
+        self.usbmsg = None
+    def sendrawusb(self,msg):
+        self.usbmsg = msg
+    def get_sendusb_messages(self):    
+        if self.usbmsg == None:
+            return []
+        return [self.usbmsg]
+
 class TestCubeUSB(
     RelayMessage,
     PwmMessage,
-    DiMessage
+    DiMessage,
+    ActCurMessage,
+    UsbMessage,
+    FrequencyMessage
     ):
     
-    def __init__(self):
+    def callParentInits(self):
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
         DiMessage.__init__(self)
+        ActCurMessage.__init__(self)
+        UsbMessage.__init__(self)
+        FrequencyMessage.__init__(self)
+
+    def __init__(self):
+        callParentInits()
 
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
@@ -144,11 +215,11 @@ class TestCubeUSB(
         msgs = (self.get_relay_messages()
             + self.get_pwm_messages()
             + self.get_di_messages()
+            + self.get_actcur_messages()
+            + self.get_sendusb_messages()
+            + self.get_freq_messages()
         )
         for msg in msgs:
             self.dev.write(2, msg)
-        RelayMessage.__init__(self)
-        PwmMessage.__init__(self)
-        DiMessage.__init__(self)
-
+        callParentInits()
 
