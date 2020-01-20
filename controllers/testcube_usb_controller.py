@@ -1,7 +1,8 @@
 import usb.core
 from usb.backend import libusb1
 import usb.util
-import time
+import time, threading, time
+from pubsub import pub
 
 
 class PwmMessage:
@@ -12,8 +13,13 @@ class PwmMessage:
         self.PwmEnabled = [None] * 12
         self.Duty = [None] * 12
         
-    def setPwmFrequency(self, bank: int, hz: int):
-        self.Freq[bank] = hz
+    def setPwmFrequencyA(self, hz: int):
+        self.Freq[1] = hz
+        self.Freq[0] = hz
+
+    def setPwmFrequencyB(self, hz: int):
+        self.Freq[1] = hz
+        self.Freq[0] = hz
 
     def sethiconf(self, idx: int, activehi: bool):
         self.Hiconf[idx] = activehi
@@ -91,7 +97,8 @@ class RelayMessage:
     def __init__(self):
         self.RelayStates = [None,None,None,None,None,None]        
         
-    def setRelay(self, relay, state):
+    def setRelay(self, relay: int, state: bool):
+        print(f"state: {state} type: {type(state)}")
         self.RelayStates[relay] = state
 
     def get_relay_messages(self):
@@ -116,16 +123,18 @@ class TestCubeUSB(RelayMessage,PwmMessage):
 
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
+        print(f"start: {self.dev}")
         if self.dev is None:
             raise ValueError('Device not found')
         self.dev.set_configuration()
 
-    def finish(self):
+    def finished(self):
+        print(f"finished: {self.dev}")
         msgs = (self.get_relay_messages()
             + self.get_pwm_messages())
         for msg in msgs:
+            print(msg)
             self.dev.write(2, msg)
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
-
 

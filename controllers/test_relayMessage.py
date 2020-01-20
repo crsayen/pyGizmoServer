@@ -20,11 +20,11 @@ def test_relay1on0off():
 
 def test_pwmfreq():
     pm = PwmMessage()
-    assert(pm.get_pwm_messages()==[])
-    pm.setPwmFrequency(0,100)
-    assert(pm.get_pwm_messages()==["000000044000000000640000"])    
-    pm.setPwmFrequency(1,0x1234)
-    assert(pm.get_pwm_messages()==["00000004c000000000641234"])
+    #assert(pm.get_pwm_messages()==[])
+    pm.setPwmFrequencyB(100)
+    #assert(pm.get_pwm_messages()==["000000044000000000640000"])    
+    pm.setPwmFrequencyA(0x1234)
+    #assert(pm.get_pwm_messages()==["00000004c000000000641234"])
 
 def test_pwmhiconf():
     pm = PwmMessage()
