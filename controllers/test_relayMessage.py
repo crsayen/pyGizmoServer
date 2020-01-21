@@ -4,6 +4,8 @@ from controllers.testcube_usb_controller import DiMessage
 from controllers.testcube_usb_controller import ActCurMessage
 from controllers.testcube_usb_controller import UsbMessage
 from controllers.testcube_usb_controller import FrequencyMessage
+from controllers.testcube_usb_controller import AdcMessage
+
 
 def test_init():
     rm = RelayMessage()
@@ -25,9 +27,9 @@ def test_relay1on0off():
 def test_pwmfreq():
     pm = PwmMessage()
     assert(pm.get_pwm_messages()==[])
-    pm.setPwmFrequency(0,100)
+    pm.setPwmFrequencyA(100)
     assert(pm.get_pwm_messages()==["000000048000000000640000"])    
-    pm.setPwmFrequency(1,0x1234)
+    pm.setPwmFrequencyB(0x1234)
     assert(pm.get_pwm_messages()==["00000004c000000000641234"])
 
 def test_pwmhiconf():
@@ -74,3 +76,9 @@ def test_freq():
     fm.setFrequencyInputEnabled(0x5)
     fm.setFrequencyMonitorRate(0x1)
     assert(fm.get_freq_messages()==['0000000e0501'])
+
+def test_adcrequest():
+    am = AdcMessage()
+    am.setAdcEnabled(0x5)
+    am.setAdcMonitorUpdateRate(0x11)
+    assert(am.get_adc_messages()==['000000100511'])

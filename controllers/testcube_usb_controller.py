@@ -5,6 +5,28 @@ import time, threading, time
 from pubsub import pub
 
 
+class AdcMessage:
+    def __init__(self):
+        self.AdcChannels = None
+        self.AdcRate = None
+    
+    def setAdcMonitorUpdateRate(self,rate:int):
+        self.AdcRate = rate
+
+    def setAdcEnabled(self,mask:int):
+        self.AdcChannels = mask
+
+    def get_adc_messages(self):
+        if self.AdcChannels == None:
+            return []
+        if self.AdcRate == None:
+            return []
+        r = "{:08x}{:02x}{:02x}".format(
+            0x10,self.AdcChannels,self.AdcRate
+        ) 
+        return [r]
+
+
 class PwmMessage:
     def __init__(self):
         self.Freq = [None] * 2
@@ -14,12 +36,10 @@ class PwmMessage:
         self.Duty = [None] * 12
         
     def setPwmFrequencyA(self, hz: int):
-        self.Freq[1] = hz
         self.Freq[0] = hz
 
     def setPwmFrequencyB(self, hz: int):
         self.Freq[1] = hz
-        self.Freq[0] = hz
 
     def sethiconf(self, idx: int, activehi: bool):
         self.Hiconf[idx] = activehi
@@ -125,7 +145,7 @@ class DiMessage:
     def get_di_messages(self):
         if self.dimonitorrate == None:
             return []
-        r = "{:08x}{:02}".format(
+        r = "{:08x}{:02x}".format(
             0xa,self.dimonitorrate
         ) 
         return [r]
@@ -198,7 +218,8 @@ class TestCubeUSB(
     DiMessage,
     ActCurMessage,
     UsbMessage,
-    FrequencyMessage
+    FrequencyMessage,
+    AdcMessage
     ):
     
     def callParentInits(self):
@@ -208,6 +229,7 @@ class TestCubeUSB(
         ActCurMessage.__init__(self)
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
+        AdcMessage.__init__(self)
 
     def __init__(self):
         callParentInits()
@@ -227,6 +249,7 @@ class TestCubeUSB(
             + self.get_actcur_messages()
             + self.get_sendusb_messages()
             + self.get_freq_messages()
+            + self.get_adc_messages()
         )
         for msg in msgs:
             print(msg)
