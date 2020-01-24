@@ -8,6 +8,6 @@ parts
 *.egg-info
 lib
 lib64
-.vscode
+*.vscode
 *.pyo
 *.pyc
