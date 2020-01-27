@@ -80,12 +80,14 @@ class Test_usbRec():
         )
         self.processandcheck(msg)
 
-    # def test_usbmsgb(self):
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 0xb,
-    #         digitalinputs = 0x555
-    #     )
-    
+    def test_usbmsgb(self):
+        id = 0xb
+        digitalinputs = 0x555
+        msg = "{:08x}{:04x}".format(
+            id,digitalinputs
+        )
+        self.processandcheck(msg)
+
     # def test_usbmsgd(self): #act curr
     #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
     #         id = 0xd,

@@ -3,6 +3,22 @@ import json
 class MockVars:
     def __init__(self):
         self.mock_model = {
+            "digitalInputController" : {
+                "digitalInputs": [
+                    {"high": True},
+                    {"high": False},
+                    {"high": True},
+                    {"high": False},
+                    {"high": True},
+                    {"high": False},
+                    {"high": True},
+                    {"high": False},
+                    {"high": True},
+                    {"high": False},
+                    {"high": True},
+                    {"high": False},
+                ]
+            },
             "relayController": {
                 "relays" : [
                     { "enabled": False },
