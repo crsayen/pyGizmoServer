@@ -324,7 +324,15 @@ class TestCubeUSB(
         return [{'path': path, 'data': ret}]
 
     def recusb_9_pwmenable(self,payload):
-        raise("not implemented")
+        d = []
+        enabled = (
+            int(payload[:4],16)
+        )
+        data = [{'enabled': True} if (enabled & (1<<x)) else {'enabled': False} for x in range(12)]
+        path = '/pwmController/pwms'
+        d.append({'path':path,'data':data})
+        return d
+
     def recusb_b_digitalinputs(self,payload):
         raise("not implemented")
     def recusb_00d_actcurrent(self,payload):

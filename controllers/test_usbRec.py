@@ -17,6 +17,15 @@ class Test_usbRec():
         else:
             assert(md == pd),f"{loc=}"
 
+    def processandcheck(self,msg):
+        d = self.controller.recUsb(msg)
+    
+        for pd in d:
+            #print('pd ' + str(pd))
+            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
+            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
+
+
     def setup(self):
         self.mockvars = MockVars()
         self.controller=TestCubeUSB()
@@ -31,13 +40,7 @@ class Test_usbRec():
         freqb = 0xfff
 
         msg = '{:08x}{:04x}{:04x}{:04x}'.format(id,acthi,freqa,freqb)
-        d = self.controller.recUsb(msg)
-
-        for pd in d:
-            #print('pd ' + str(pd))
-            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
-            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
- 
+        self.processandcheck(msg) 
 
     def test_usbmsg7(self):
         id = 7
@@ -52,12 +55,7 @@ class Test_usbRec():
         msg = "{:08x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}".format(
             id,bank,mod,dcf,dce,dcd,dcc,dcb,dca
         )        
-        d = self.controller.recUsb(msg)
-     
-        for pd in d:
-            #print('pd ' + str(pd))
-            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
-            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
+        self.processandcheck(msg)
   
         id = 7
         bank = 0x1
@@ -71,18 +69,16 @@ class Test_usbRec():
         msg = "{:08x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}".format(
             id,bank,mod,dcf,dce,dcd,dcc,dcb,dca
         )        
-        d = self.controller.recUsb(msg)
-     
-        for pd in d:
-            #print('pd ' + str(pd))
-            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
-            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
+        self.processandcheck(msg)
 
-    # def test_usbmsg9(self):
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 9,
-    #         enablemask = 0x555
-    #     )
+    def test_usbmsg9(self):
+        id = 9
+        enablemask = 0x555
+        
+        msg = "{:08x}{:04x}".format(
+            id,enablemask
+        )
+        self.processandcheck(msg)
 
     # def test_usbmsgb(self):
     #     msg = "{:08x}{:04x}".format(
