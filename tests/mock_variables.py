@@ -41,11 +41,11 @@ class MockVars:
             },
             "relayController": {
                 "relays" : [
+                    { "enabled": True },
                     { "enabled": False },
                     { "enabled": False },
                     { "enabled": False },
-                    { "enabled": False },
-                    { "enabled": False },
+                    { "enabled": True },
                     { "enabled": False }
                 ]
             },
@@ -61,74 +61,86 @@ class MockVars:
                         "dutyCycle": 1,
                     "enabled": True,
                     "currentMonitor": {
-                        "measuredCurrent": 1
+                        "measuredCurrent": 1,
+                        "faulty": True
                     }
                      },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 2,
                     "enabled": False ,
                            "currentMonitor": {
-                        "measuredCurrent": 2
+                        "measuredCurrent": 2,
+                        "faulty": False
                     }},
                     { "activeConfiguration": 'high',
                      "dutyCycle": 3,
                     "enabled": True ,
                            "currentMonitor": {
-                        "measuredCurrent": 3
+                        "measuredCurrent": 3,
+                        "faulty": True
                     }},
                     { "activeConfiguration": 'low',
                      "dutyCycle": 4,
                     "enabled": False,
                            "currentMonitor": {
-                        "measuredCurrent": 4
+                        "measuredCurrent": 4,
+                        "faulty": False
                     } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 5,
                     "enabled": True,
                            "currentMonitor": {
-                        "measuredCurrent": 5
+                        "measuredCurrent": 5,
+                        "faulty": True
                     } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 6,
                     "enabled": False,
                            "currentMonitor": {
-                        "measuredCurrent": 6
+                        "measuredCurrent": 6,
+                        "faulty": False
                     } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 7,
                     "enabled": True ,
                            "currentMonitor": {
-                        "measuredCurrent": 7
+                        "measuredCurrent": 7,
+                        "faulty": True
                     }},
                     { "activeConfiguration": 'low',
                      "dutyCycle": 8,
                     "enabled": False,
                            "currentMonitor": {
-                        "measuredCurrent": 8
+                        "measuredCurrent": 8,
+                        "faulty": False
                     } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 9,
                     "enabled": True,
                            "currentMonitor": {
-                        "measuredCurrent": 9
+                        "measuredCurrent": 9,
+                        "faulty": True
                     } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 10,
                     "enabled": False,
                            "currentMonitor": {
-                        "measuredCurrent": 10
+                        "measuredCurrent": 10,
+                        "faulty": False
                     } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 11,
                     "enabled": True,
                            "currentMonitor": {
-                        "measuredCurrent": 11
+                        "measuredCurrent": 11,
+                        "faulty": True
                     } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 12,
                     "enabled": False,
                            "currentMonitor": {
-                        "measuredCurrent": 12
+                        "measuredCurrent": 12,
+                        "faulty": False
                     } }
                 ]
             }

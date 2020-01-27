@@ -497,8 +497,22 @@ class TestCubeUSB(
         return [{'path': path, 'data': ret}]        
     
     def recusb_13_relay(self,payload):
-        raise("not implemented")
+        enabled = (
+            int(payload[:2],16)
+        )
+        data = [{'enabled': True} if (enabled & (1<<x)) else {'enabled': False} for x in range(8)]
+
+        path = 'relayController/relays'
+        return [{'path': path, 'data': data}]
+
     def recusb_1d_actfault(self,payload):
-        raise("not implemented")
+        sync,faults = (
+            int(payload[:1],16),
+            int(payload[1:4],16)
+        )
+        data = [{'currentMonitor':{'faulty': True}} if (faults & (1<<x)) else {'currentMonitor':{'faulty': False}} for x in range(12)]
+
+        path = 'pwmController/pwms'
+        return [{'path': path, 'data': data}]                
     def recusb_41_version(self,payload):
         raise("not implemented")

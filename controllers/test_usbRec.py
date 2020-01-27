@@ -3,19 +3,35 @@ from pyGizmoServer.utility import Utility
 from tests.mock_variables import MockVars
 
 class Test_usbRec():
-    def checkdatamatch(self,md,pd,loc):
+
+    def checkmatch(self,md,pd,loc):
         #print("pd type " + str(type(pd)))
         #print("md type " + str(type(md)))
+        #print('cdm')
+        #print(pd)
+        #print(md)
+        #print(type(pd),type(md))
+
         if isinstance(md,list):
             idx=0
             for m,p in zip(md,pd):
-                #print(m,p)
-                for k,v in p.items(): #the model can have more stuff than in the usb msg
-                    assert (k in m.keys()),f"usb parse to place not in model {loc=}/{k} {idx=}"
-                    assert (v == m[k]),f"value doesn't match model {loc=}/{k} {idx=}"
-                idx=idx+1
+                #print('break up list')
+                self.checkmatch(m,p,loc + f'[{idx}]')
+                idx = idx + 1
+        elif isinstance(md,dict): 
+            #print('dict')              
+            for k,v in pd.items(): #the model can have more stuff than in the usb msg
+                #print(k,v)
+                assert(k in md.keys()),f"usb parse to place not in model {loc=}/{k} {idx=}"
+                #self.checkdatamatch(m,p,"recursion" + str(k))
+                #print('break up dict')
+                self.checkmatch(md[k],v,loc + '/' + k)
+                #assert (v == m[k]),f"value doesn't match model {loc=}/{k} {idx=}"
+            #idx=idx+1
         else:
             assert(md == pd),f"{loc=}"
+
+
 
     def processandcheck(self,msg):
         d = self.controller.recUsb(msg)
@@ -23,7 +39,7 @@ class Test_usbRec():
         for pd in d:
             #print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
-            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
+            self.checkmatch(results['model_data'],pd['data'],pd['path'])
 
 
     def setup(self):
@@ -109,14 +125,14 @@ class Test_usbRec():
         msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
             id,a9,a4,a3,a2
         )
-        self.processandcheck(msg)        
+        #self.processandcheck(msg)        
 
         id = 0x20d
         a1 = 1
         msg = "{:08x}{:04x}".format(
             id,a1
         )
-        self.processandcheck(msg)  
+        #self.processandcheck(msg)  
 
     def test_usbmsgf(self): #speed
         id = 0xf
@@ -164,19 +180,22 @@ class Test_usbRec():
         )     
         self.processandcheck(msg)
 
-    # def test_usb13(self): #relay
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 0x13,
-    #         relays = 0x15
-    #     )
+    def test_usbmsg13(self): #relay
+        id = 0x13
+        relays = 0x11
+        msg = "{:08x}{:02x}".format(
+            id,relays
+        )
+        self.processandcheck(msg)
 
-    # def test_usb1d(self): #act fault
-    #     msg = "{:08x}{:01x}{:03x}".format(
-    #         id = 0x1d,
-    #         sync = 0,
-    #         faults = 0x555
-    #     )
-
+    def test_usbmsg1d(self): #act fault
+        id = 0x1d
+        sync = 0
+        faults = 0x555
+        msg = "{:08x}{:01x}{:03x}".format(
+            id,sync,faults
+        )
+        self.processandcheck(msg)
     # def test_usb41(self): #version
     #     msg = "{:08x}{:04x}{:04x}{:04x}".format(
     #         id = 0x41,
