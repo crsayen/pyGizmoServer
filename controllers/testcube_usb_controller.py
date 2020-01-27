@@ -303,7 +303,26 @@ class TestCubeUSB(
         d.append({'path':path,'data':data})
         return d
     def recusb_7_pwmdutycycle(self,payload):
-        raise("not implemented")
+        ret = [{}]*12
+        bank,mod,dcf,dce,dcd,dcc,dcb,dca = (
+            int(payload[:2],16),
+            int(payload[2:4],16),
+            int(payload[4:6],16),
+            int(payload[6:8],16),
+            int(payload[8:10],16),
+            int(payload[10:12],16),
+            int(payload[12:14],16),
+            int(payload[14:16],16)
+        )
+        ret[6*bank+0] = {'dutyCycle': dca}
+        ret[6*bank+1] = {'dutyCycle': dcb}
+        ret[6*bank+2] = {'dutyCycle': dcc}
+        ret[6*bank+3] = {'dutyCycle': dcd}
+        ret[6*bank+4] = {'dutyCycle': dce}
+        ret[6*bank+5] = {'dutyCycle': dcf}
+        path = '/pwmController/pwms'
+        return [{'path': path, 'data': ret}]
+
     def recusb_9_pwmenable(self,payload):
         raise("not implemented")
     def recusb_b_digitalinputs(self,payload):

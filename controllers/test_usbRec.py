@@ -11,8 +11,8 @@ class Test_usbRec():
             for m,p in zip(md,pd):
                 #print(m,p)
                 for k,v in p.items(): #the model can have more stuff than in the usb msg
-                    assert (k in m.keys()),f"usb parse to place not in model {idx=}"
-                    assert (v == m[k]),f"value doesn't match model {idx=}"
+                    assert (k in m.keys()),f"usb parse to place not in model {loc=}/{k} {idx=}"
+                    assert (v == m[k]),f"value doesn't match model {loc=}/{k} {idx=}"
                 idx=idx+1
         else:
             assert(md == pd),f"{loc=}"
@@ -39,34 +39,44 @@ class Test_usbRec():
             self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
  
 
-    # def test_usbmsg7(self):
-    #     msg = "{:08x}{:02x}{02x}{02x}{02x}{02x}{02x}{02x}{02x}".format(
-    #         id = 7,
-    #         bank = 0x0,
-    #         mod = 0x3f,
-    #         dcf = 0x6,
-    #         dce = 0x5,
-    #         dcd = 0x4,
-    #         dcc = 0x3,
-    #         dcb = 0x2,
-    #         dca = 0x1
-    #     )        
-    #     RecUSB(msg)
+    def test_usbmsg7(self):
+        id = 7
+        bank = 0x0
+        mod = 0x3f
+        dcf = 0x6
+        dce = 0x5
+        dcd = 0x4
+        dcc = 0x3
+        dcb = 0x2
+        dca = 0x1
+        msg = "{:08x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}".format(
+            id,bank,mod,dcf,dce,dcd,dcc,dcb,dca
+        )        
+        d = self.controller.recUsb(msg)
      
-    #     # assert(dc = [1,2,3,4,5,6])
-
-    #     msg = "{:08x}{:02x}{02x}{02x}{02x}{02x}{02x}{02x}{02x}".format(
-    #         id = 7,
-    #         bank = 0x1,
-    #         mod = 0x3f,
-    #         dcf = 0x6,
-    #         dce = 0x5,
-    #         dcd = 0x4,
-    #         dcc = 0x3,
-    #         dcb = 0x2,
-    #         dca = 0x1
-    #     )        
-    #     RecUSB(msg)
+        for pd in d:
+            #print('pd ' + str(pd))
+            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
+            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
+  
+        id = 7
+        bank = 0x1
+        mod = 0x3f
+        dcf = 12
+        dce = 11
+        dcd = 10
+        dcc = 9
+        dcb = 8
+        dca = 7
+        msg = "{:08x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}".format(
+            id,bank,mod,dcf,dce,dcd,dcc,dcb,dca
+        )        
+        d = self.controller.recUsb(msg)
+     
+        for pd in d:
+            #print('pd ' + str(pd))
+            results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
+            self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
 
     # def test_usbmsg9(self):
     #     msg = "{:08x}{:04x}".format(
