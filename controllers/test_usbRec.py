@@ -21,14 +21,32 @@ class Test_usbRec():
         d = []
         d = self.controller.recUsb(msg)
         #print(d)
+        def checkdatamatch(md,pd,loc):
+            print("pd type " + str(type(pd)))
+            print("md type " + str(type(md)))
+            if isinstance(md,list):
+                idx=0
+                for m,p in zip(md,pd):
+                    #print(m,p)
+                    for k,v in p.items(): #the model can have more stuff than in the usb msg
+                        assert (k in m.keys()),f"usb parse to place not in model {idx=}"
+                        assert (v == m[k]),f"value doesn't match model {idx=}"
+                    idx=idx+1
+            else:
+                assert(md == pd),f"{loc=}"
+
         for pd in d:
             print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
+            checkdatamatch(results['model_data'],pd['data'],pd['path'])
+            #if isinstance(results['model_data'], list):
+            #    print('listlen ' + str(len(results['model_data'])))
             print('results ' + str(results))
-            print(results["model_data"])
+            #print('md ' + str(type(results['model_data'])) + str(results["model_data"]))
             #print(results["data"])
             #checkmatchesschema()
             #check pd.data = expList[pd.data]
+ 
 
     # def test_usbmsg7(self):
     #     msg = "{:08x}{:02x}{02x}{02x}{02x}{02x}{02x}{02x}{02x}".format(

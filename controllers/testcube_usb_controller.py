@@ -295,7 +295,7 @@ class TestCubeUSB(
         path = '/pwmController/bankA/frequency'
         data = int(freqa,16)
         d.append({'path':path,'data':data})
-        path = '/pwmController/bankA/frequency'
+        path = '/pwmController/bankB/frequency'
         data = int(freqb,16)
         d.append({'path':path,'data':data})
         path = '/pwmController/pwms'

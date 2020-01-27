@@ -2,7 +2,7 @@ import copy
 
 class Utility:
     @classmethod
-    def parse_path_against_schema_and_model(cls, model: dict, schema: dict, path: str, read_write: str="r") -> dict:
+    def parse_path_against_schema_and_model(cls, model: dict, schema: dict, path: str, read_write: str="r", toLeaves: bool=False) -> dict:
         """
         navigate the schema following the request's path. The destination
         should be the name of a function and associated parameters that this 
