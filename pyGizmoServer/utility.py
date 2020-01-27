@@ -13,6 +13,8 @@ class Utility:
             return None
         result = {}
         index = None
+        #print('model ' + str(model))
+
         schema_location = copy.deepcopy(schema)
         model_location = copy.deepcopy(model)
         paths = path.replace('[','.').replace('/','.').replace(']','').strip('\n\r\t').split('.')
@@ -36,6 +38,7 @@ class Utility:
                 epath = "/" + "/".join(paths[:i])
                 err = f"PATH ERROR: {epath}/{p}"
                 break
+            #print('model_location ' + str(model_location))
         result["error"] = err
         if err is not None:          
             result["path_array"] = None

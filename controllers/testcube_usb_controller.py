@@ -232,7 +232,25 @@ class TestCubeUSB(
         AdcMessage.__init__(self)
 
     def __init__(self):
-        callParentInits()
+        self.callParentInits()
+        self.usbidparsers = {
+            '00000005':self.recusb_5_pwmfreq,
+            '00000007':self.recusb_7_pwmdutycycle,
+            '00000009':self.recusb_9_pwmenable,
+            '0000000b':self.recusb_b_digitalinputs,
+            '0000000d':self.recusb_00d_actcurrent,
+            '0000010d':self.recusb_10d_actcurrent,
+            '0000020d':self.recusb_20d_actcurrent,
+            '0000030d':self.recusb_30d_actcurrent,
+            '0000000f':self.recusb_00f_speed,
+            '0000010f':self.recusb_10f_speed,
+            '00000011':self.recusb_011_adc,
+            '00000111':self.recusb_111_adc,
+            '00000211':self.recusb_211_adc,
+            '00000013':self.recusb_13_relay,
+            '0000001d':self.recusb_1d_actfault,
+            '00000041':self.recusb_41_version,
+            }
 
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
@@ -256,3 +274,61 @@ class TestCubeUSB(
             self.dev.write(2, msg)
         callParentInits()
 
+    def usbrxhandler(self):
+        msg = pollusb()
+        d = recUsb(msg)
+        sendthistochris(d)
+
+    def recUsb(self,msg):
+        id, payload = msg[:8], msg[8:]
+        f = self.usbidparsers.get(id)
+        if f is None:
+            raise ("invalid id")
+            return []
+        return f(payload)
+
+      
+    def recusb_5_pwmfreq(self,payload):
+        acthi,freqa,freqb = payload[:4],payload[4:8],payload[8:12]
+        print(acthi,freqa,freqb)
+        d = []
+        path = '/pwmController/bankA/frequency'
+        data = int(freqa,16)
+        d.append({'path':path,'data':data})
+        path = '/pwmController/bankA/frequency'
+        data = int(freqb,16)
+        d.append({'path':path,'data':data})
+        path = '/pwmController/pwms'
+        data = [{'activeConfiguration':"high"} if (int(acthi,16) & (1<<x)) else {'activeConfiguration':"low"} for x in range(12)]
+        d.append({'path':path,'data':data})
+        return d
+    def recusb_7_pwmdutycycle(self,payload):
+        raise("not implemented")
+    def recusb_9_pwmenable(self,payload):
+        raise("not implemented")
+    def recusb_b_digitalinputs(self,payload):
+        raise("not implemented")
+    def recusb_00d_actcurrent(self,payload):
+        raise("not implemented")
+    def recusb_10d_actcurrent(self,payload):
+        raise("not implemented")
+    def recusb_20d_actcurrent(self,payload):
+        raise("not implemented")
+    def recusb_30d_actcurrent(self,payload):
+        raise("not implemented")
+    def recusb_00f_speed(self,payload):
+        raise("not implemented")
+    def recusb_10f_speed(self,payload):
+        raise("not implemented")
+    def recusb_011_adc(self,payload):
+        raise("not implemented")
+    def recusb_111_adc(self,payload):
+        raise("not implemented")
+    def recusb_211_adc(self,payload):
+        raise("not implemented")
+    def recusb_13_relay(self,payload):
+        raise("not implemented")
+    def recusb_1d_actfault(self,payload):
+        raise("not implemented")
+    def recusb_41_version(self,payload):
+        raise("not implemented")

@@ -15,10 +15,10 @@ class MockVars:
             },
             "pwmController": {
                 "bankA": {
-                    "frequency": 0,
+                    "frequency": 0x1000,
                 },
                 "bankB": {
-                    "frequency": 0,
+                    "frequency": 0xFFF,
                 },
                 "pwms" : [
                     { "dutyCycle": 0,
@@ -48,6 +48,6 @@ class MockVars:
                 ]
             }
         }
-
+        #print('insideMockModel' + str(self.mock_model))
         with open("tests/mock_HW.json", "r") as f:
             self.mock_schema = json.load(f)
