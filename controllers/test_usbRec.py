@@ -21,7 +21,7 @@ class Test_usbRec():
         d = self.controller.recUsb(msg)
     
         for pd in d:
-            print('pd ' + str(pd))
+            #print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
             self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
 
@@ -117,20 +117,24 @@ class Test_usbRec():
             id,a1
         )
         self.processandcheck(msg)  
-        
-    # def test_usbf(self): #speed
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0xf,
-    #         mask = 0xf,
-    #         f4 = 4,
-    #         f3 = 3,
-    #         f2 = 2
-    #     )
 
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 0x10f,
-    #         f1 = 1
-    #     )
+    def test_usbmsgf(self): #speed
+        id = 0xf
+        mask = 0xf
+        f4 = 4
+        f3 = 3
+        f2 = 2
+        msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
+            id,mask,f4,f3,f2
+        )
+        self.processandcheck(msg)
+        
+        id = 0x10f
+        f1 = 1
+        msg = "{:08x}{:04x}".format(
+            id,f1
+        )
+        self.processandcheck(msg)
 
     # def test_usb11(self): #adc
     #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(

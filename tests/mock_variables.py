@@ -3,6 +3,14 @@ import json
 class MockVars:
     def __init__(self):
         self.mock_model = {
+            "frequencyInputController":{
+                "frequencyInputs":[
+                    {"measuredFrequency": 1},
+                    {"measuredFrequency": 2},
+                    {"measuredFrequency": 3},
+                    {"measuredFrequency": 4}
+                ]
+            },
             "digitalInputController" : {
                 "digitalInputs": [
                     {"high": True},

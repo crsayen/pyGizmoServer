@@ -345,6 +345,7 @@ class TestCubeUSB(
 
     def recusb_00d_actcurrent(self,payload):
         ret = [{}]*12
+        payload = payload + "0"*16  #pad to avoid errors
         channels,cc,cb,ca = (
             int(payload[:4],16),
             int(payload[4:8],16),
@@ -353,7 +354,6 @@ class TestCubeUSB(
         )
         #this first msg defines which channels are in subsequent msgs
         self.actcurrent_listinfirstmsg = [i for i in [11,10,9,8,7,6,5,4,3,2,1,0] if (channels & (1<<(i)))]
-        print(self.actcurrent_listinfirstmsg)
         thismsg = self.actcurrent_listinfirstmsg[0:3]
         
         for i,v in zip([0,1,2],[cc,cb,ca]):
@@ -373,7 +373,6 @@ class TestCubeUSB(
             int(payload[12:16],16)
         )        
         thismsg = self.actcurrent_listinfirstmsg[3:7]
-        print(thismsg)
         for ch,v in zip(thismsg,[cd,cc,cb,ca]):
             if isinstance(ch,int):
                 ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
@@ -390,7 +389,6 @@ class TestCubeUSB(
             int(payload[12:16],16)
         )        
         thismsg = self.actcurrent_listinfirstmsg[7:11]
-        print(thismsg)
         for ch,v in zip(thismsg,[cd,cc,cb,ca]):
             if isinstance(ch,int):
                 ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
@@ -403,7 +401,7 @@ class TestCubeUSB(
         cd = (
             int(payload[:4],16),
         )        
-        thismsg = self.actcurrent_listinfirstmsg[12]
+        thismsg = self.actcurrent_listinfirstmsg[12:]
         print(thismsg)
         for ch,v in zip(thismsg,[cd]):
             if isinstance(ch,int):
@@ -412,9 +410,38 @@ class TestCubeUSB(
         return [{'path': path, 'data': ret}]                
 
     def recusb_00f_speed(self,payload):
-        raise("not implemented")
+        ret = [{}]*4
+        payload = payload + "0"*16  #pad to avoid errors
+        channels,cc,cb,ca = (
+            int(payload[:4],16),
+            int(payload[4:8],16),
+            int(payload[8:12],16),
+            int(payload[12:16],16)
+        )
+        #this first msg defines which channels are in subsequent msgs
+        self.speed_listinfirstmsg = [i for i in [3,2,1,0] if (channels & (1<<(i)))]
+        thismsg = self.speed_listinfirstmsg[0:3]
+        
+        for ch,v in zip(thismsg,[cc,cb,ca]):
+            if isinstance(ch,int):
+                ret[ch] = {'measuredFrequency': v}
+        path = '/frequencyInputController/frequencyInputs'
+        return [{'path': path, 'data': ret}]                
+        
+
     def recusb_10f_speed(self,payload):
-        raise("not implemented")
+        ret = [{}]*4
+        payload = payload + "0"*16  #pad to avoid errors
+        cd = int(payload[:4],16)
+
+        thismsg = self.speed_listinfirstmsg[3:]
+        
+        for ch,v in zip(thismsg,[cd]):
+            if isinstance(ch,int):
+                ret[ch] = {'measuredFrequency': v}
+        path = '/frequencyInputController/frequencyInputs'
+        return [{'path': path, 'data': ret}]               
+        
     def recusb_011_adc(self,payload):
         raise("not implemented")
     def recusb_111_adc(self,payload):
