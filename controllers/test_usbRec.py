@@ -21,7 +21,7 @@ class Test_usbRec():
         d = self.controller.recUsb(msg)
     
         for pd in d:
-            #print('pd ' + str(pd))
+            print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
             self.checkdatamatch(results['model_data'],pd['data'],pd['path'])
 
@@ -88,34 +88,36 @@ class Test_usbRec():
         )
         self.processandcheck(msg)
 
-    # def test_usbmsgd(self): #act curr
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0xd,
-    #         mask = 0xfff,
-    #         a12 = 12,
-    #         a11 = 11,
-    #         a10 = 10
-    #     )
+    def test_usbmsgd(self): #act curr
+        
+        id = 0xd
+        mask = 0xf0f
+        a12 = 12
+        a11 = 11
+        a10 = 10
+        
+        msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
+            id,mask,a12,a11,a10
+        )
+        self.processandcheck(msg)
 
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0x10d,
-    #         a9 = 9,
-    #         a8 = 8,
-    #         a7 = 7,
-    #         a6 = 6
-    #     )
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0x20d,
-    #         a5 = 5,
-    #         a4 = 4,
-    #         a3 = 3,
-    #         a2 = 2
-    #     )
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 0x30d,
-    #         a1 = 1
-    #     )
+        id = 0x10d
+        a9 = 9
+        a4 = 4
+        a3 = 3
+        a2 = 2
+        msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
+            id,a9,a4,a3,a2
+        )
+        self.processandcheck(msg)        
 
+        id = 0x20d
+        a1 = 1
+        msg = "{:08x}{:04x}".format(
+            id,a1
+        )
+        self.processandcheck(msg)  
+        
     # def test_usbf(self): #speed
     #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
     #         id = 0xf,

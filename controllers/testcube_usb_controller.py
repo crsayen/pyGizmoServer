@@ -251,7 +251,7 @@ class TestCubeUSB(
             '0000001d':self.recusb_1d_actfault,
             '00000041':self.recusb_41_version,
             }
-
+        self.actcurrent_listinfirstmsg = None
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         print(f"start: {self.dev}")
@@ -344,13 +344,73 @@ class TestCubeUSB(
         return d        
 
     def recusb_00d_actcurrent(self,payload):
-        raise("not implemented")
+        ret = [{}]*12
+        channels,cc,cb,ca = (
+            int(payload[:4],16),
+            int(payload[4:8],16),
+            int(payload[8:12],16),
+            int(payload[12:16],16)
+        )
+        #this first msg defines which channels are in subsequent msgs
+        self.actcurrent_listinfirstmsg = [i for i in [11,10,9,8,7,6,5,4,3,2,1,0] if (channels & (1<<(i)))]
+        print(self.actcurrent_listinfirstmsg)
+        thismsg = self.actcurrent_listinfirstmsg[0:3]
+        
+        for i,v in zip([0,1,2],[cc,cb,ca]):
+            ch = self.actcurrent_listinfirstmsg[i]
+            if isinstance(ch,int):
+                ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
+        path = '/pwmController/pwms'
+        return [{'path': path, 'data': ret}]                
+
     def recusb_10d_actcurrent(self,payload):
-        raise("not implemented")
+        ret = [{}]*12
+        payload = payload + "0"*16  #pad to avoid errors
+        cd,cc,cb,ca = (
+            int(payload[:4],16),
+            int(payload[4:8],16),
+            int(payload[8:12],16),
+            int(payload[12:16],16)
+        )        
+        thismsg = self.actcurrent_listinfirstmsg[3:7]
+        print(thismsg)
+        for ch,v in zip(thismsg,[cd,cc,cb,ca]):
+            if isinstance(ch,int):
+                ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
+        path = '/pwmController/pwms'
+        return [{'path': path, 'data': ret}]        
+
     def recusb_20d_actcurrent(self,payload):
-        raise("not implemented")
+        ret = [{}]*12
+        payload = payload + "0"*16  #pad to avoid errors
+        cd,cc,cb,ca = (
+            int(payload[:4],16),
+            int(payload[4:8],16),
+            int(payload[8:12],16),
+            int(payload[12:16],16)
+        )        
+        thismsg = self.actcurrent_listinfirstmsg[7:11]
+        print(thismsg)
+        for ch,v in zip(thismsg,[cd,cc,cb,ca]):
+            if isinstance(ch,int):
+                ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
+        path = '/pwmController/pwms'
+        return [{'path': path, 'data': ret}]                
+   
     def recusb_30d_actcurrent(self,payload):
-        raise("not implemented")
+        ret = [{}]*12
+        payload = payload + "0"*16  #pad to avoid errors
+        cd = (
+            int(payload[:4],16),
+        )        
+        thismsg = self.actcurrent_listinfirstmsg[12]
+        print(thismsg)
+        for ch,v in zip(thismsg,[cd]):
+            if isinstance(ch,int):
+                ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
+        path = '/pwmController/pwms'
+        return [{'path': path, 'data': ret}]                
+
     def recusb_00f_speed(self,payload):
         raise("not implemented")
     def recusb_10f_speed(self,payload):

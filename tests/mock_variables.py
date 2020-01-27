@@ -39,40 +39,77 @@ class MockVars:
                 "pwms" : [
                     { "activeConfiguration": 'high',
                         "dutyCycle": 1,
-                    "enabled": True },
+                    "enabled": True,
+                    "currentMonitor": {
+                        "measuredCurrent": 1
+                    }
+                     },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 2,
-                    "enabled": False },
+                    "enabled": False ,
+                           "currentMonitor": {
+                        "measuredCurrent": 2
+                    }},
                     { "activeConfiguration": 'high',
                      "dutyCycle": 3,
-                    "enabled": True },
+                    "enabled": True ,
+                           "currentMonitor": {
+                        "measuredCurrent": 3
+                    }},
                     { "activeConfiguration": 'low',
                      "dutyCycle": 4,
-                    "enabled": False },
+                    "enabled": False,
+                           "currentMonitor": {
+                        "measuredCurrent": 4
+                    } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 5,
-                    "enabled": True },
+                    "enabled": True,
+                           "currentMonitor": {
+                        "measuredCurrent": 5
+                    } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 6,
-                    "enabled": False },
+                    "enabled": False,
+                           "currentMonitor": {
+                        "measuredCurrent": 6
+                    } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 7,
-                    "enabled": True },
+                    "enabled": True ,
+                           "currentMonitor": {
+                        "measuredCurrent": 7
+                    }},
                     { "activeConfiguration": 'low',
                      "dutyCycle": 8,
-                    "enabled": False },
+                    "enabled": False,
+                           "currentMonitor": {
+                        "measuredCurrent": 8
+                    } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 9,
-                    "enabled": True },
+                    "enabled": True,
+                           "currentMonitor": {
+                        "measuredCurrent": 9
+                    } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 10,
-                    "enabled": False },
+                    "enabled": False,
+                           "currentMonitor": {
+                        "measuredCurrent": 10
+                    } },
                     { "activeConfiguration": 'high',
                      "dutyCycle": 11,
-                    "enabled": True },
+                    "enabled": True,
+                           "currentMonitor": {
+                        "measuredCurrent": 11
+                    } },
                     { "activeConfiguration": 'low',
                      "dutyCycle": 12,
-                    "enabled": False }
+                    "enabled": False,
+                           "currentMonitor": {
+                        "measuredCurrent": 12
+                    } }
                 ]
             }
         }
