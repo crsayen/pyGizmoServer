@@ -3,6 +3,18 @@ import json
 class MockVars:
     def __init__(self):
         self.mock_model = {
+            "adcInputController":{
+                "adcInputs":[
+                    {"measuredVoltage": 1},
+                    {"measuredVoltage": 2},
+                    {"measuredVoltage": 3},
+                    {"measuredVoltage": 4},
+                    {"measuredVoltage": 5},
+                    {"measuredVoltage": 6},
+                    {"measuredVoltage": 7},
+                    {"measuredVoltage": 8}
+                ]
+            },
             "frequencyInputController":{
                 "frequencyInputs":[
                     {"measuredFrequency": 1},

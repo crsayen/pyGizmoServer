@@ -136,25 +136,33 @@ class Test_usbRec():
         )
         self.processandcheck(msg)
 
-    # def test_usb11(self): #adc
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0x11,
-    #         mask = 0xf,
-    #         a8 = 8,
-    #         a7 = 7,
-    #         a6 = 6
-    #     )     
-    #     msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
-    #         id = 0x211,
-    #         a5 = 5,
-    #         a4 = 4,
-    #         a3 = 3,
-    #         a2 = 2           
-    #     )
-    #     msg = "{:08x}{:04x}".format(
-    #         id = 0x211,
-    #         a1 = 1
-    #     )
+    def test_usbmsg11(self): #adc
+        id = 0x11
+        mask = 0xff
+        a8 = 8
+        a7 = 7
+        a6 = 6
+
+        msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
+            id,mask,a8,a7,a6
+        )     
+        self.processandcheck(msg)
+
+        id = 0x111
+        a5 = 5
+        a4 = 4
+        a3 = 3
+        a2 = 2
+        msg = "{:08x}{:04x}{:04x}{:04x}{:04x}".format(
+            id,a5,a4,a3,a2
+        )     
+        self.processandcheck(msg)
+        id = 0x211
+        a1 = 1
+        msg = "{:08x}{:04x}".format(
+            id,a1
+        )     
+        self.processandcheck(msg)
 
     # def test_usb13(self): #relay
     #     msg = "{:08x}{:04x}".format(
