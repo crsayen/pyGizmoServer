@@ -290,7 +290,7 @@ class TestCubeUSB(
       
     def recusb_5_pwmfreq(self,payload):
         acthi,freqa,freqb = payload[:4],payload[4:8],payload[8:12]
-        print(acthi,freqa,freqb)
+        #print(acthi,freqa,freqb)
         d = []
         path = '/pwmController/bankA/frequency'
         data = int(freqa,16)
