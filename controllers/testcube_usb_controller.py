@@ -272,7 +272,7 @@ class TestCubeUSB(
         for msg in msgs:
             print(msg)
             self.dev.write(2, msg)
-        callParentInits()
+        self.callParentInits()
 
     def usbrxhandler(self):
         msg = pollusb()
@@ -283,7 +283,7 @@ class TestCubeUSB(
         id, payload = msg[:8], msg[8:]
         f = self.usbidparsers.get(id)
         if f is None:
-            raise ("invalid id")
+            raise("invalid id")
             return []
         return f(payload)
 
@@ -304,7 +304,7 @@ class TestCubeUSB(
         return d
     def recusb_7_pwmdutycycle(self,payload):
         ret = [{}]*12
-        bank,mod,dcf,dce,dcd,dcc,dcb,dca = (
+        bank,mo,dcf,dce,dcd,dcc,dcb,dca = (
             int(payload[:2],16),
             int(payload[2:4],16),
             int(payload[4:6],16),
@@ -356,8 +356,7 @@ class TestCubeUSB(
         self.actcurrent_listinfirstmsg = [i for i in [11,10,9,8,7,6,5,4,3,2,1,0] if (channels & (1<<(i)))]
         thismsg = self.actcurrent_listinfirstmsg[0:3]
         
-        for i,v in zip([0,1,2],[cc,cb,ca]):
-            ch = self.actcurrent_listinfirstmsg[i]
+        for ch,v in zip(thismsg,[cc,cb,ca]):
             if isinstance(ch,int):
                 ret[ch] = {'currentMonitor':{'measuredCurrent': v}}
         path = '/pwmController/pwms'
