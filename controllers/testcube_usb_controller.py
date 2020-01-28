@@ -513,6 +513,15 @@ class TestCubeUSB(
         data = [{'currentMonitor':{'faulty': True}} if (faults & (1<<x)) else {'currentMonitor':{'faulty': False}} for x in range(12)]
 
         path = 'pwmController/pwms'
-        return [{'path': path, 'data': data}]                
+        return [{'path': path, 'data': data}]  
+                      
     def recusb_41_version(self,payload):
-        raise("not implemented")
+        hi,lo,patch = (
+            int(payload[:4],16),
+            int(payload[4:8],16),
+            int(payload[8:12],16)
+        )
+        data = f"{hi=}.{lo=}.{patch=}"
+
+        path = 'version'
+        return [{'path': path, 'data': data}]  

@@ -19,6 +19,7 @@ class Utility:
         model_location = copy.deepcopy(model)
         paths = path.replace('[','.').replace('/','.').replace(']','').strip('\n\r\t').split('.')
         n_non_indexed_locations = len(paths)
+        print(model_location)
         while '' in paths: paths.remove('')
         for i, p in enumerate(paths):
             """ 
@@ -35,6 +36,11 @@ class Utility:
                     schema_location = schema_location[p]
                 model_location = model_location[p]
             except Exception as e:
+                print('exception')
+                print(e)
+                print(schema_location)
+                print(model_location)
+                print('exception')
                 epath = "/" + "/".join(paths[:i])
                 err = f"PATH ERROR: {epath}/{p}"
                 break

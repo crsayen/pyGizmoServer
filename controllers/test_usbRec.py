@@ -39,6 +39,7 @@ class Test_usbRec():
         for pd in d:
             #print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
+            print(results)
             self.checkmatch(results['model_data'],pd['data'],pd['path'])
 
 
@@ -196,11 +197,13 @@ class Test_usbRec():
             id,sync,faults
         )
         self.processandcheck(msg)
-    # def test_usb41(self): #version
-    #     msg = "{:08x}{:04x}{:04x}{:04x}".format(
-    #         id = 0x41,
-    #         hi = 0xb,
-    #         lo = 0xa,
-    #         patch = 0xd
-    #     )
 
+    def test_usbmsg41(self): #version
+        id = 0x41
+        hi = 0xb
+        lo = 0xa
+        patch = 0xd
+        msg = "{:08x}{:04x}{:04x}{:04x}".format(
+            id,hi,lo,patch
+        )
+        self.processandcheck(msg)

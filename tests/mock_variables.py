@@ -3,6 +3,7 @@ import json
 class MockVars:
     def __init__(self):
         self.mock_model = {
+            'version': "hi=11.lo=10.patch=13",
             "adcInputController":{
                 "adcInputs":[
                     {"measuredVoltage": 1},

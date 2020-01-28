@@ -49,5 +49,6 @@
     "usb":{
         "message":
          {"w": "sendusb"}
-    }
+    },
+    "version":{ "type" : "string" }
 }
