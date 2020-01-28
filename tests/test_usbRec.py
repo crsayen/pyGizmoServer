@@ -39,7 +39,7 @@ class Test_usbRec():
         for pd in d:
             #print('pd ' + str(pd))
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
-            print(results)
+            #print(results)
             self.checkmatch(results['model_data'],pd['data'],pd['path'])
 
 
