@@ -5,7 +5,6 @@ from tests.mock_variables import MockVars
 class Test_usbRec():
 
     def checkmatch(self,md,pd,loc):
-
         if isinstance(md,list):
             idx=0
             for m,p in zip(md,pd):
@@ -13,23 +12,20 @@ class Test_usbRec():
                 idx = idx + 1
         elif isinstance(md,dict):       
             for k,v in pd.items(): #the model can have more stuff than in the usb msg
-                assert(k in md.keys()),f"usb parse to place not in model {loc=}/{k} {idx=}"
+                assert(k in md.keys()),f"usb parse to place not in model {loc=}/{k}"
                 self.checkmatch(md[k],v,loc + '/' + k)
         else:
-            assert(md == pd),f"{loc=}"
+            assert(md == pd),f"usb data does not match model {loc=}"
 
     def processandcheck(self,msg):
         d = self.controller.recUsb(msg)
-    
         for pd in d:
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
             self.checkmatch(results['model_data'],pd['data'],pd['path'])
 
-
     def setup(self):
         self.mockvars = MockVars()
         self.controller=TestCubeUSB()
-        pass
 
     def test_usbmsg5(self): #pwm act and freq
         id,acthi,freqa,freqb = 0x5,0x555,0x1000,0xfff
@@ -57,7 +53,8 @@ class Test_usbRec():
 
     def test_usbmsgd(self): #act curr
         
-        id,mask,a12,a11,a10 = 0xd,0xf0f,12,11,10
+        id, mask,   a12,    a11,    a10 = (
+        0xd,0xf0f,  12,     11,     10)
         msg = f"{id:08x}{mask:04x}{a12:04x}{a11:04x}{a10:04x}"
         self.processandcheck(msg)
 

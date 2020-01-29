@@ -21,11 +21,7 @@ class AdcMessage:
             return []
         if self.AdcRate == None:
             return []
-        r = "{:08x}{:02x}{:02x}".format(
-            0x10,self.AdcChannels,self.AdcRate
-        ) 
-        return [r]
-
+        return [f"{0x10:08x}{self.AdcChannels:02x}{self.AdcRate:02x}"]
 
 class PwmMessage:
     def __init__(self):
@@ -60,9 +56,7 @@ class PwmMessage:
                 mask |= (1<<i)
                 if self.PwmEnabled[i]:
                     val |= (1<<i)           
-        r = "{:08x}{:04x}{:04x}".format(
-            0x08,mask,val)
-        return [r]
+        return [f"{8:08x}{mask:04x}{val:04x}"]
 
     def getUsbMsg6(self,bank:int):
         if self.Duty[bank*6:bank*6+6] == ([None] * 6):
@@ -72,12 +66,10 @@ class PwmMessage:
         for i in range(6):
             if self.Duty[i+bank*6] != None:
                 dutymask |= (1<<i)
-        r = "{:08x}{:02x}{:02x}".format(
-            0x06,bank,dutymask) 
+        r = f"{6:08x}{bank:02x}{dutymask:02x}"
         for i in range(6): 
-            r += "{:02x}".format(self.Duty[i+bank*6] or 0) 
-        return [r]           
-                    
+            r += f"{self.Duty[i+bank*6] or 0:02x}"
+        return [r]              
 
     def getUsbMsg4(self):
         if (self.Freq == [None]*2) and (self.Hiconf == [None]*12):
@@ -106,7 +98,6 @@ class PwmMessage:
             0x04,freqmask,hilomask,hiloval,self.Freq[0] or 0,self.Freq[1] or 0)
         return [r]
 
-
     def get_pwm_messages(self):
         return (self.getUsbMsg4() +
          self.getUsbMsg6(0) + 
@@ -115,7 +106,7 @@ class PwmMessage:
 
 class RelayMessage:
     def __init__(self):
-        self.RelayStates = [None,None,None,None,None,None]        
+        self.RelayStates = [None] * 6        
         
     def setRelay(self, relay: int, state: bool):
         print(f"state: {state} type: {type(state)}")
@@ -131,9 +122,7 @@ class RelayMessage:
                 mask |= (1<<i)
                 if self.RelayStates[i]:
                     val |= (1<<i)   
-        r = "{:08x}{:02x}{:02x}".format(
-               0x12,mask,val)
-        return [r]
+        return [f"{0x12:08x}{mask:02x}{val:02x}"]
 
 class DiMessage:
     def __init__(self):
@@ -145,10 +134,7 @@ class DiMessage:
     def get_di_messages(self):
         if self.dimonitorrate == None:
             return []
-        r = "{:08x}{:02x}".format(
-            0xa,self.dimonitorrate
-        ) 
-        return [r]
+        return [f"{0xa:08x}{self.dimonitorrate:02x}"]
 
 class ActCurMessage:
     def __init__(self):
@@ -174,11 +160,7 @@ class ActCurMessage:
             return []
         if self.actmonitorThreshold == None:
             return []
-
-        r = "{:08x}{:04x}{:02x}{:02x}".format(
-            0xc,self.actmonitorChannels,self.actmonitorRate,self.actmonitorThreshold
-        ) 
-        return [r]            
+        return [f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"]            
 
 class FrequencyMessage:
     def __init__(self):
@@ -195,12 +177,8 @@ class FrequencyMessage:
         if self.freqmonitorRate == None:
             return []
         if self.freqmonitorChannels == None:
-            return []   
-
-        r = "{:08x}{:02x}{:02x}".format(
-            0xe,self.freqmonitorChannels,self.freqmonitorRate
-        ) 
-        return [r]          
+            return []
+        return [f"{0xe:08x}{self.freqmonitorChannels:02x}{self.freqmonitorRate:02x}"]          
 
 class UsbMessage:
     def __init__(self):
@@ -276,9 +254,9 @@ class TestCubeUSB(
 
     def usbrxhandler(self):
         msg = pollusb()
-        d = recUsb(msg)
+        d = self.recUsb(msg)
         sendthistochris(d)
-
+      
     def recUsb(self,msg):
         id, payload = msg[:8], msg[8:]
         f = self.usbidparsers.get(id)
@@ -287,7 +265,6 @@ class TestCubeUSB(
             return []
         return f(payload)
 
-      
     def recusb_5_pwmfreq(self,payload):
         acthi,freqa,freqb = payload[:4],payload[4:8],payload[8:12]
         #print(acthi,freqa,freqb)
@@ -325,9 +302,7 @@ class TestCubeUSB(
 
     def recusb_9_pwmenable(self,payload):
         d = []
-        enabled = (
-            int(payload[:4],16)
-        )
+        enabled = int(payload[:4],16)
         data = [{'enabled': True} if (enabled & (1<<x)) else {'enabled': False} for x in range(12)]
         path = '/pwmController/pwms'
         d.append({'path':path,'data':data})
@@ -335,9 +310,7 @@ class TestCubeUSB(
 
     def recusb_b_digitalinputs(self,payload):
         d = []
-        high = (
-            int(payload[:4],16)
-        )
+        high = int(payload[:4],16)
         data = [{'high': True} if (high & (1<<x)) else {'high': False} for x in range(12)]
         path = '/digitalInputController/digitalInputs'
         d.append({'path':path,'data':data})

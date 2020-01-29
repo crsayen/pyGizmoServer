@@ -1,11 +1,4 @@
-from controllers.testcube_usb_controller import RelayMessage
-from controllers.testcube_usb_controller import PwmMessage
-from controllers.testcube_usb_controller import DiMessage
-from controllers.testcube_usb_controller import ActCurMessage
-from controllers.testcube_usb_controller import UsbMessage
-from controllers.testcube_usb_controller import FrequencyMessage
-from controllers.testcube_usb_controller import AdcMessage
-
+from controllers.testcube_usb_controller import *
 
 def test_init():
     rm = RelayMessage()
