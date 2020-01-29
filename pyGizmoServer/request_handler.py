@@ -39,7 +39,7 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
                     HTTPStatus.BAD_REQUEST,
                     f"invalid PATCH request format: {request}"
                 )
-        pub.sendMessage('modification_request_recieved', requests=requests, response_handle=handle)
+        pub.sendMessage('modification_request_recieved_from_client', requests=requests, response_handle=handle)
         while self.response is None: pass
 
     def generate_response_handler(self):

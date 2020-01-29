@@ -20,7 +20,8 @@ class ModificationHandler:
         self.model = model
 
     def start():
-        pub.subscribe(self.handle_patch, 'modification_request_recieved')
+        pub.subscribe(self.handle_patch_from_client, 'modification_request_recieved_from_client')
+        pub.subscribe(self.handle_patch_from_controller, 'modification_request_recieved_from_controller')
     
     """
     the handle_patch method is called when a 'modification_request_received'
@@ -30,7 +31,7 @@ class ModificationHandler:
     requests (list): A list of modification requests 
     response_handle (string): A handle to a 'response' event subscriber
     """
-    def handle_patch(self, requests, response_handle=None):
+    def handle_patch_from_client(self, requests, response_handle=None):
         for r in requests:
             response = []
             data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='w')
@@ -52,12 +53,19 @@ class ModificationHandler:
         create and apply the requested PATCH to the model
         """
         patch = jsonpatch.JsonPatch(requests)
-        result = jsonpatch.apply_patch(self.model, patch)
+        jsonpatch.apply_patch(in_place=True,self.model, patch)
         """
         if someone is subscribed to response events, raise an event
         """
         if response_handle is not None:
             pub.sendMessage(response_handle, response=response, fmt="JSON")
+
+    def handle_patch_from_controller(self, requests=None, path=None, value=None):
+        if requests is None:
+            requests = [{"op": "replace": "path": path, "value": value}]
+        patch = jsonpatch.JsonPatch(requests)
+        jsonpatch.apply_patch(in_place=True,self.model, patch)
+        pub.sendMessage("applied_modification_from_controller", requests=requests)
 
     
 

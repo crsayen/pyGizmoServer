@@ -49,4 +49,4 @@ class QueryHandler:
             pub.sendMessage(response_handle, response=response, fmt="HTML")
     
     def handle_updates(self, message):       
-        self.subscription_server.publish(message)
+        self.subscription_server.parseupdate(message)
