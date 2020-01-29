@@ -7,14 +7,17 @@ from pubsub import pub
 
 class AdcMessage:
     def __init__(self):
-        self.AdcChannels = None
+        self.AdcChannels = 0x3F
         self.AdcRate = None
     
     def setAdcMonitorUpdateRate(self,rate:int):
-        self.AdcRate = rate
+        print(f"testcubeUSB: setAdcMonitorUpdateRate")
+        self.AdcRate = int(rate / 50)
 
-    def setAdcEnabled(self,mask:int):
-        self.AdcChannels = mask
+    def setAdcEnabled(self,enabled:bool,channel:int):
+        print(f"testcubeUSB: setAdcEnabled: {channel=}")
+        if enabled: self.AdcChannels |= 1 << channel 
+        else: self.AdcChannels &= ((1 << channel) ^ 0xff)
 
     def get_adc_messages(self):
         if self.AdcChannels == None:
@@ -109,7 +112,6 @@ class RelayMessage:
         self.RelayStates = [None] * 6        
         
     def setRelay(self, relay: int, state: bool):
-        print(f"state: {state} type: {type(state)}")
         self.RelayStates[relay] = state
 
     def get_relay_messages(self):
@@ -207,10 +209,11 @@ class TestCubeUSB(
         ActCurMessage.__init__(self)
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
-        AdcMessage.__init__(self)
+        
 
     def __init__(self):
         self.callParentInits()
+        AdcMessage.__init__(self)
         self.usbidparsers = {
             '00000005':self.recusb_5_pwmfreq,
             '00000007':self.recusb_7_pwmdutycycle,
@@ -234,9 +237,10 @@ class TestCubeUSB(
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
-        self.dev.set_configuration()
+        threading.Thread(target=self.usbrxhandler,args=([])).start()
 
     def finished(self):
+        print(f"testcubeUSB: finished")
         msgs = (self.get_relay_messages()
             + self.get_pwm_messages()
             + self.get_di_messages()
@@ -246,17 +250,28 @@ class TestCubeUSB(
             + self.get_adc_messages()
         )
         for msg in msgs:
-            print(msg)
+            print(f"testcubeUSB: finished: write({msg=})")
             self.dev.write(2, msg)
         self.callParentInits()
 
     def usbrxhandler(self):
-        msg = self.dev.read(2)
-        d = self.recUsb(msg)
-        if d is not None:
-            pub.sendMessage('update_recieved', message = d)
-      
+        time.sleep(2)
+        while 1: 
+            try:
+                msgs = self.dev.read(self.dev[0][(0,0)][0], 100, 1)
+            except usb.core.USBError as e:
+                if "timeout error" not in str(e):
+                    print(f"USB: {e}")
+                continue
+            print(f"got a USB msg(s)")
+            for msg in msgs:
+                d = self.recUsb(msg)
+                if len(d) > 0:
+                    pub.sendMessage('update_received', message = d)
+            
+
     def recUsb(self,msg):
+        
         id, payload = msg[:8], msg[8:]
         f = self.usbidparsers.get(id)
         if f is None:

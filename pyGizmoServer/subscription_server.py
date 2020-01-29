@@ -42,13 +42,19 @@ class SubscriptionServer:
             else:
                 self.applyupdate(path + f"/{i}", item)
 
-    def parseupdate(self, update):
-        if isinstance(update, dict): self.parsedict('', update)
-        elif isinstance(update, list): 
-            for item in update:
-                if not isinstance(item, dict):
-                    raise ValueError(f"incorrect update format: {update}")
-                self.parsedict('',update)
+    def parseupdate(self, updates):
+        print(f"subscription_server: parse_update: {updates}")
+        if not isinstance(update,list):
+            updates = [updates]
+        for update in updates:
+            path = update["path"]
+            data = update["data"]
+            if isinstance(data, dict): self.parsedict(path, data)
+            elif isinstance(data, list): 
+                for item in data:
+                    if not isinstance(item, dict):
+                        raise ValueError(f"incorrect update format: {data}")
+                    self.parsedict(path,data)
 
     def applyupdate(self, path, value):
         print(f"subscription_server: applying update: {path=} {value=}")

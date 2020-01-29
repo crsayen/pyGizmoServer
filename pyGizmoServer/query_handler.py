@@ -27,7 +27,7 @@ class QueryHandler:
     def start(self):
         self.subscription_server = SubscriptionServer(self.address)
         pub.subscribe(self.handle_get, 'query_request_recieved')
-        pub.subscribe(self.handle_updates, 'received_update')
+        pub.subscribe(self.handle_updates, 'update_received')
     
     def handle_get(self, path, address, response_handle=None):
         # ensure the path is valid, and formatted properly
@@ -38,8 +38,8 @@ class QueryHandler:
             print(f"query_handler: {response}")
             pub.sendMessage(response_handle, response=response, fmt="HTML")
             return
-        if data["routine"] is not None:
-            data["model_data"] = getattr(self.controller, routine)(*data["args"])
+        if data.get("routine") is not None:
+            data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
             """TODO: update the model to reflect the data we get from the controller"""
         self.subscription_server.add(data["path_up_to_array_index"], address)
         if response_handle is not None:
@@ -50,5 +50,5 @@ class QueryHandler:
             pub.sendMessage(response_handle, response=json.dumps(response,indent=2), fmt="HTML")
     
     def handle_updates(self, message): 
-        print(f"query_handler: update received: {message}")
+        print(f"query_handler: handle_updates: update received: {message}")
         self.subscription_server.parseupdate(message)

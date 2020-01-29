@@ -7,14 +7,14 @@ class MockVars:
             "adcInputController":{
                 "adcInputMonitorRate": 0,
                 "adcInputs":[
-                    {"measuredVoltage": 1},
-                    {"measuredVoltage": 2},
-                    {"measuredVoltage": 3},
-                    {"measuredVoltage": 4},
-                    {"measuredVoltage": 5},
-                    {"measuredVoltage": 6},
-                    {"measuredVoltage": 7},
-                    {"measuredVoltage": 8}
+                    {"measuredVoltage": 1,"enabled" : False},
+                    {"measuredVoltage": 2,"enabled" : False},
+                    {"measuredVoltage": 3,"enabled" : False},
+                    {"measuredVoltage": 4,"enabled" : False},
+                    {"measuredVoltage": 5,"enabled" : False},
+                    {"measuredVoltage": 6,"enabled" : False},
+                    {"measuredVoltage": 7,"enabled" : False},
+                    {"measuredVoltage": 8,"enabled" : False}
                 ]
             },
             "frequencyInputController":{

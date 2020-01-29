@@ -32,6 +32,7 @@ class ModificationHandler:
     response_handle (string): A handle to a 'response' event subscriber
     """
     def handle_patch_from_client(self, requests, response_handle=None):
+        print(f"modification_handler: handle_path_from_client")
         response = []
         for r in requests:
             if (path := r.get("path")) is None:
@@ -43,6 +44,7 @@ class ModificationHandler:
             value = r.get("value")
             if value is not None: data["args"].append(value)
             # call the specified function with the associated parameters
+            print(f"modification_handler: handle patch: {data['routine']=}")
             getattr(self.controller, data["routine"])(*data["args"])
             """
             rebuild the path. This corrects any index-notation issues 
