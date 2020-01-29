@@ -251,9 +251,10 @@ class TestCubeUSB(
         self.callParentInits()
 
     def usbrxhandler(self):
-        msg = pollusb()
+        msg = self.dev.read(2)
         d = self.recUsb(msg)
-        sendthistochris(d)
+        if d is not None:
+            pub.sendMessage('update_recieved', message = d)
       
     def recUsb(self,msg):
         id, payload = msg[:8], msg[8:]
