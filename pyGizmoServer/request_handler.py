@@ -14,7 +14,7 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
     def send(self, message, fmt):
         if fmt.upper() == "HTML":
             self._set_headers()
-            content = f"<html><body><h1>{message}</h1></body></html>"
+            content = f"<html><body><p>{message}</p></body></html>"
             return content.encode("utf8") 
         if fmt.upper() == "JSON":
             self._set_headers("application/JSON")
@@ -22,6 +22,7 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
             return content.encode("utf8")  
 
     def do_GET(self):
+        print(f"received a GET request: {self.path}")
         handle = self.generate_response_handler()
         pub.sendMessage('query_request_recieved', path=self.path, address=self.client_address, response_handle=handle)
         

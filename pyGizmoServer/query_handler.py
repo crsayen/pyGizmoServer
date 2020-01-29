@@ -31,6 +31,7 @@ class QueryHandler:
     
     def handle_get(self, path, address, response_handle=None):
         # ensure the path is valid, and formatted properly
+        print(f"query_handler: handle_get: {path}")
         data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='r')
         if data["error"] is not None:
             response = data["error"]
@@ -46,7 +47,8 @@ class QueryHandler:
                 "path": data["path_string"],
                 "data": data["model_data"]
             })
-            pub.sendMessage(response_handle, response=response, fmt="HTML")
+            pub.sendMessage(response_handle, response=json.dumps(response,indent=2), fmt="HTML")
     
-    def handle_updates(self, message):       
+    def handle_updates(self, message): 
+        print(f"query_handler: update received: {message}")
         self.subscription_server.parseupdate(message)

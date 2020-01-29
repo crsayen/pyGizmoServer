@@ -12,6 +12,7 @@ class SubscriptionServer:
         pub.subscribe(self.publish, 'applied_modification_from_controller')
 
     def add(self, path, address):
+        print(f"subscription_server: add: {path=}, {address=}")
         if address[0] not in self.subscribers:
             self.subscribers[address[0]] = {path}
         else: self.subscribers[address[0]].add(path)
@@ -50,6 +51,7 @@ class SubscriptionServer:
                 self.parsedict('',update)
 
     def applyupdate(self, path, value):
+        print(f"subscription_server: applying update: {path=} {value=}")
         pub.sendMessage('modification_request_recieved_from_controller', path=path, value=value)
 
     def publish(self, message):

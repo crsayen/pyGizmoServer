@@ -19,7 +19,7 @@ class ModificationHandler:
         self.schema = schema
         self.model = model
 
-    def start():
+    def start(self):
         pub.subscribe(self.handle_patch_from_client, 'modification_request_recieved_from_client')
         pub.subscribe(self.handle_patch_from_controller, 'modification_request_recieved_from_controller')
     
@@ -32,16 +32,18 @@ class ModificationHandler:
     response_handle (string): A handle to a 'response' event subscriber
     """
     def handle_patch_from_client(self, requests, response_handle=None):
+        response = []
         for r in requests:
-            response = []
+            if (path := r.get("path")) is None:
+                raise ValueError(f"no path provided in request: {r}")
             data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='w')
             if data["error"] is not None:
-                print(f"modification handler: {data["error"]}")
+                print(f"modification handler: {data['error']}")
                 continue
             value = r.get("value")
             if value is not None: data["args"].append(value)
             # call the specified function with the associated parameters
-            getattr(self.controller, routine)(*data["args"])
+            getattr(self.controller, data["routine"])(*data["args"])
             """
             rebuild the path. This corrects any index-notation issues 
             that the original path may have had
@@ -53,7 +55,7 @@ class ModificationHandler:
         create and apply the requested PATCH to the model
         """
         patch = jsonpatch.JsonPatch(requests)
-        jsonpatch.apply_patch(in_place=True,self.model, patch)
+        jsonpatch.apply_patch(self.model, patch,in_place=True)
         """
         if someone is subscribed to response events, raise an event
         """
@@ -62,9 +64,9 @@ class ModificationHandler:
 
     def handle_patch_from_controller(self, requests=None, path=None, value=None):
         if requests is None:
-            requests = [{"op": "replace": "path": path, "value": value}]
+            requests = [{"op": "replace", "path": path, "value": value}]
         patch = jsonpatch.JsonPatch(requests)
-        jsonpatch.apply_patch(in_place=True,self.model, patch)
+        jsonpatch.apply_patch(self.model, patch,in_place=True)
         pub.sendMessage("applied_modification_from_controller", requests=requests)
 
     

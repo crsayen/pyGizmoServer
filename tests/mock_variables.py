@@ -5,6 +5,7 @@ class MockVars:
         self.mock_model = {
             'version': "hi=11.lo=10.patch=13",
             "adcInputController":{
+                "adcInputMonitorRate": 0,
                 "adcInputs":[
                     {"measuredVoltage": 1},
                     {"measuredVoltage": 2},

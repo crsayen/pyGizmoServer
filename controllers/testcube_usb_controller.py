@@ -232,13 +232,11 @@ class TestCubeUSB(
         self.actcurrent_listinfirstmsg = None
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
-        print(f"start: {self.dev}")
         if self.dev is None:
             raise ValueError('Device not found')
         self.dev.set_configuration()
 
     def finished(self):
-        print(f"finished: {self.dev}")
         msgs = (self.get_relay_messages()
             + self.get_pwm_messages()
             + self.get_di_messages()
