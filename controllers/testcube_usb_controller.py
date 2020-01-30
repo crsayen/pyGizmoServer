@@ -255,17 +255,18 @@ class TestCubeUSB(
         self.callParentInits()
 
     def usbrxhandler(self):
-        time.sleep(2)
+        time.sleep(.2)
         while 1: 
             try:
-                ret = self.dev.read(130, 1, 10)
-                sret = ''.join([chr(x) for x in ret])
-                print(f"usbrx: {sret=}")
+                ret = self.dev.read(130, 24, 10)
+                msg = ''.join([chr(x) for x in ret])
+                print(f"usbrx: {msg=}")
             except usb.core.USBError as e:
-                if "timeout error" not in str(e):
+                if "time" not in str(e):
                     print(f"USB: {e}")
                 continue
             print(f"got a USB msg(s)")
+            d = self.recUsb(msg)
             #for msg in msgs:
             #    d = self.recUsb(msg)
             #    if len(d) > 0:
