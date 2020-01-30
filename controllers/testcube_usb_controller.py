@@ -233,6 +233,7 @@ class TestCubeUSB(
             '00000041':self.recusb_41_version,
             }
         self.actcurrent_listinfirstmsg = None
+        self.adc_listinfirstmsg = []
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
@@ -258,16 +259,16 @@ class TestCubeUSB(
         time.sleep(2)
         while 1: 
             try:
-                msgs = self.dev.read(self.dev[0][(0,0)][0], 100, 1)
+                msg = self.dev.read(130,24)
             except usb.core.USBError as e:
-                if "timeout error" not in str(e):
+                if "time" not in str(e):
                     print(f"USB: {e}")
                 continue
             print(f"got a USB msg(s)")
-            for msg in msgs:
-                d = self.recUsb(msg)
-                if len(d) > 0:
-                    pub.sendMessage('update_received', message = d)
+            msg = ''.join([chr(x) for x in msg])
+            d = self.recUsb(msg)
+            if len(d) > 0:
+                pub.sendMessage('update_received', message = d)
             
 
     def recUsb(self,msg):
@@ -486,9 +487,9 @@ class TestCubeUSB(
         enabled = (
             int(payload[:2],16)
         )
-        data = [{'enabled': True} if (enabled & (1<<x)) else {'enabled': False} for x in range(8)]
+        data = [{'enabled': True} if (enabled & (1<<x)) else {'enabled': False} for x in range(6)]
 
-        path = 'relayController/relays'
+        path = '/relayController/relays'
         return [{'path': path, 'data': data}]
 
     def recusb_1d_actfault(self,payload):
@@ -498,7 +499,7 @@ class TestCubeUSB(
         )
         data = [{'currentMonitor':{'faulty': True}} if (faults & (1<<x)) else {'currentMonitor':{'faulty': False}} for x in range(12)]
 
-        path = 'pwmController/pwms'
+        path = '/pwmController/pwms'
         return [{'path': path, 'data': data}]  
                       
     def recusb_41_version(self,payload):
@@ -509,5 +510,5 @@ class TestCubeUSB(
         )
         data = f"{hi=}.{lo=}.{patch=}"
 
-        path = 'version'
+        path = '/version'
         return [{'path': path, 'data': data}]  

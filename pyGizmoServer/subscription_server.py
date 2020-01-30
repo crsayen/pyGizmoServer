@@ -1,92 +1,46 @@
 import websockets, json, threading, asyncio, copy
+from queue import Queue
 from pubsub import pub
 
 class SubscriptionServer:
     def __init__(self,address):
-        self.address = ('127.0.0.1', 8021)
+        self.address = ('0.0.0.0', 36364)
         self.connected = set()
         self.subscribers = {}
         self.server = None
         self.thread_run = threading.Thread(target=self.run_async,args=([]))
         self.thread_run.start()
-        pub.subscribe(self.publish, 'applied_modification_from_controller')
 
-    def add(self, path, address):
-        print(f"subscription_server: add: {path=}, {address=}")
-        if address[0] not in self.subscribers:
-            self.subscribers[address[0]] = {path}
-        else: self.subscribers[address[0]].add(path)
-
-    def remove(self, address):
-        try:
-            del self.subscribers[address[0]]
-        except Exception as e:
-            pass
-            #print(f"failed to remove {address}:\n{e}")
-
-    def parsedict(self, path, d):
-        for k,v in d.items():
-            if isinstance(v, list): 
-                self.parselist(path + f"/{k}")
-            elif isinstance(v, dict):
-                self.parsedict(path + f"/{k}")
-            else:
-                self.applyupdate(path + f"/{k}", v)
-
-    def parselist(self, path, l):
-        for i, item in enumerate(l):
-            if isinstance(item, list): 
-                self.parselist(path + f"/{i}")
-            elif isinstance(item, dict):
-                self.parsedict(path + f"/{i}")
-            else:
-                self.applyupdate(path + f"/{i}", item)
-
-    def parseupdate(self, updates):
-        print(f"subscription_server: parse_update: {updates}")
-        if not isinstance(update,list):
-            updates = [updates]
+    def publish(self, updates):
         for update in updates:
-            path = update["path"]
-            data = update["data"]
-            if isinstance(data, dict): self.parsedict(path, data)
-            elif isinstance(data, list): 
-                for item in data:
-                    if not isinstance(item, dict):
-                        raise ValueError(f"incorrect update format: {data}")
-                    self.parsedict(path,data)
-
-    def applyupdate(self, path, value):
-        print(f"subscription_server: applying update: {path=} {value=}")
-        pub.sendMessage('modification_request_recieved_from_controller', path=path, value=value)
-
-    def publish(self, message):
-        for update in message:
-            if (path := message.get("path")) is None:
-                raise ValueError(f"unable to publish update, bad format: {message}")
-            for subscriber, subscriptions in self.subscribers.items():
-                for subscription in subscriptions:
-                    if subscription in path:
-                        message = json.dumps(message)
-                        self.send_message(message)
-
-    async def send_message(self, message):
-        await asyncio.wait(websocket.send(f"{{\n\t'path':{path},\n\t'value':{value}}}"))
-
-    async def handler(websocket, path):
+            print(f"\nsubscription_server: publish: {updates=}")
+            if (path := update.get("path")) is None:
+                raise ValueError(f"unable to publish update, bad format: {updates}")
+            for connection in self.connected:
+                if connection[0] in path:
+                    print(f"\nfound subscriber")
+                    connection[1].put(item=update)
+  
+    async def handler(self, websocket, path):
         # register the client
-        connected.add(websocket)
-        try:
-            await asyncio.sleep(10)
-        finally:
-            # unregister the client
-            connected.remove(websocket)
-            self.remove(websocket)
+        outbox = Queue()
+        async def send_message(message):
+            print(f"\nsubscription_server: send_message: {message}")
+            await websocket.send(json.dumps(message))
+        connection = (path, outbox)
+        self.connected.add(connection)
+        print(f"\nsubscription_server: handler: new subscription: {self.connected=}")
+        while True:
+            if outbox.empty(): continue
+            message = outbox.get()
+            print(f"{message=}")
+            result = await websocket.send("hello")
+            print(f"we got here {result}")
 
     def run_async(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        self.server = websockets.serve(self.handler, *self.address)
+        self.server = websockets.serve(self.handler, "0.0.0.0", 11111)
         loop.run_until_complete(self.server)
         loop.run_forever()
 
