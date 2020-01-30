@@ -258,16 +258,18 @@ class TestCubeUSB(
         time.sleep(2)
         while 1: 
             try:
-                msgs = self.dev.read(self.dev[0][(0,0)][0], 100, 1)
+                ret = self.dev.read(130, 1, 10)
+                sret = ''.join([chr(x) for x in ret])
+                print(f"usbrx: {sret=}")
             except usb.core.USBError as e:
                 if "timeout error" not in str(e):
                     print(f"USB: {e}")
                 continue
             print(f"got a USB msg(s)")
-            for msg in msgs:
-                d = self.recUsb(msg)
-                if len(d) > 0:
-                    pub.sendMessage('update_received', message = d)
+            #for msg in msgs:
+            #    d = self.recUsb(msg)
+            #    if len(d) > 0:
+            #        pub.sendMessage('update_received', message = d)
             
 
     def recUsb(self,msg):
