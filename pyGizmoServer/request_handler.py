@@ -27,7 +27,6 @@ class PyGizmoRequestHandler(BaseHTTPRequestHandler):
         pub.sendMessage('query_request_recieved', path=self.path, address=self.client_address, response_handle=handle)
         
     def do_PATCH(self):
-        
         self.response = None
         handle = self.generate_response_handler()
         content = self.rfile.read(int(self.headers.get('Content-Length')))
