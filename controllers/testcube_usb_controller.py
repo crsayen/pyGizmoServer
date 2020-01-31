@@ -256,22 +256,19 @@ class TestCubeUSB(
         self.callParentInits()
 
     def usbrxhandler(self):
-        time.sleep(.2)
+        time.sleep(2)
         while 1: 
             try:
-                ret = self.dev.read(130, 24, 10)
-                msg = ''.join([chr(x) for x in ret])
-                print(f"usbrx: {msg=}")
+                msg = self.dev.read(130,24)
             except usb.core.USBError as e:
                 if "time" not in str(e):
                     print(f"USB: {e}")
                 continue
             print(f"got a USB msg(s)")
+            msg = ''.join([chr(x) for x in msg])
             d = self.recUsb(msg)
-            #for msg in msgs:
-            #    d = self.recUsb(msg)
-            #    if len(d) > 0:
-            #        pub.sendMessage('update_received', message = d)
+            if len(d) > 0:
+                pub.sendMessage('update_received', message = d)
             
 
     def recUsb(self,msg):
@@ -514,4 +511,4 @@ class TestCubeUSB(
         data = f"{hi=}.{lo=}.{patch=}"
 
         path = '/version'
-        return [{'path': path, 'data': data}]  
+        return [{'path': path, 'data': data}]

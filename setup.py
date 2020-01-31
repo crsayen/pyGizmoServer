@@ -9,7 +9,7 @@ setup(
         "pyGizmoServer",
         "schemas",
     ],
-    install_requires=["jsonpatch", "pypubsub", "dpath", "websockets"],
+    install_requires=["jsonpatch", "pypubsub", "dpath", "websockets", "aiohttp"],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={
         "console_scripts": [

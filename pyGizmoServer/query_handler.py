@@ -6,6 +6,7 @@ import dpath.util
 import io, copy, re, time
 from pyGizmoServer.subscription_server import SubscriptionServer
 from pyGizmoServer.utility import Utility
+from aiohttp import web
 
 def merge(a, b):
     if isinstance(a, dict) and isinstance(b, dict):
@@ -35,33 +36,23 @@ class QueryHandler:
         self.model = model
         self.err = None
         self.address = address
-        self.subscribers = {}
-
-    def start(self):
-        self.subscription_server = SubscriptionServer(self.address)
-        pub.subscribe(self.handle_get, 'query_request_recieved')
+        self.subscription_server = SubscriptionServer(address)
         pub.subscribe(self.handle_updates, 'update_received')
+        self.subscribers = {}
     
-    def handle_get(self, path, address, response_handle=None):
-        # ensure the path is valid, and formatted properly
+    def handle_get(self, request):
+        path = request.path
         print(f"query_handler: handle_get: {path}")
         data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='r')
         if data["error"] is not None:
             response = data["error"]
-            print(f"query_handler: {response}")
-            pub.sendMessage(response_handle, response=response, fmt="HTML")
+            print(f"ERROR: query_handler: {response}")
             return
         if data.get("routine") is not None:
             data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
-            """TODO: update the model to reflect the data we get from the controller"""
-        if response_handle is not None:
-            response = json.dumps({
-                "path": data["path_string"],
-                "data": data["model_data"]
-            })
-            pub.sendMessage(response_handle, response=json.dumps(response,indent=2), fmt="HTML")
+        return web.json_response(data)
 
-    def handle_updates(self, message): 
+    async def handle_updates(self, message): 
         print(f"query_handler: handle_updates: update received: {message}")
         outgoing = []
         for update in message:
@@ -70,4 +61,5 @@ class QueryHandler:
             location = dpath.util.get(self.model, path)
             result = merge(location, data)
             outgoing.append({"path": path, "value": data})
-        self.subscription_server.publish(outgoing)
+        print(f"outgoing updates: {outgoing}")
+        await self.subscription_server.publish(outgoing)

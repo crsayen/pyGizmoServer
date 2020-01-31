@@ -3,6 +3,7 @@ import copy
 from pubsub import pub
 import asyncio
 from pyGizmoServer.utility import *
+from aiohttp import web
 
 class ModificationHandler:
     """
@@ -18,11 +19,6 @@ class ModificationHandler:
         self.controller = controller
         self.schema = schema
         self.model = model
-
-    def start(self):
-        pub.subscribe(self.handle_patch_from_client, 'modification_request_recieved_from_client')
-        pub.subscribe(self.handle_patch_from_controller, 'modification_request_recieved_from_controller')
-    
     """
     the handle_patch method is called when a 'modification_request_received'
     event is raised
@@ -31,10 +27,11 @@ class ModificationHandler:
     requests (list): A list of modification requests 
     response_handle (string): A handle to a 'response' event subscriber
     """
-    def handle_patch_from_client(self, requests, response_handle=None):
-        print(f"modification_handler: handle_path_from_client")
+    async def handle_patch_from_client(self, request):
+        request = json.loads(await request.text())
+        if not isinstance(request, list): request = [request]
         response = []
-        for r in requests:
+        for r in request:
             if (path := r.get("path")) is None:
                 raise ValueError(f"no path provided in request: {r}")
             data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='w')
@@ -56,14 +53,12 @@ class ModificationHandler:
         """
         create and apply the requested PATCH to the model
         """
-        patch = jsonpatch.JsonPatch(requests)
+        patch = jsonpatch.JsonPatch(request)
         jsonpatch.apply_patch(self.model, patch,in_place=True)
-        """
-        if someone is subscribed to response events, raise an event
-        """
-        if response_handle is not None:
-            pub.sendMessage(response_handle, response=response, fmt="JSON")
+        return web.json_response(response)
+        
 
+    """ this gets called by query_handler.py """
     def handle_patch_from_controller(self, updates=None, path=None, value=None):
         if updates is None:
             updates = [{"op": "replace", "path": path, "value": value}]

@@ -6,38 +6,32 @@ from pyGizmoServer.query_handler import QueryHandler
 from controllers.testcube_usb_controller import TestCubeUSB
 from controllers.mock_controller import MockUSB
 from tests.mock_variables import MockVars
-import sys
+import sys, asyncio, sys
 import time, json
+import textwrap
+from aiohttp import web
 
-mockvars = MockVars()
-address = ('', 36364)
+address = ('0.0.0.0', 36364)
 
-def main():
-    class ThreadedHTTPServer(ThreadingMixIn,HTTPServer):
-        pass
-
+def init():
     with open('schemas/testcube_HW.json') as f:
         hwschema = json.load(f)
-    if len(sys.argv) > 1 and sys.argv[1] in ["--test", "-t"]:
-        controller = MockUSB()
-    else:
-        controller = TestCubeUSB()
 
+    controller = TestCubeUSB()
     controller.start()
-    modification_handler = ModificationHandler(controller, hwschema, model=mockvars.mock_model)
-    query_handler = QueryHandler(address, controller, hwschema, model=mockvars.mock_model)
-    modification_handler.start()
-    query_handler.start()
-    gizmoServer = ThreadedHTTPServer(address, PyGizmoRequestHandler)
-    print(time.asctime(), f"Server started - {address}")
+    model = MockVars().mock_model
+    
+    app = web.Application(loop=asyncio.get_event_loop())
 
+    app.router.add_route('GET', r'/{tail:.*}', QueryHandler(address, controller, hwschema, model=model).handle_get)
+    app.router.add_route('PATCH', r'/{tail:.*}', ModificationHandler(controller, hwschema, model=model).handle_patch_from_client)
+    return app
+
+def main():
     try:
-        gizmoServer.serve_forever()
+        print(time.asctime(), f"Server started - {address}")
+        web.run_app(init(), host='localhost', port=36364)
     except KeyboardInterrupt:
-        pass
+        sys.exit()
 
-    gizmoServer.server_close()
-    print(time.asctime(), f"Server started - {address}")
 
-if __name__ == "__main__":
-    main()
