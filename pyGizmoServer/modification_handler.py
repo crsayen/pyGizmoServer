@@ -64,12 +64,12 @@ class ModificationHandler:
         if response_handle is not None:
             pub.sendMessage(response_handle, response=response, fmt="JSON")
 
-    def handle_patch_from_controller(self, requests=None, path=None, value=None):
-        if requests is None:
-            requests = [{"op": "replace", "path": path, "value": value}]
-        patch = jsonpatch.JsonPatch(requests)
+    def handle_patch_from_controller(self, updates=None, path=None, value=None):
+        if updates is None:
+            updates = [{"op": "replace", "path": path, "value": value}]
+        patch = jsonpatch.JsonPatch(updates)
         jsonpatch.apply_patch(self.model, patch,in_place=True)
-        pub.sendMessage("applied_modification_from_controller", requests=requests)
+        pub.sendMessage("applied_modification_from_controller", updates=updates)
 
     
 

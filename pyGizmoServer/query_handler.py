@@ -1,9 +1,22 @@
-import jsonpatch, json
+import jsonpatch, json, itertools
+from itertools import zip_longest
 import copy
 from pubsub import pub
+import dpath.util
 import io, copy, re, time
 from pyGizmoServer.subscription_server import SubscriptionServer
 from pyGizmoServer.utility import Utility
+
+def merge(a, b):
+    if isinstance(a, dict) and isinstance(b, dict):
+        d = dict(a)
+        d.update({k: merge(a.get(k, None), b[k]) for k in b})
+        return d
+
+    if isinstance(a, list) and isinstance(b, list):
+        return [merge(x, y) for x, y in itertools.zip_longest(a, b)]
+
+    return a if b is None else b
 
 class QueryHandler:
     """
@@ -41,14 +54,20 @@ class QueryHandler:
         if data.get("routine") is not None:
             data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
             """TODO: update the model to reflect the data we get from the controller"""
-        self.subscription_server.add(data["path_up_to_array_index"], address)
         if response_handle is not None:
             response = json.dumps({
                 "path": data["path_string"],
                 "data": data["model_data"]
             })
             pub.sendMessage(response_handle, response=json.dumps(response,indent=2), fmt="HTML")
-    
+
     def handle_updates(self, message): 
         print(f"query_handler: handle_updates: update received: {message}")
-        self.subscription_server.parseupdate(message)
+        outgoing = []
+        for update in message:
+            path = update["path"]
+            data = update["data"]
+            location = dpath.util.get(self.model, path)
+            result = merge(location, data)
+            outgoing.append({"path": path, "value": data})
+        self.subscription_server.publish(outgoing)
