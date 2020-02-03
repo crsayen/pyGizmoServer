@@ -14,15 +14,19 @@ import aiojobs
 import logging
 from aiojobs.aiohttp import atomic
 
-logging.basicConfig(filename='gizmo.log',level=logging.DEBUG)
+logger = logging.getLogger('gizmoLogger')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.FileHandler(filename='gizmo.log', mode='w'))
 
 with open('schemas/testcube_HW.json') as f:
     hwschema = json.load(f)
 
-address = ('0.0.0.0', 36364)
+tcp_ip, tcp_port = "0.0.0.0", 36364
+ws_ip, ws_port = "0.0.0.0", 11111
+
 model = MockVars().mock_model        
 modification_handler = ModificationHandler(hwschema, model=model)
-query_handler = QueryHandler(address, hwschema, model=model)
+query_handler = QueryHandler(ws_ip, ws_port, hwschema, model=model)
 controller = TestCubeUSB(query_handler.handle_updates)
 
 @atomic
@@ -44,8 +48,8 @@ def make_app():
 
 def main():
     try:
-        print(time.asctime(), f"Server started - {address}")
-        web.run_app(make_app(), host='localhost', port=36364)
+        print(time.asctime(), f"Server started - {tcp_ip}:{tcp_port}")
+        web.run_app(make_app(), host=tcp_ip, port=tcp_port)
     except KeyboardInterrupt:
         sys.exit()
 

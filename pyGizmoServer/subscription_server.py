@@ -1,35 +1,30 @@
 import websockets, json, threading, asyncio, copy
 from queue import Queue
-from pubsub import pub
 import logging
 
 class SubscriptionServer:
-    def __init__(self,address):
-        self.address = ('0.0.0.0', 11111)
-        self.logger = logging.getLogger('websockets')
-        self.logger.setLevel(logging.INFO)
-        self.logger.addHandler(logging.StreamHandler())
+    def __init__(self,ws_ip, ws_port):
+        self.logger = logging.getLogger('gizmoLogger')
+        self.logger.debug(f'SubscriptionServer({ws_ip=},{ws_port=})')
         self.connected = set()
         self.subscribers = {}
-        self.server = websockets.serve(self.handler, "0.0.0.0", 11111)
+        self.server = websockets.serve(self.connection_handler, ws_ip, ws_port)
         asyncio.get_event_loop().run_until_complete(self.server)
 
     async def publish(self, updates):
         for update in updates:
-            print(f"\nsubscription_server: publish: {updates=}")
+            self.logger.debug(f"SubscriptionServer.publish: {updates}")
             if (path := update.get("path")) is None:
                 raise ValueError(f"unable to publish update, bad format: {updates}")
             for connection in self.connected:
-                print(f"subscription_server: publish: connection: path={connection[0]}")
                 if connection[1] in path:
-                    print(f"subscription_server: publish: connection subscribed: {update}")
                     result = await connection[0].send(json.dumps(update))
   
-    async def handler(self, websocket, path):
+    async def connection_handler(self, websocket, path):
+        self.logger.debug(f"SubscriptionServer.connection_handler: {websocket}")
         connection = (websocket, path)
         self.connected.add(connection)
         result = await connection[0].send(f'SUCCESS: you are subscribed to {path}')
-        print(f"\nsubscription_server: handler: new subscription: {self.connected=}")
         await websocket.wait_closed()
 
 

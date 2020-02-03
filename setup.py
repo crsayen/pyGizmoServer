@@ -8,8 +8,9 @@ setup(
         "controllers",
         "pyGizmoServer",
         "schemas",
+        "controllers.TestCubeComponents"
     ],
-    install_requires=["jsonpatch", "pypubsub", "dpath", "websockets", "aiohttp"],
+    install_requires=["jsonpatch", "dpath", "websockets", "aiohttp", "aiojobs"],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={
         "console_scripts": [

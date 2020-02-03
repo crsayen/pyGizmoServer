@@ -1,7 +1,6 @@
 import jsonpatch, json, itertools
 from itertools import zip_longest
-import copy
-from pubsub import pub
+import copy, logging
 import dpath.util
 import io, copy, re, time
 from pyGizmoServer.subscription_server import SubscriptionServer
@@ -30,12 +29,13 @@ class QueryHandler:
     schema (dict): A description of the hardware that controller is based on
     default_model (dict): An in-memory model of the hardware
     """
-    def __init__(self, address, schema, model=None):
+    def __init__(self, ws_ip, ws_port, schema, model=None):
         self.schema = schema
         self.model = model
         self.err = None
-        self.address = address
-        self.subscription_server = SubscriptionServer(address)
+        self.logger = logging.getLogger('gizmoLogger')
+        self.logger.debug('QueryHandler()')
+        self.subscription_server = SubscriptionServer(ws_ip, ws_port)
         self.subscribers = {}
 
     def add_controller(self, controller):
@@ -43,27 +43,26 @@ class QueryHandler:
     
     def handle_get(self, request):
         path = request.path
-        print(f"query_handler: handle_get: {path}")
+        self.logger.debug(f"QueryHandler.handle_get: {path}")
         data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='r')
         if data["error"] is not None:
             response = data["error"]
-            print(f"ERROR: query_handler: {response}")
+            self.logger.error(f"{response}")
             return
         if data.get("routine") is not None:
             data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
         return web.json_response(data)
 
     async def handle_updates(self, updates): 
-        print(f"query_handler: handle_updates: update received: {updates}")
+        self.logger.debug(f"QueryHandler.handle_updates: {updates}")
         outgoing = []
         if not isinstance(updates, list):
             updates = [updates]
         for update in updates:
             if isinstance(update, str) or (data := update.get("data")) is None or (path := update.get("path")) is None: 
-                print("handle_updates: ERROR path or data key not found")
+                self.logger.error("QueryHandler.handle_updates: path or data key not found")
                 continue
             location = dpath.util.get(self.model, path)
-            result = merge(location, data)
+            dpath.util.set(self.model, merge(location, data), path)
             outgoing.append({"path": path, "value": data})
-        print(f"outgoing updates: {outgoing}")
         await self.subscription_server.publish(outgoing)
