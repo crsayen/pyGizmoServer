@@ -5,7 +5,7 @@ import logging
 
 class SubscriptionServer:
     def __init__(self,address):
-        self.address = ('0.0.0.0', 36364)
+        self.address = ('0.0.0.0', 11111)
         self.logger = logging.getLogger('websockets')
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(logging.StreamHandler())
@@ -20,7 +20,9 @@ class SubscriptionServer:
             if (path := update.get("path")) is None:
                 raise ValueError(f"unable to publish update, bad format: {updates}")
             for connection in self.connected:
+                print(f"subscription_server: publish: connection: path={connection[0]}")
                 if connection[1] in path:
+                    print(f"subscription_server: publish: connection subscribed: {update}")
                     result = await connection[0].send(json.dumps(update))
   
     async def handler(self, websocket, path):

@@ -1,0 +1,360 @@
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:asyncio:Using proactor: IocpProactor
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.listen at 0x00000251CE2EDA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 261, in listen
+    await self.usbrxhandler()
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 267, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:40:38 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:40:38 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:40:39 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:40:40 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:42:06 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:42:06 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:42:07 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:42:07 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x0000029EB7300A40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 267, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001D2F410E7C0>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 264, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x00000222DA54DA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 264, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x0000020719810A40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 267, in usbrxhandler
+    try:
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:01 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:01 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:03 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:03 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:10 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:11 +0000] "GET /relayController/relays HTTP/1.1" 200 479 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:13 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:13 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:18 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:19 +0000] "GET /relayController/relays HTTP/1.1" 200 479 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:21 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:46:21 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001EF3A78EA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:48:32 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:48:32 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:48:33 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:48:33 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001BF7DF5FA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:49:36 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:49:36 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:49:38 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:49:38 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x0000021B35CCFA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:51:23 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:51:24 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:51:25 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:51:25 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001B0760F0A40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:15 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:15 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:16 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:17 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x0000017E48B91A40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:51 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:51 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:52 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:54:53 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x0000012C5D0AEA40>>>
+Traceback (most recent call last):
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\aiohttp\web.py", line 419, in run_app
+    loop.run_until_complete(_run_app(app,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 595, in run_until_complete
+    self.run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 563, in run_forever
+    self._run_once()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\base_events.py", line 1844, in _run_once
+    handle._run()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\asyncio\events.py", line 81, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 268, in usbrxhandler
+    msg = self.dev.read(130,24,100)
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\core.py", line 983, in read
+    ret = fn(
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 537, in bulk_read
+    return self.__read(_lib.usb_bulk_read,
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\usb\backend\libusb0.py", line 622, in __read
+    ret = int(_check(fn(
+KeyboardInterrupt
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:56:41 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:56:41 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:56:43 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:56:43 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001452A41EA40>>>
+Traceback (most recent call last):
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 277, in usbrxhandler
+    await self.callback(d)
+  File "c:\dev\pygizmoserver\pyGizmoServer\query_handler.py", line 69, in handle_updates
+    await self.subscription_server.publish(outgoing)
+  File "c:\dev\pygizmoserver\pyGizmoServer\subscription_server.py", line 26, in publish
+    result = await connection[0].send(json.dumps(update))
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\websockets\protocol.py", line 555, in send
+    await self.ensure_open()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\websockets\protocol.py", line 812, in ensure_open
+    raise self.connection_closed_exc()
+websockets.exceptions.ConnectionClosedOK: code = 1000 (OK), no reason
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:59:10 +0000] "GET / HTTP/1.1" 200 187 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:59:10 +0000] "GET /relayController/relays HTTP/1.1" 200 478 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:59:11 +0000] "PATCH / HTTP/1.1" 200 218 "-" "-"
+INFO:aiohttp.access:127.0.0.1 [03/Feb/2020:16:59:12 +0000] "PATCH / HTTP/1.1" 200 219 "-" "-"
+ERROR:asyncio:Job processing failed
+job: <Job coro=<<coroutine object TestCubeUSB.usbrxhandler at 0x000001E762ECFA40>>>
+Traceback (most recent call last):
+  File "c:\dev\pygizmoserver\controllers\testcube_usb_controller.py", line 277, in usbrxhandler
+    await self.callback(d)
+  File "c:\dev\pygizmoserver\pyGizmoServer\query_handler.py", line 69, in handle_updates
+    await self.subscription_server.publish(outgoing)
+  File "c:\dev\pygizmoserver\pyGizmoServer\subscription_server.py", line 26, in publish
+    result = await connection[0].send(json.dumps(update))
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\websockets\protocol.py", line 555, in send
+    await self.ensure_open()
+  File "C:\Users\Stephen Lin\AppData\Local\Programs\Python\Python38\lib\site-packages\websockets\protocol.py", line 812, in ensure_open
+    raise self.connection_closed_exc()
+websockets.exceptions.ConnectionClosedOK: code = 1000 (OK), no reason

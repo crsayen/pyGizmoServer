@@ -211,8 +211,9 @@ class TestCubeUSB(
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
         
-
+    
     def __init__(self, callback):
+        print("init: tescubeUSB")
         self.callParentInits()
         self.callback = callback
         AdcMessage.__init__(self)
@@ -233,14 +234,13 @@ class TestCubeUSB(
             '00000013':self.recusb_13_relay,
             '0000001d':self.recusb_1d_actfault,
             '00000041':self.recusb_41_version,
-            }
+        }
         self.actcurrent_listinfirstmsg = None
         self.adc_listinfirstmsg = []
     def start(self):
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
-        asyncio.get_event_loop().run_until_complete(self.usbrxhandler())
 
     def finished(self):
         print(f"testcubeUSB: finished")
@@ -256,11 +256,14 @@ class TestCubeUSB(
             print(f"testcubeUSB: finished: write({msg=})")
             self.dev.write(2, msg)
         self.callParentInits()
+    
+    async def listen(self):
+        await self.usbrxhandler()
 
-    @asyncio.coroutine
     async def usbrxhandler(self):
-        time.sleep(2)
+        print("TestCubeUSB: usbrxhandler()")
         while 1: 
+            await asyncio.sleep(0.001)
             try:
                 msg = self.dev.read(130,24,100)
             except usb.core.USBError as e:
@@ -271,18 +274,20 @@ class TestCubeUSB(
             msg = ''.join([chr(x) for x in msg])
             d = self.recUsb(msg)
             if len(d) > 0:
-                await self.callback(msg)
-            yield
+                await self.callback(d)
             
-
     def recUsb(self,msg):
-        
-        id, payload = msg[:8], msg[8:]
-        f = self.usbidparsers.get(id)
-        if f is None:
-            raise("invalid id")
-            return []
-        return f(payload)
+        _id, payload = msg[:8], msg[8:]
+        try:
+            f = self.usbidparsers.get(_id)
+            if f is None:
+                print(f"ID not found in {self.usbidparsers=}")
+                return []
+        except Exception as e:
+            print(f"ERROR: {e}")
+        result = f(payload)
+        print(f"recUsb:\n\tf: {f.__name__}\n\tpayload: {payload}\n\tresult: {type(result)}:{result}")
+        return result
 
     def recusb_5_pwmfreq(self,payload):
         acthi,freqa,freqb = payload[:4],payload[4:8],payload[8:12]

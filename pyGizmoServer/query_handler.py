@@ -53,12 +53,15 @@ class QueryHandler:
             data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
         return web.json_response(data)
 
-    async def handle_updates(self, message): 
-        print(f"query_handler: handle_updates: update received: {message}")
+    async def handle_updates(self, updates): 
+        print(f"query_handler: handle_updates: update received: {updates}")
         outgoing = []
-        for update in message:
-            path = update["path"]
-            data = update["data"]
+        if not isinstance(updates, list):
+            updates = [updates]
+        for update in updates:
+            if isinstance(update, str) or (data := update.get("data")) is None or (path := update.get("path")) is None: 
+                print("handle_updates: ERROR path or data key not found")
+                continue
             location = dpath.util.get(self.model, path)
             result = merge(location, data)
             outgoing.append({"path": path, "value": data})
