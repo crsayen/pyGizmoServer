@@ -3,6 +3,7 @@ from usb.backend import libusb1
 import usb.util
 import time, threading, time
 from pubsub import pub
+import asyncio
 
 
 class AdcMessage:
@@ -211,8 +212,9 @@ class TestCubeUSB(
         FrequencyMessage.__init__(self)
         
 
-    def __init__(self):
+    def __init__(self, callback):
         self.callParentInits()
+        self.callback = callback
         AdcMessage.__init__(self)
         self.usbidparsers = {
             '00000005':self.recusb_5_pwmfreq,
@@ -238,7 +240,7 @@ class TestCubeUSB(
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
-        threading.Thread(target=self.usbrxhandler,args=([])).start()
+        asyncio.get_event_loop().run_until_complete(self.usbrxhandler())
 
     def finished(self):
         print(f"testcubeUSB: finished")
@@ -255,11 +257,12 @@ class TestCubeUSB(
             self.dev.write(2, msg)
         self.callParentInits()
 
-    def usbrxhandler(self):
+    @asyncio.coroutine
+    async def usbrxhandler(self):
         time.sleep(2)
         while 1: 
             try:
-                msg = self.dev.read(130,24)
+                msg = self.dev.read(130,24,100)
             except usb.core.USBError as e:
                 if "time" not in str(e):
                     print(f"USB: {e}")
@@ -268,7 +271,8 @@ class TestCubeUSB(
             msg = ''.join([chr(x) for x in msg])
             d = self.recUsb(msg)
             if len(d) > 0:
-                pub.sendMessage('update_received', message = d)
+                await self.callback(msg)
+            yield
             
 
     def recUsb(self,msg):

@@ -1,10 +1,14 @@
 import websockets, json, threading, asyncio, copy
 from queue import Queue
 from pubsub import pub
+import logging
 
 class SubscriptionServer:
     def __init__(self,address):
         self.address = ('0.0.0.0', 36364)
+        self.logger = logging.getLogger('websockets')
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(logging.StreamHandler())
         self.connected = set()
         self.subscribers = {}
         self.server = websockets.serve(self.handler, "0.0.0.0", 11111)
@@ -19,10 +23,11 @@ class SubscriptionServer:
                 if connection[1] in path:
                     result = await connection[0].send(json.dumps(update))
   
-    def handler(self, websocket, path):
+    async def handler(self, websocket, path):
         connection = (websocket, path)
         self.connected.add(connection)
         print(f"\nsubscription_server: handler: new subscription: {self.connected=}")
+        #await websocket.wait_closed()
 
 
 

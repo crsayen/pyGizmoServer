@@ -30,15 +30,16 @@ class QueryHandler:
     schema (dict): A description of the hardware that controller is based on
     default_model (dict): An in-memory model of the hardware
     """
-    def __init__(self, address, controller, schema, model=None):
-        self.controller = controller
+    def __init__(self, address, schema, model=None):
         self.schema = schema
         self.model = model
         self.err = None
         self.address = address
         self.subscription_server = SubscriptionServer(address)
-        pub.subscribe(self.handle_updates, 'update_received')
         self.subscribers = {}
+
+    def add_controller(self, controller):
+        self.controller = controller
     
     def handle_get(self, request):
         path = request.path

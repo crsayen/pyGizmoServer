@@ -1,6 +1,5 @@
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
-from pyGizmoServer.request_handler import PyGizmoRequestHandler
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from controllers.testcube_usb_controller import TestCubeUSB
@@ -17,14 +16,21 @@ def init():
     with open('schemas/testcube_HW.json') as f:
         hwschema = json.load(f)
 
-    controller = TestCubeUSB()
+    model = MockVars().mock_model        
+
+    modification_handler = ModificationHandler(hwschema, model=model)
+    query_handler = QueryHandler(address, hwschema, model=model)
+
+    controller = TestCubeUSB(query_handler.handle_updates)
     controller.start()
-    model = MockVars().mock_model
     
+    modification_handler.add_controller(controller)
+    query_handler.add_controller(controller)
+
     app = web.Application(loop=asyncio.get_event_loop())
 
-    app.router.add_route('GET', r'/{tail:.*}', QueryHandler(address, controller, hwschema, model=model).handle_get)
-    app.router.add_route('PATCH', r'/{tail:.*}', ModificationHandler(controller, hwschema, model=model).handle_patch_from_client)
+    app.router.add_route('GET', r'/{tail:.*}', query_handler.handle_get)
+    app.router.add_route('PATCH', r'/{tail:.*}', modification_handler.handle_patch_from_client)
     return app
 
 def main():

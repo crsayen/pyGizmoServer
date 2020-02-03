@@ -6,11 +6,13 @@ from pyGizmoServer.utility import *
 from aiohttp import web
 
 class ModificationHandler:
-    def __init__(self, controller, schema, model=None):
-        self.controller = controller
+    def __init__(self, schema, model=None):
         self.schema = schema
         self.model = model
 
+    def add_controller(self, controller):
+        self.controller = controller
+        
     async def handle_patch_from_client(self, request):
         request = json.loads(await request.text())
         if not isinstance(request, list): request = [request]
