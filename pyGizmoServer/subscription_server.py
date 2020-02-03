@@ -28,8 +28,9 @@ class SubscriptionServer:
     async def handler(self, websocket, path):
         connection = (websocket, path)
         self.connected.add(connection)
+        result = await connection[0].send(f'SUCCESS: you are subscribed to {path}')
         print(f"\nsubscription_server: handler: new subscription: {self.connected=}")
-        #await websocket.wait_closed()
+        await websocket.wait_closed()
 
 
 
