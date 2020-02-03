@@ -42,8 +42,11 @@ class Utility:
                 #print(model_location)
                 #print('exception')
                 epath = "/" + "/".join(paths[:i])
-                err = f"PATH ERROR: {epath}/{p}"
-                break
+                if not 'FAVICON' in epath:
+                    err = f"PATH ERROR: {epath}/{p}"
+                    break
+                else:
+                    continue
             #print('model_location ' + str(model_location))
         result["error"] = err
         if err is not None:          

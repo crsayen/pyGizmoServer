@@ -18,7 +18,10 @@ class SubscriptionServer:
                 raise ValueError(f"unable to publish update, bad format: {updates}")
             for connection in self.connected:
                 if connection[1] in path:
-                    result = await connection[0].send(json.dumps(update))
+                    try:
+                        result = await connection[0].send(json.dumps(update))
+                    except Exception as e:
+                        self.logger.error(f'{e}')
   
     async def connection_handler(self, websocket, path):
         self.logger.debug(f"SubscriptionServer.connection_handler: {websocket}")
@@ -26,7 +29,7 @@ class SubscriptionServer:
         self.connected.add(connection)
         result = await connection[0].send(f'SUCCESS: you are subscribed to {path}')
         await websocket.wait_closed()
-
+        self.connected.remove(connection)
 
 
 

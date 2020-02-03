@@ -289,7 +289,8 @@ class TestCubeUSB(
             if isinstance(ch,int):
                 ret[ch] = {'measuredVoltage': v}
         path = '/adcInputController/adcInputs'
-        return [{'path': path, 'data': ret}]    
+        return [{'path': path, 'data': ret}]
+            
     def recusb_211_adc(self,payload):
         ret = [{}]*8
         payload = payload + "0"*16  #pad to avoid errors

@@ -15,8 +15,8 @@ class ModificationHandler:
         self.controller = controller
         
     async def handle_patch_from_client(self, request):
-        self.logger.debug(f"ModificationHandler.handle_patch_from_client: {request}")
         request = json.loads(await request.text())
+        self.logger.debug(f"ModificationHandler.handle_patch_from_client: {request}")
         if not isinstance(request, list): request = [request]
         response = []
         for r in request:
@@ -25,7 +25,7 @@ class ModificationHandler:
             data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='w')
             if data["error"] is not None:
                 self.logger.error(f"modification handler: {data['error']}")
-                continue
+                return web.json_response({"error": data["error"]})
             value = r.get("value")
             if value is not None: data["args"].append(value)
             # call the specified function with the associated parameters

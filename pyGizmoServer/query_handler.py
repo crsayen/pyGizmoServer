@@ -51,7 +51,7 @@ class QueryHandler:
             return
         if data.get("routine") is not None:
             data["model_data"] = getattr(self.controller, data["routine"])(*data["args"])
-        return web.json_response(data)
+        return web.json_response({"path":data["path_string"], "data": data["model_data"]})
 
     async def handle_updates(self, updates): 
         self.logger.debug(f"QueryHandler.handle_updates: {updates}")

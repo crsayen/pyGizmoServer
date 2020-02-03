@@ -13,10 +13,21 @@ from aiojobs.aiohttp import setup, spawn
 import aiojobs
 import logging
 from aiojobs.aiohttp import atomic
+from yattag import Doc
+from pyGizmoServer.render_index import *
+import time
 
 logger = logging.getLogger('gizmoLogger')
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.FileHandler(filename='gizmo.log', mode='w'))
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(fmt='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
+                                  datefmt='%Y-%m-%d %H:%M:%S') 
+handler = logging.FileHandler(filename='gizmo.log', mode='w')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+starttime = time.strftime("%Y-%m-%d %H:%M")
+logger.info(starttime)
+
+coro_running = False
 
 with open('schemas/testcube_HW.json') as f:
     hwschema = json.load(f)
@@ -29,10 +40,17 @@ modification_handler = ModificationHandler(hwschema, model=model)
 query_handler = QueryHandler(ws_ip, ws_port, hwschema, model=model)
 controller = TestCubeUSB(query_handler.handle_updates)
 
+async def get_index(request):
+    doc, tag, text = Doc().tagtext()
+    return web.Response(body=render_index(starttime, '1.0.0'),content_type='text/html')
+
 @atomic
-async def handler(request):
-    await spawn(request, controller.usbrxhandler())
-    return web.Response(text="this is a response I hope to receive")
+async def start_your_engines(request):
+    global coro_running
+    if not coro_running:
+        await spawn(request, controller.usbrxhandler())
+        coro_running = True
+    return web.Response(text="VROOM")
 
 def make_app():
     controller.start()
@@ -40,7 +58,8 @@ def make_app():
     query_handler.add_controller(controller)
 
     app = web.Application(loop=asyncio.get_event_loop())
-    app.router.add_get('/', handler)
+    app.router.add_get('/', get_index)
+    app.router.add_get('/gizmogo', start_your_engines)
     app.router.add_route('GET', r'/{tail:.*}', query_handler.handle_get)
     app.router.add_route('PATCH', r'/{tail:.*}', modification_handler.handle_patch_from_client)
     setup(app)
