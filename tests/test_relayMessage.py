@@ -72,7 +72,6 @@ def test_freq():
 
 def test_adcrequest():
     am = AdcMessage()
-    #am.setAdcEnabled(True,0x5)
-    # default changed to all on
-    am.setAdcMonitorUpdateRate(0x11 * 50)
-    assert(am.get_adc_messages()==['000000103f11'])
+    am.setAdcEnabled(0x5)
+    am.setAdcMonitorUpdateRate(0x11)
+    assert(am.get_adc_messages()==['000000100511'])
