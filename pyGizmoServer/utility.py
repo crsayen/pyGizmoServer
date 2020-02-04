@@ -1,4 +1,4 @@
-import copy
+import copy, json
 
 class Utility:
     @classmethod
@@ -66,4 +66,16 @@ class Utility:
             if index is not None and args is not None: args.append(index)
             result["args"] = args if err is None else None
         return result
-    
+
+    @classmethod
+    def initialize_model_from_schema(cls, schema):
+        with open(schema) as f:
+            schema_dict = json.load(f)
+        for k,v in schema_dict.items():
+            if isinstance(v, list):
+                schema_dict[k] = [v[0] for i in v]
+            elif isinstance(v, dict):
+                for x,y in schema_dict[k].items():
+                    if isinstance(y, list):
+                        schema_dict[k][x] = [y[0] for i in y]
+        return schema_dict
