@@ -23,9 +23,12 @@ class Test_usbRec():
             results = Utility.parse_path_against_schema_and_model(path=pd['path'],schema=self.mockvars.mock_schema,model=self.mockvars.mock_model)
             self.checkmatch(results['model_data'],pd['data'],pd['path'])
 
+    def callback():
+        print("callback")
+
     def setup(self):
         self.mockvars = MockVars()
-        self.controller=TestCubeUSB()
+        self.controller=TestCubeUSB(self.callback)
 
     def test_usbmsg5(self): #pwm act and freq
         id,acthi,freqa,freqb = 0x5,0x555,0x1000,0xfff
