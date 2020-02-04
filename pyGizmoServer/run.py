@@ -1,21 +1,17 @@
-from http.server import HTTPServer
-from socketserver import ThreadingMixIn
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from controllers.testcube_usb_controller import TestCubeUSB
 from controllers.mock_controller import MockUSB
 from tests.mock_variables import MockVars
-import sys, asyncio, sys
-import time, json
-import textwrap
+import sys, asyncio, sys, time, json, textwrap
 from aiohttp import web
-from aiojobs.aiohttp import setup, spawn
-import aiojobs
-import logging
-from aiojobs.aiohttp import atomic
+from aiojobs.aiohttp import setup, spawn, atomic
 from yattag import Doc
 from pyGizmoServer.render_index import *
-import time
+import time, jinja2, aiohttp_jinja2, logging, aiojobs
+import pkg_resources, os
+
+version = pkg_resources.require("pyGizmoServer")[0].version
 
 logger = logging.getLogger('gizmoLogger')
 logger.setLevel(logging.INFO)
@@ -26,6 +22,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 starttime = time.strftime("%Y-%m-%d %H:%M")
 logger.info(starttime)
+
 
 coro_running = False
 
@@ -38,11 +35,11 @@ ws_ip, ws_port = "0.0.0.0", 11111
 model = MockVars().mock_model        
 modification_handler = ModificationHandler(hwschema, model=model)
 query_handler = QueryHandler(ws_ip, ws_port, hwschema, model=model)
-controller = TestCubeUSB(query_handler.handle_updates)
+controller = MockUSB(query_handler.handle_updates)
 
+@aiohttp_jinja2.template('index.html')
 async def get_index(request):
-    doc, tag, text = Doc().tagtext()
-    return web.Response(body=render_index(starttime, '1.0.0'),content_type='text/html')
+    return {'title': 'PyGizmoServer', 'version': version, 'time_started': starttime}
 
 @atomic
 async def start_your_engines(request):
@@ -53,12 +50,17 @@ async def start_your_engines(request):
     return web.Response(text="VROOM")
 
 def make_app():
+    print(os.getcwd())
     controller.start()
     modification_handler.add_controller(controller)
     query_handler.add_controller(controller)
 
     app = web.Application(loop=asyncio.get_event_loop())
+    aiohttp_jinja2.setup(app,loader=jinja2.FileSystemLoader(['templates', 'static']))
+    app['static_root_url'] = '/static'
+    print(app['static_root_url'])
     app.router.add_get('/', get_index)
+    app.router.add_static('/static', "static")
     app.router.add_get('/gizmogo', start_your_engines)
     app.router.add_route('GET', r'/{tail:.*}', query_handler.handle_get)
     app.router.add_route('PATCH', r'/{tail:.*}', modification_handler.handle_patch_from_client)

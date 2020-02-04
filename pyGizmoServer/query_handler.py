@@ -19,16 +19,6 @@ def merge(a, b):
     return a if b is None else b
 
 class QueryHandler:
-    """
-    This class handles client queries. It looks at the device model and update
-    messages from the device to generate query responses, and publish update
-    streams via a Websocket server
-
-    Attributes:
-    controller (controller): A controller for some piece of hardware
-    schema (dict): A description of the hardware that controller is based on
-    default_model (dict): An in-memory model of the hardware
-    """
     def __init__(self, ws_ip, ws_port, schema, model=None):
         self.schema = schema
         self.model = model
