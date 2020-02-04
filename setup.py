@@ -21,7 +21,8 @@ setup(
         "jinja2", 
         "aiohttp-jinja2",
         "pyusb",
-        "pytest"
+        "pytest",
+        "app-settings"
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={

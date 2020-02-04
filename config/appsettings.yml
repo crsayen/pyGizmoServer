@@ -1,0 +1,13 @@
+ws:
+  ip: '0.0.0.0'
+  port: 11111
+tcp: 
+  ip: '0.0.0.0'
+  port: 36364
+controller: 
+  module: 'mock_controller'
+  name: 'MockUSB'
+hwschema: 'testcube_schema.json'
+logging:
+  loglevel: INFO
+  filename: 'gizmo.log'

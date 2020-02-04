@@ -3,43 +3,49 @@ from pyGizmoServer.query_handler import QueryHandler
 from controllers.testcube_usb_controller import TestCubeUSB
 from controllers.mock_controller import MockUSB
 from tests.mock_variables import MockVars
-import sys, asyncio, sys, time, json, textwrap
+import sys, asyncio, sys, time, json, textwrap, importlib
 from aiohttp import web
 from aiojobs.aiohttp import setup, spawn, atomic
 from yattag import Doc
 from pyGizmoServer.render_index import *
 import time, jinja2, aiohttp_jinja2, logging, aiojobs
 import pkg_resources, os
+from app_settings import AppSettings
 
+cfg = AppSettings()
+""" get version from setup.py """
 version = pkg_resources.require("pyGizmoServer")[0].version
-
+""" setup logging """
 logger = logging.getLogger('gizmoLogger')
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter(fmt='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
-                                  datefmt='%Y-%m-%d %H:%M:%S') 
-handler = logging.FileHandler(filename='gizmo.log', mode='w')
+logger.setLevel(getattr(logging, cfg.logging.loglevel))
+formatter = logging.Formatter(
+    fmt='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S') 
+handler = logging.FileHandler(filename=cfg.logging.filename, mode='w')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-starttime = time.strftime("%Y-%m-%d %H:%M")
-logger.info(starttime)
-
+""" get schema """
+with open(f'schemas/{cfg.hwschema}') as f:
+    hwschema = json.load(f)
+""" set initial model """
+model = MockVars().mock_model
+""" setup modification, query handlers """
+modification_handler = ModificationHandler(hwschema, model=model)
+query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, hwschema, model=model)
+ """ setup controller """
+controller = getattr(
+    importlib.import_module(f'controllers.{cfg.controller.module}'), 
+    cfg.controller.name)(query_handler.handle_updates)
 
 coro_running = False
 
-with open('schemas/testcube_HW.json') as f:
-    hwschema = json.load(f)
-
-tcp_ip, tcp_port = "0.0.0.0", 36364
-ws_ip, ws_port = "0.0.0.0", 11111
-
-model = MockVars().mock_model        
-modification_handler = ModificationHandler(hwschema, model=model)
-query_handler = QueryHandler(ws_ip, ws_port, hwschema, model=model)
-controller = MockUSB(query_handler.handle_updates)
-
 @aiohttp_jinja2.template('index.html')
 async def get_index(request):
-    return {'title': 'PyGizmoServer', 'version': version, 'time_started': starttime}
+    return {
+        'title': cfg.controller.name,
+        'version': version, 
+        'time_started': time.strftime("%Y-%m-%d %H:%M")
+    }
 
 @atomic
 async def start_your_engines(request):
@@ -69,8 +75,8 @@ def make_app():
 
 def main():
     try:
-        print(time.asctime(), f"Server started - {tcp_ip}:{tcp_port}")
-        web.run_app(make_app(), host=tcp_ip, port=tcp_port)
+        print(time.asctime(), f"Server started - {cfg.tcp.ip}:{cfg.tcp.port}")
+        web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port)
     except KeyboardInterrupt:
         sys.exit()
 
