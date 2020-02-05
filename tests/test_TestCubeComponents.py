@@ -1,4 +1,10 @@
-from controllers.testcube_usb_controller import *
+from controllers.TestCubeComponents.actuators import *
+from controllers.TestCubeComponents.adc import *
+from controllers.TestCubeComponents.di import *
+from controllers.TestCubeComponents.frequency import *
+from controllers.TestCubeComponents.pwm import *
+from controllers.TestCubeComponents.relay import *
+from controllers.TestCubeComponents.usb import *
 
 def test_init():
     rm = RelayMessage()
