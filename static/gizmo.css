@@ -38,3 +38,9 @@
     color: rgb(235, 230, 224);
     padding: 1em;
 }
+.treenode {
+    color: black;
+    background-color: blanchedalmond;
+    border-style: dotted;
+    border-color: red;
+}
