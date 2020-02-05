@@ -49,7 +49,7 @@
     "usb":{
         "message":
          {"w": "sendrawusb"},
-    "version": ""
+    "version": { "r" : "getFirmwareVersion" }
     },
     "wsinvoke": {"w": "wsinvoke", "args": [] }
 }

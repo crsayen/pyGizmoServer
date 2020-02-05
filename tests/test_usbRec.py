@@ -1,4 +1,4 @@
-from controllers.testcube_usb_controller import *
+from controllers.TestCubeUSB import *
 from pyGizmoServer.utility import Utility
 from tests.mock_variables import MockVars
 
