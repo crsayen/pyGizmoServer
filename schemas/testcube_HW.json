@@ -49,6 +49,6 @@
     "usb":{
         "message":
          {"w": "sendrawusb"},
-    "version": ""
+    "version": { "r" : "getFirmwareVersion" }
     }
 }

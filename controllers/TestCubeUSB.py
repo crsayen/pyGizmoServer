@@ -10,7 +10,8 @@ from controllers.TestCubeComponents.di import DiMessage
 from controllers.TestCubeComponents.actuators import ActCurMessage
 from controllers.TestCubeComponents.frequency import FrequencyMessage
 from controllers.TestCubeComponents.usb import UsbMessage
-         
+from controllers.TestCubeComponents.version import VersionMessage
+
 class TestCubeUSB(
     RelayMessage,
     PwmMessage,
@@ -18,7 +19,8 @@ class TestCubeUSB(
     ActCurMessage,
     UsbMessage,
     FrequencyMessage,
-    AdcMessage
+    AdcMessage,
+    VersionMessage
     ):
     
     def callParentInits(self):
@@ -28,6 +30,7 @@ class TestCubeUSB(
         ActCurMessage.__init__(self)
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
+        VersionMessage.__init__(self)
         
     
     def __init__(self, callback):
@@ -70,6 +73,7 @@ class TestCubeUSB(
             + self.get_sendusb_messages()
             + self.get_freq_messages()
             + self.get_adc_messages()
+            + self.get_version_messsages()
         )
         for msg in msgs:
             self.logger.debug(f"TescubeUSB.finished: write({msg})")

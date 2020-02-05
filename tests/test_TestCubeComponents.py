@@ -5,6 +5,7 @@ from controllers.TestCubeComponents.frequency import *
 from controllers.TestCubeComponents.pwm import *
 from controllers.TestCubeComponents.relay import *
 from controllers.TestCubeComponents.usb import *
+from controllers.TestCubeComponents.version import *
 
 def test_init():
     rm = RelayMessage()
@@ -82,3 +83,8 @@ def test_adcrequest():
     # default changed to all on
     am.setAdcMonitorUpdateRate(0x11 * 50)
     assert(am.get_adc_messages()==['000000103f11'])
+
+def test_version():
+    vm = VersionMessage()
+    vm.getFirmwareVersion()
+    assert(vm.get_version_messages()==['00000040'])
