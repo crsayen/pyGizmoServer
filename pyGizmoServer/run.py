@@ -1,3 +1,5 @@
+# export TEST_ENV='development'
+
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from pyGizmoServer.utility import Utility
@@ -62,6 +64,9 @@ async def start_your_engines(request):
         coro_running = True
     return web.Response(text="VROOM")
 
+def get_model(request):
+    return query_handler.handle_get(request)
+
 
 def make_app():
     controller.start()
@@ -74,6 +79,7 @@ def make_app():
     app.router.add_get("/", get_index)
     app.router.add_static("/static", "static")
     app.router.add_get("/gizmogo", start_your_engines)
+    app.router.add_get("/model", get_model)
     app.router.add_route("GET", r"/{tail:.*}", query_handler.handle_get)
     app.router.add_route(
         "PATCH", r"/{tail:.*}", modification_handler.handle_patch_from_client

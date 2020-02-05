@@ -24,7 +24,7 @@ class QueryHandler:
         self.model = model
         self.err = None
         self.logger = logging.getLogger('gizmoLogger')
-        self.logger.debug('QueryHandler()')
+        self.logger.debug('init')
         self.subscription_server = SubscriptionServer(ws_ip, ws_port)
         self.subscribers = {}
 
@@ -33,7 +33,8 @@ class QueryHandler:
     
     def handle_get(self, request):
         path = request.path
-        self.logger.debug(f"QueryHandler.handle_get: {path}")
+        if path == "/model": path = "/"
+        self.logger.debug(f"{path}")
         data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='r')
         if data["error"] is not None:
             response = data["error"]
@@ -44,13 +45,13 @@ class QueryHandler:
         return web.json_response({"path":data["path_string"], "data": data["model_data"]})
 
     async def handle_updates(self, updates): 
-        self.logger.debug(f"QueryHandler.handle_updates: {updates}")
+        self.logger.debug(f"{updates}")
         outgoing = []
         if not isinstance(updates, list):
             updates = [updates]
         for update in updates:
             if isinstance(update, str) or (data := update.get("data")) is None or (path := update.get("path")) is None: 
-                self.logger.error("QueryHandler.handle_updates: path or data key not found")
+                self.logger.error("path or data key not found")
                 continue
             location = dpath.util.get(self.model, path)
             dpath.util.set(self.model, merge(location, data), path)

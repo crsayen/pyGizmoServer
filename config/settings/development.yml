@@ -1,0 +1,9 @@
+controller: 
+  name: 'MockUSB'
+  schema: 'testcube_hw.json'
+model:
+  schema: 'testcube_ui.json'
+logging:
+  loglevel: 'DEBUG'
+  filename: 'gizmodev.log'
+

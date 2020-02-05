@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyGizmoServer",
-    version="1.0.1",
+    version="1.0.2",
     python_requires=">=3.7",
     packages=[
         "controllers",

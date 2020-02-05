@@ -1,0 +1,8 @@
+controller: 
+  name: 'TestCubeUSB'
+  schema: 'testcube_hw.json'
+model:
+  schema: 'testcube_ui.json'
+logging:
+  loglevel: 'INFO'
+  filename: 'gizmo.log'

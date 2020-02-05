@@ -7,7 +7,7 @@ from aiohttp import web
 class ModificationHandler:
     def __init__(self, schema, model=None):
         self.logger = logging.getLogger('gizmoLogger')
-        self.logger.debug('ModificationHandler()')
+        self.logger.debug("init")
         self.schema = schema
         self.model = model
 
@@ -16,7 +16,7 @@ class ModificationHandler:
         
     async def handle_patch_from_client(self, request):
         request = json.loads(await request.text())
-        self.logger.debug(f"ModificationHandler.handle_patch_from_client: {request}")
+        self.logger.debug(f"{request}")
         if not isinstance(request, list): request = [request]
         response = []
         for r in request:
@@ -24,7 +24,7 @@ class ModificationHandler:
                 raise ValueError(f"no path provided in request: {r}")
             data = Utility.parse_path_against_schema_and_model(self.model, self.schema, path, read_write='w')
             if data["error"] is not None:
-                self.logger.error(f"modification handler: {data['error']}")
+                self.logger.error(f"{data['error']}")
                 return web.json_response({"error": data["error"]})
             value = r.get("value")
             if value is not None: data["args"].append(value)

@@ -50,5 +50,6 @@
         "message":
          {"w": "sendrawusb"},
     "version": ""
-    }
+    },
+    "wsinvoke": {"w": "wsinvoke", "args": [] }
 }
