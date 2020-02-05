@@ -18,29 +18,46 @@ function create_button_bar(roots){
     });
 }
 
-function parsetree(item, element){
-    function append_stuff(txt,val,el){
-        var div = document.createElement('div');
-        div.className = "treenode"
-        div.innerText = txt;
-        el.appendChild(div);
-        parsetree(val, div);
-    }
-    if (typeof item === "object" && item != null){
-        for (const [key, val] of Object.entries(item)){
+function append_stuff(txt,val,el, path){
+    var div = document.createElement('div');
+    div.className = "treenode"
+    path = div.id = path + '/' + txt
+    div.innerText = txt;
+    el.appendChild(div);
+    parsetree(val, div, path);
+}
+
+function parsetree(item, element, path){
+    console.log(path)
+    if (typeof item === "object" && item !== null){
+        for ([key, val] of Object.entries(item)){
             if (key == "data"){
-                parsetree(val, element);
+                parsetree(val, element, path);
                 continue;
             }
-            append_stuff(key,val,element);
+            append_stuff(String(key),val,element, path);
         }
     }
     else if (Array.isArray(item)){
         for(i = 0; i < item.length; i++){
-            append_stuff(String(i),item[i],element);
+            append_stuff(String(i),item[i],element, path);
         }
     }
-    else element.innerText = String(item);
+    else{
+        var e;
+        if (String(item)[0] == '/'){
+            e = document.createElement('dev');
+            e.className = "treenode";
+            e.innerHTML = String(item);
+        }else{
+            e = document.createElement('input');
+            e.className = "treeinput"
+            e.name = path.split('/').slice(-1)[0];
+            e.value = String(item);
+        }
+        e.id = path
+        element.appendChild(e);
+    }
 }
 
 function showtree(btn_root, roots){
@@ -56,7 +73,7 @@ function showtree(btn_root, roots){
             fetch(root)
                 .then(async (response) => {
                     var treejson =  await response.json();
-                    parsetree(treejson, container);
+                    parsetree(treejson, container, '/' + btn_root);
                 }
             );
             btn.className = "btn btn_selected";

@@ -54,6 +54,18 @@ div {
     margin-left: 0.5em;
     height: auto;
 }
+.treeinput {
+    color: rgb(65, 65, 65);
+    display: grid;
+    background-color: rgb(235, 230, 224);
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(61, 61, 61);
+    padding-left: 0.5em;
+    margin-left: 0.5em;
+    height: auto;
+    width: auto;
+}
 .btn{
     display: inline-block;
     color: rgb(30, 30, 30);

@@ -4,3 +4,11 @@ ws:
 tcp: 
   ip: '0.0.0.0'
   port: 36364
+controller: 
+  name: 'TestCubeUSB'
+  schema: 'testcube_hw.json'
+model:
+  schema: 'testcube_ui.json'
+logging:
+  loglevel: 'INFO'
+  filename: 'gizmo.log'
