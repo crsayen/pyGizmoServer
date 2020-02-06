@@ -7,7 +7,6 @@ from tests.mock_variables import MockVars
 import sys, asyncio, sys, time, json, textwrap, importlib
 from aiohttp import web
 from aiojobs.aiohttp import setup, spawn, atomic
-from yattag import Doc
 import time, jinja2, aiohttp_jinja2, logging, aiojobs, pkg_resources
 from app_settings import AppSettings
 
