@@ -5,7 +5,7 @@ import logging
 class SubscriptionServer:
     def __init__(self,ws_ip, ws_port):
         self.logger = logging.getLogger('gizmoLogger')
-        self.logger.debug(f'{ws_ip=},{ws_port=}')
+        self.logger.debug(f'{ws_ip},{ws_port}')
         self.connected = set()
         self.subscribers = {}
         self.server = websockets.serve(
@@ -24,7 +24,7 @@ class SubscriptionServer:
             for connection in self.connected:
                 if connection[1] in path:
                     try:
-                        self.logger.debug(f"sending ws: {update=}")
+                        self.logger.debug(f"sending ws: {update}")
                         result = await connection[0].send(
                             json.dumps(update)
                         )
@@ -32,7 +32,7 @@ class SubscriptionServer:
                         self.logger.error(f'{e}')
   
     async def connection_handler(self, websocket, path):
-        self.logger.debug(f"{path=}")
+        self.logger.debug(f"{path}")
         connection = (websocket, path)
         self.connected.add(connection)
         await connection[0].send(f'SUCCESS: you are subscribed to {path}')

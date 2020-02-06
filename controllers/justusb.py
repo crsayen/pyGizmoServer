@@ -24,10 +24,10 @@ if __name__ == "__main__":
     for i in range(10):
         try:
             ret = dev.read(130, 24, 100)
-            print(f'{len(ret)=}')
+            print(f'{len(ret)}')
             sret = ''.join(f'{x:02x}' for x in ret)  
             sret2 = ''.join([chr(x) for x in ret]) 
-            print(f"usbrx: {sret2=} {sret=}")
+            print(f"usbrx: {sret2} {sret}")
         except usb.core.USBError as e:
             if "time" not in str(e):
                 print(f"USB: {e}")

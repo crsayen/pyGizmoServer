@@ -12,6 +12,7 @@ from app_settings import AppSettings
 
 cfg = AppSettings()
 
+
 """ get version from setup.py """
 version = pkg_resources.require("pyGizmoServer")[0].version
 

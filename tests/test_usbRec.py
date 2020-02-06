@@ -12,10 +12,10 @@ class Test_usbRec():
                 idx = idx + 1
         elif isinstance(md,dict):       
             for k,v in pd.items(): #the model can have more stuff than in the usb msg
-                assert(k in md.keys()),f"usb parse to place not in model {loc=}/{k}"
+                assert(k in md.keys()),f"usb parse to place not in model {loc}/{k}"
                 self.checkmatch(md[k],v,loc + '/' + k)
         else:
-            assert(md == pd),f"usb data does not match model {loc=}"
+            assert(md == pd),f"usb data does not match model {loc}"
 
     def processandcheck(self,msg):
         d = self.controller.recUsb(msg)

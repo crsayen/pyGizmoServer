@@ -103,7 +103,7 @@ class TestCubeUSB(
         try:
             f = self.usbidparsers.get(_id)
             if f is None:
-                self.logger.error(f"TescubeUSB: ID not found in {self.usbidparsers=}")
+                self.logger.error(f"TescubeUSB: ID not found in {self.usbidparsers}")
                 return []
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
@@ -338,7 +338,7 @@ class TestCubeUSB(
             int(payload[4:8],16),
             int(payload[8:12],16)
         )
-        data = f"{hi=}.{lo=}.{patch=}"
+        data = f"{hi}.{lo}.{patch}"
 
         path = '/version'
         return [{'path': path, 'data': data}]
