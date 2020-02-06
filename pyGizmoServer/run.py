@@ -64,6 +64,7 @@ async def start_your_engines(request):
         coro_running = True
     return web.Response(text="VROOM")
 
+
 def get_model(request):
     return query_handler.handle_get(request)
 

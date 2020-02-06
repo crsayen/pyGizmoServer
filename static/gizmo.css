@@ -3,15 +3,8 @@
     margin: 0;
     padding: 0;
 }
-body {
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vw;
-    max-height: 100vh;
-}
 div {
     max-width: 100%;
-    max-height: 100%;
 }
 .container {
     display: grid;
@@ -21,9 +14,8 @@ div {
         "header header header"
         "leftpad main rightpad"
         "footer footer footer";
-    min-height: 20em;
+    min-height: 100vh;
     background-color: rgb(51, 51, 51);
-    height: 100%;
 }
 .header {
     grid-area: header;
@@ -36,6 +28,7 @@ div {
     background-color: rgb(51, 51, 51);
     color: rgb(235, 230, 224);
     padding: 1em;
+    
 }
 .footer {
     grid-area: footer;
@@ -44,45 +37,61 @@ div {
     padding: 1em;
 }
 .treenode {
-    color: rgb(235, 230, 224);
+    font-weight: bold;
+    color: rgb(241, 237, 231);
     display: grid;
-    background-color: rgb(65, 65, 65);
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgb(42, 42, 42);
-    padding-left: 0.5em;
-    margin-left: 0.5em;
-    height: auto;
+    background-color: rgb(43, 43, 43);
+    box-shadow: -3px 3px 8px 1px #181818;
+    padding: 0.5em;
+    margin: 0.5em;
+
 }
 .treeinput {
-    color: rgb(65, 65, 65);
-    display: grid;
-    background-color: rgb(235, 230, 224);
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgb(61, 61, 61);
-    padding-left: 0.5em;
-    margin-left: 0.5em;
-    height: auto;
-    width: auto;
+    display: inline-block;
+    color: rgb(0, 0, 0);
+    font-size: 1em;
+    border: 1px solid;
+    border-color: rgb(0, 0, 0);
+    font-family: 'Courier New', Courier, monospace;
+    background-color: rgb(255, 255, 255);
+    padding: 0.2em;
+    margin: 0.2em;
+    width: max-content;
+    height: max-content;
+    min-height: 1.2em;
+}
+.submit {
+    display: inline-block;
+    background-color: #202020;
+    color: rgb(226, 226, 226);
+    width: max-content;
+    height: max-content;
+    border-width: 0;
+    font-weight: 600;
+    padding: 1em;
+    margin: 0.2em;
 }
 .btn{
     display: inline-block;
-    color: rgb(30, 30, 30);
-    background-color: rgb(190, 190, 190);
+    color: rgb(235, 230, 224);
+    background-color: rgb(43, 43, 43);
+    border-width: 0;
     font-weight: 600;
-    width: auto;
-    padding: 1em;
-    min-width: 5em;
-    min-height: 2em;
+    padding: 2em;
+    margin: 1em;
+    margin-bottom: 0;
+    width: max-content;
+    height: max-content;
 }
 .btn-selected {
     color: rgb(30, 30, 30);
     background-color: rgb(226, 226, 226);
 }
 #buttonbar {
-    height: auto;
+    height: max-content;
 }
+
+
 
 
 

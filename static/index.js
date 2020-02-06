@@ -1,4 +1,3 @@
-
 var treevisible = false;
 var model_buttonbar = [];
 var model;
@@ -21,14 +20,32 @@ function create_button_bar(roots){
 function append_stuff(txt,val,el, path){
     var div = document.createElement('div');
     div.className = "treenode"
-    path = div.id = path + '/' + txt
+    div.id = path
     div.innerText = txt;
     el.appendChild(div);
-    parsetree(val, div, path);
+    parsetree(val, div, path + '/' + txt);
+}
+
+function groom(val){
+    if (['','NULL','NONE'].includes(val.toUpperCase())){ return false; }
+    if (["TRUE","FALSE","NULL"].includes(val.toUpperCase())){
+        return val.toLowerCase();
+    }
+    else if(val !== null) {
+        if(val.length > 0) {
+            if (!isNaN(val)) {
+                return val;
+            }
+        }
+    }
+    else if ((val) => val instanceof Array || val instanceof Object ? true : false) {
+        return val;
+    }else{
+        return false;    
+    }
 }
 
 function parsetree(item, element, path){
-    console.log(path)
     if (typeof item === "object" && item !== null){
         for ([key, val] of Object.entries(item)){
             if (key == "data"){
@@ -49,14 +66,38 @@ function parsetree(item, element, path){
             e = document.createElement('dev');
             e.className = "treenode";
             e.innerHTML = String(item);
+            e.id = path
+        element.appendChild(e);
         }else{
             e = document.createElement('input');
             e.className = "treeinput"
             e.name = path.split('/').slice(-1)[0];
             e.value = String(item);
-        }
-        e.id = path
-        element.appendChild(e);
+            e.id = path
+            element.appendChild(e);
+            var btn = document.createElement("button");
+            btn.className = "submit";
+            btn.textContent = "Submit";
+            btn.addEventListener("click", () => {
+                var input = document.getElementById(path).value;
+                if (val = groom(input)){
+                    val = JSON.parse(val);
+                }else{
+                    alert("invalid input: " + String(input));
+                    return;
+                }
+                fetch(path, {
+                    headers: { "Content-Type": "application/json; charset=utf-8" },
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        op: 'replace',
+                        path: path,
+                        value: val
+                    })
+                })
+            });
+            element.appendChild(btn);
+        } 
     }
 }
 

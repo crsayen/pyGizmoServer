@@ -64,18 +64,22 @@ class PatchValidation:
     value: Union[bool, float, None, str]
 
     @staticmethod
-    def from_dict(obj: Any) -> 'PatchValidation':
+    def from_dict(obj: Any) -> "PatchValidation":
         assert isinstance(obj, dict)
         op = Op(obj.get("op"))
         path = from_str(obj.get("path"))
-        value = from_union([from_float, from_bool, from_str, from_none], obj.get("value"))
+        value = from_union(
+            [from_float, from_bool, from_str, from_none], obj.get("value")
+        )
         return PatchValidation(op, path, value)
 
     def to_dict(self) -> dict:
         result: dict = {}
         result["op"] = to_enum(Op, self.op)
         result["path"] = from_str(self.path)
-        result["value"] = from_union([to_float, from_bool, from_str, from_none], self.value)
+        result["value"] = from_union(
+            [to_float, from_bool, from_str, from_none], self.value
+        )
         return result
 
 

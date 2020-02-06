@@ -8,19 +8,26 @@ class SubscriptionServer:
         self.logger.debug(f'{ws_ip=},{ws_port=}')
         self.connected = set()
         self.subscribers = {}
-        self.server = websockets.serve(self.connection_handler, ws_ip, ws_port)
+        self.server = websockets.serve(
+            self.connection_handler, ws_ip, ws_port
+        )
         asyncio.get_event_loop().run_until_complete(self.server)
 
     async def publish(self, updates):
         for update in updates:
             self.logger.debug(f"{updates}")
-            if (path := update.get("path")) is None:
-                raise ValueError(f"unable to publish update, bad format: {updates}")
+            path = update.get("path")
+            if path is None:
+                raise ValueError(
+                    f"unable to publish update, bad format: {updates}"
+                )
             for connection in self.connected:
                 if connection[1] in path:
                     try:
                         self.logger.debug(f"sending ws: {update=}")
-                        result = await connection[0].send(json.dumps(update))
+                        result = await connection[0].send(
+                            json.dumps(update)
+                        )
                     except Exception as e:
                         self.logger.error(f'{e}')
   

@@ -10,24 +10,20 @@ setup(
         "schemas",
         "controllers.TestCubeComponents",
         "tests",
-        "static"
+        "static",
     ],
     install_requires=[
-        "jsonpatch", 
-        "dpath", 
-        "websockets", 
-        "aiohttp", 
-        "aiojobs", 
-        "jinja2", 
+        "jsonpatch",
+        "dpath",
+        "websockets",
+        "aiohttp",
+        "aiojobs",
+        "jinja2",
         "aiohttp-jinja2",
         "pyusb",
         "pytest",
-        "app-settings"
+        "app-settings",
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
-    entry_points={
-        "console_scripts": [
-            "gizmo=pyGizmoServer.run:main"
-        ]
-    },
+    entry_points={"console_scripts": ["gizmo=pyGizmoServer.run:main"]},
 )

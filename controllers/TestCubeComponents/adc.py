@@ -2,13 +2,15 @@ class AdcMessage:
     def __init__(self):
         self.AdcChannels = 0x3F
         self.AdcRate = None
-    
-    def setAdcMonitorUpdateRate(self,rate:int):
+
+    def setAdcMonitorUpdateRate(self, rate: int):
         self.AdcRate = int(rate / 50)
 
-    def setAdcEnabled(self,enabled:bool,channel:int):
-        if enabled: self.AdcChannels |= 1 << channel 
-        else: self.AdcChannels &= ((1 << channel) ^ 0xff)
+    def setAdcEnabled(self, enabled: bool, channel: int):
+        if enabled:
+            self.AdcChannels |= 1 << channel
+        else:
+            self.AdcChannels &= (1 << channel) ^ 0xFF
 
     def get_adc_messages(self):
         if self.AdcChannels == None:

@@ -1,5 +1,6 @@
 import asyncio, json
 
+
 class MockUSB:
     def __init__(self, callback):
         self.callback = callback
@@ -18,9 +19,9 @@ class MockUSB:
         print(f"wsinvoke: {msg}")
         if self.msg is None:
             self.msg = msg
-    
+
     async def usbrxhandler(self):
-        while 1: 
+        while 1:
             if self.msg is not None:
                 print(f"handler: {self.msg}")
                 await self.callback(self.msg)

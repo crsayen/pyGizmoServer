@@ -9,6 +9,7 @@
                     fetch("/model")
                         .then(async (response) => {
                             model = await response.json();
+                            console.log(model);
                             var buttonbar = document.getElementById("buttonbar");
                             Object.keys(model.data).forEach((root, index, array) => {
                                 var btn = document.createElement("button");
