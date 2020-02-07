@@ -83,7 +83,7 @@ class TestCubeUSB(
             + self.get_sendusb_messages()
             + self.get_freq_messages()
             + self.get_adc_messages()
-            + self.get_version_messsages()
+            + self.get_version_messages()
         )
         for msg in msgs:
             self.logger.debug(f"TescubeUSB.finished: write({msg})")
