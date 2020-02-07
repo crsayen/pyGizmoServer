@@ -3,14 +3,15 @@ from usb.backend import libusb1
 import usb.util
 import time, threading, time, logging
 import asyncio, json
-from controllers.TestCubeComponents.adc import AdcMessage
-from controllers.TestCubeComponents.pwm import PwmMessage
-from controllers.TestCubeComponents.relay import RelayMessage
-from controllers.TestCubeComponents.di import DiMessage
-from controllers.TestCubeComponents.actuators import ActCurMessage
-from controllers.TestCubeComponents.frequency import FrequencyMessage
-from controllers.TestCubeComponents.usb import UsbMessage
-from controllers.TestCubeComponents.version import VersionMessage
+from TestCubeUSB.TestCubeComponents.adc import AdcMessage
+from TestCubeUSB.TestCubeComponents.pwm import PwmMessage
+from TestCubeUSB.TestCubeComponents.relay import RelayMessage
+from TestCubeUSB.TestCubeComponents.di import DiMessage
+from TestCubeUSB.TestCubeComponents.actuators import ActCurMessage
+from TestCubeUSB.TestCubeComponents.frequency import FrequencyMessage
+from TestCubeUSB.TestCubeComponents.usb import UsbMessage
+from TestCubeUSB.TestCubeComponents.version import VersionMessage
+from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 
 class TestCubeUSB(
     RelayMessage,
@@ -20,7 +21,8 @@ class TestCubeUSB(
     UsbMessage,
     FrequencyMessage,
     AdcMessage,
-    VersionMessage
+    VersionMessage,
+    CanDatabaseMessage
     ):
     
     def callParentInits(self):
@@ -59,7 +61,7 @@ class TestCubeUSB(
         }
         self.actcurrent_listinfirstmsg = None
         self.adc_listinfirstmsg = []
-        with open("controllers/schema.json") as f:
+        with open("TestCubeUSB/schema.json") as f:
             self.schema = json.load(f)
 
     def setcallback(self, callback):

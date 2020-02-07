@@ -11,7 +11,7 @@ from app_settings import AppSettings
 import os
 os.environ['TEST_ENV'] = 'production'
 cfg = AppSettings(env_name='TEST_ENV')
-
+starttime = time.strftime("%Y-%m-%d %H:%M")
 
 """ get version from setup.py """
 version = pkg_resources.require("pyGizmoServer")[0].version
@@ -30,7 +30,7 @@ logger.addHandler(handler)
 
 """ setup controller """
 controller = getattr(
-    importlib.import_module(f"controllers.{cfg.controller}"), cfg.controller
+    importlib.import_module(f"{cfg.controller}.{cfg.controller}"), cfg.controller
 )()
 
 """ set initial model """
@@ -49,7 +49,7 @@ async def get_index(request):
     return {
         "title": cfg.controller,
         "version": version,
-        "time_started": time.strftime("%Y-%m-%d %H:%M"),
+        "time_started": starttime,
     }
 
 
