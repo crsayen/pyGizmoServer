@@ -59,7 +59,7 @@ class TestCubeUSB(
         }
         self.actcurrent_listinfirstmsg = None
         self.adc_listinfirstmsg = []
-        with open("/controllers/schema.json") as f:
+        with open("controllers/schema.json") as f:
             self.schema = json.load(f)
 
     def setcallback(self, callback):

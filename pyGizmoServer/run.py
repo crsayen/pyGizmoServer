@@ -9,7 +9,7 @@ import time, jinja2, aiohttp_jinja2, logging, aiojobs, pkg_resources
 from app_settings import AppSettings
 
 import os
-os.environ['TEST_ENV'] = 'production' if (0) else 'development'
+os.environ['TEST_ENV'] = 'production'
 cfg = AppSettings(env_name='TEST_ENV')
 
 
