@@ -21,17 +21,15 @@ def merge(a, b):
 
 
 class QueryHandler:
-    def __init__(self, ws_ip, ws_port, schema, model=None):
-        self.schema = schema
+    def __init__(self, ws_ip, ws_port, controller, model=None):
+        self.controller = controller
+        self.schema = controller.schema
         self.model = model
         self.err = None
         self.logger = logging.getLogger("gizmoLogger")
         self.logger.debug("init")
         self.subscription_server = SubscriptionServer(ws_ip, ws_port)
         self.subscribers = {}
-
-    def add_controller(self, controller):
-        self.controller = controller
 
     def handle_get(self, request):
         path = request.path

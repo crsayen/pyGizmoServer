@@ -7,7 +7,6 @@ setup(
     packages=[
         "controllers",
         "pyGizmoServer",
-        "schemas",
         "controllers.TestCubeComponents",
         "tests",
         "static",

@@ -2,7 +2,7 @@ import usb.core
 from usb.backend import libusb1
 import usb.util
 import time, threading, time, logging
-import asyncio
+import asyncio, json
 from controllers.TestCubeComponents.adc import AdcMessage
 from controllers.TestCubeComponents.pwm import PwmMessage
 from controllers.TestCubeComponents.relay import RelayMessage
@@ -33,11 +33,11 @@ class TestCubeUSB(
         VersionMessage.__init__(self)
         
     
-    def __init__(self, callback):
+    def __init__(self,):
         self.logger = logging.getLogger('gizmoLogger')
         self.logger.debug("TescubeUSB()")
         self.callParentInits()
-        self.callback = callback
+        self.callback = None
         AdcMessage.__init__(self)
         self.usbidparsers = {
             '00000005':self.recusb_5_pwmfreq,
@@ -59,7 +59,17 @@ class TestCubeUSB(
         }
         self.actcurrent_listinfirstmsg = None
         self.adc_listinfirstmsg = []
+        with open("/controllers/schema.json") as f:
+            self.schema = json.load(f)
+
+    def setcallback(self, callback):
+        if not callable(callback):
+            raise ValueError("callback must be a function")
+        self.callback = callback
+
     def start(self):
+        if self.callback is None:
+            raise RuntimeError('controller callback not set')
         self.dev = usb.core.find(idVendor=0x2B87,idProduct=0x0001)
         if self.dev is None:
             raise ValueError('Device not found')
