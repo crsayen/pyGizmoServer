@@ -48,7 +48,7 @@ function parsetree(item, element, path){
                 parsetree(val, element, path);
                 continue;
             }
-            append_stuff(String(key),val,element, path.slice(1));
+            append_stuff(String(key),val,element, path);
         }
     }
     else if (Array.isArray(item)){

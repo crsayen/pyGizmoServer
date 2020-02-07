@@ -10,7 +10,6 @@ from TestCubeUSB.TestCubeComponents.di import DiMessage
 from TestCubeUSB.TestCubeComponents.actuators import ActCurMessage
 from TestCubeUSB.TestCubeComponents.frequency import FrequencyMessage
 from TestCubeUSB.TestCubeComponents.usb import UsbMessage
-from TestCubeUSB.TestCubeComponents.version import VersionMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 
 class TestCubeUSB(
@@ -21,7 +20,6 @@ class TestCubeUSB(
     UsbMessage,
     FrequencyMessage,
     AdcMessage,
-    VersionMessage,
     CanDatabaseMessage
     ):
     
@@ -32,7 +30,6 @@ class TestCubeUSB(
         ActCurMessage.__init__(self)
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
-        VersionMessage.__init__(self)
         
     
     def __init__(self,):
@@ -40,6 +37,8 @@ class TestCubeUSB(
         self.logger.debug("TescubeUSB()")
         self.callParentInits()
         self.callback = None
+        self.version = None
+        self.ask = None
         AdcMessage.__init__(self)
         self.usbidparsers = {
             '00000005':self.recusb_5_pwmfreq,
@@ -345,12 +344,30 @@ class TestCubeUSB(
         return [{'path': path, 'data': data}]  
                       
     def recusb_41_version(self,payload):
+        print("GOTIT")
         hi,lo,patch = (
             int(payload[:4],16),
             int(payload[4:8],16),
             int(payload[8:12],16)
         )
-        data = f"{hi}.{lo}.{patch}"
+        self.version = f"{hi}.{lo}.{patch}"
+        data = self.version
 
         path = '/version'
         return [{'path': path, 'data': data}]
+
+    async def getFirmwareVersion(self):
+        self.ask = True
+        data = await self.wait_for_version()
+        path = '/version'
+        return [{'path': path, 'data': data}]
+
+    def get_version_messages(self):
+        if self.ask == None:
+            return []
+        return [f"{0x40:08x}"]
+
+    async def wait_for_version(self):
+        while self.version is None:
+            await asyncio.sleep(1)
+        return self.version

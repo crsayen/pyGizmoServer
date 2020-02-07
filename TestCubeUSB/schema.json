@@ -53,10 +53,9 @@
     },
     "canDatabase" : { "w" : "setCanDatabase", "args": [], "$type": "object"  },
     "usb":{
-        "message":
-         {"w": "sendrawusb", "args": [], "$type": "string"},
-    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
+        "message": {"w": "sendrawusb", "args": [], "$type": "string"}
     },
+    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
     "wsinvoke": {"w": "wsinvoke", "args": [], "$type": "string" },
     "thermometer": {"w": "readLabJackAdd", "args": [1234], "$type": "string" }
 }
