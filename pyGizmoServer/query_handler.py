@@ -11,7 +11,7 @@ from aiohttp import web
 def merge(a, b):
     if isinstance(a, dict) and isinstance(b, dict):
         d = dict(a)
-        d.update({k: merge(a.get(k, None), b[k]) for k in b})
+        d.update({k: merge(a.get(k, None), b[k]) for k in b if b[k]})
         return d
 
     if isinstance(a, list) and isinstance(b, list):
@@ -65,6 +65,6 @@ class QueryHandler:
                 self.logger.error("path or data key not found")
                 continue
             location = dpath.util.get(self.model, path)
-            dpath.util.set(self.model, merge(location, data), path)
-            outgoing.append({"path": path, "value": data})
+            dpath.util.set(self.model, path, merge(location, data))
+            outgoing.append({"path": path, "value": dpath.util.get(self.model, path)})
         await self.subscription_server.publish(outgoing)
