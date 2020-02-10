@@ -44,7 +44,7 @@
         }
     },
     "frequencyInputController" : {
-        "frequencyMonitorRate" : { "$type" : "integer" },
+        "frequencyMonitorRate" : { "w": "setFrequencyMonitorRate","$type" : "integer", "args": [] },
         "frequencyInputs" :{
             "$count": 4,
             "measuredFrequency" : {  "args": [], "$type": "integer" },

@@ -30,6 +30,7 @@ class TestCubeUSB(
         ActCurMessage.__init__(self)
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
+        AdcMessage.__init__(self)
         
     
     def __init__(self):
@@ -105,11 +106,13 @@ class TestCubeUSB(
                     self.logger.error(f"ERROR: {e}")
                 continue
             msg = ''.join([chr(x) for x in msg])
+            self.logger.debug(f"{msg}")
             d = self.recUsb(msg)
             if len(d) > 0:
                 await self.callback(d)
             
     def recUsb(self,msg):
+        
         _id, payload = msg[:8], msg[8:]
         try:
             f = self.usbidparsers.get(_id)
