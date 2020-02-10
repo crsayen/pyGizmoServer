@@ -32,7 +32,7 @@ class TestCubeUSB(
         FrequencyMessage.__init__(self)
         
     
-    def __init__(self,):
+    def __init__(self):
         self.logger = logging.getLogger('gizmoLogger')
         self.logger.debug("TescubeUSB()")
         self.callParentInits()
@@ -344,7 +344,7 @@ class TestCubeUSB(
         return [{'path': path, 'data': data}]  
                       
     def recusb_41_version(self,payload):
-        print("GOTIT")
+        #print("GOTIT")
         hi,lo,patch = (
             int(payload[:4],16),
             int(payload[4:8],16),
