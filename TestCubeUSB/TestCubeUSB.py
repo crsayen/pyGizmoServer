@@ -344,7 +344,6 @@ class TestCubeUSB(
         return [{'path': path, 'data': data}]  
                       
     def recusb_41_version(self,payload):
-        print("GOTIT")
         hi,lo,patch = (
             int(payload[:4],16),
             int(payload[4:8],16),
@@ -358,16 +357,8 @@ class TestCubeUSB(
 
     async def getFirmwareVersion(self):
         self.ask = True
-        data = await self.wait_for_version()
-        path = '/version'
-        return [{'path': path, 'data': data}]
 
     def get_version_messages(self):
         if self.ask == None:
             return []
         return [f"{0x40:08x}"]
-
-    async def wait_for_version(self):
-        while self.version is None:
-            await asyncio.sleep(1)
-        return self.version
