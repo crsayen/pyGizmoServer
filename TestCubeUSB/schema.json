@@ -13,6 +13,7 @@
             "frequency" : { "w" : "setPwmFrequencyB",  "args": [], "$type": "integer" }
         },
         "pwmCurrentMonitorUpdateRate" : { "w" : "setPwmCurrentMonitorUpdateRate", "args": [], "$type": "integer" },
+        "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
         "pwms" : {
             "$count": 12,
             "activeConfiguration" : {},
@@ -20,7 +21,6 @@
             "enabled" : { "w" : "setPwmEnabled", "args": [], "$type": "boolean" },
             "profile" : {},
             "currentMonitor" : {
-                "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
                 "faultDelay" : { "w" : "setPwmFaultDelay", "args": [], "$type": "integer" },
                 "faulty" : { "args": [], "$type": "boolean" },
                 "measuredCurrent" : { "args": [], "$type": "integer" },
