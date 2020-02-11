@@ -8,9 +8,11 @@ setup(
         "TestCubeUSB",
         "MockUSB",
         "pyGizmoServer",
-        "TestCubeUSB.TestCubeComponents",
         "tests",
         "static",
+        "templates",
+        "config",
+        "MockUSB"
     ],
     install_requires=[
         "jsonpatch",

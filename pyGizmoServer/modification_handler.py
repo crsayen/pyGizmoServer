@@ -10,12 +10,14 @@ class ModificationHandler:
         self.controller = controller
         self.schema = controller.schema
         self.logger = logging.getLogger("gizmoLogger")
-        self.logger.debug("init")
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug("init")
         self.model = model
 
     async def handle_patch_from_client(self, request):
         request = json.loads(await request.text())
-        self.logger.debug(f"{request}")
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f"{request}")
         if not isinstance(request, list):
             request = [request]
         response = []
@@ -36,7 +38,8 @@ class ModificationHandler:
             try:
                 getattr(self.controller, data["routine"])(*data["args"])
             except Exception as e:
-                self.logger.debug(f"{e}")
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f"{e}")
                 data["error"] = f"bad request: {r}"
                 return web.json_response(data)
             r["path"] = data["path_string"]

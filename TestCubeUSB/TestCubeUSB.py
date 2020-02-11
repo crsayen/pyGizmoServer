@@ -34,7 +34,8 @@ class TestCubeUSB(
 
     def __init__(self):
         self.logger = logging.getLogger("gizmoLogger")
-        self.logger.debug("TescubeUSB()")
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug("TescubeUSB()")
         self.callParentInits()
         self.callback = None
         self.version = None
@@ -76,7 +77,8 @@ class TestCubeUSB(
             raise ValueError("Device not found")
 
     def finished(self):
-        self.logger.debug(f"finished")
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f"finished")
         msgs = (
             self.get_relay_messages()
             + self.get_pwm_messages()
@@ -88,8 +90,8 @@ class TestCubeUSB(
             + self.get_version_messages()
         )
         for msg in msgs:
-            self.logger.debug(f"{msg}")
-            self.logger.usb(f"finished: {msg}")
+            if self.logger.isEnabledFor(logging.USB):
+                self.logger.usb(f"finished: {msg}")
             self.dev.write(2, msg)
         self.callParentInits()
 
@@ -97,7 +99,8 @@ class TestCubeUSB(
         await self.usbrxhandler()
 
     async def usbrxhandler(self):
-        self.logger.debug("running")
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug("running")
         while 1:
             await asyncio.sleep(0.001)
             try:
@@ -107,7 +110,8 @@ class TestCubeUSB(
                     self.logger.error(f"ERROR: {e}")
                 continue
             msg = "".join([chr(x) for x in msg])
-            self.logger.usb(f"{msg}")
+            if self.logger.isEnabledFor(logging.USB):
+                self.logger.usb(f"{msg}")
             d = self.recUsb(msg)
             if d is None:
                 continue
@@ -118,7 +122,8 @@ class TestCubeUSB(
         _id, payload = msg[:8], msg[8:]
         try:
             f = self.usbidparsers.get(_id.lower())
-            self.logger.usb(f"{f.__name__}")
+            if self.logger.isEnabledFor(logging.USB):
+                self.logger.usb(f"{f.__name__}")
             if f is None:
                 self.logger.error(f"TescubeUSB: ID not found in {self.usbidparsers}")
                 return []
@@ -129,7 +134,6 @@ class TestCubeUSB(
 
     def recusb_5_pwmfreq(self, payload):
         acthi, freqa, freqb = payload[:4], payload[4:8], payload[8:12]
-        # self.logger.debug(acthi,freqa,freqb)
         d = []
         path = "/pwmController/bankA/frequency"
         data = int(freqa, 16)

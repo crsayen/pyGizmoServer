@@ -15,7 +15,7 @@ from aiojobs.aiohttp import setup, spawn, atomic
 from app_settings import AppSettings
 from functools import partial, partialmethod
 
-os.environ["TEST_ENV"] = "usb"
+os.environ["TEST_ENV"] = "production"
 cfg = AppSettings(env_name="TEST_ENV")
 starttime = time.strftime("%Y-%m-%d %H:%M")
 
@@ -27,7 +27,7 @@ logging.USB = 15
 logging.addLevelName(logging.USB, "USB")
 logging.Logger.usb = partialmethod(logging.Logger.log, logging.USB)
 logging.usb = partial(logging.log, logging.USB)
-gizmo_logger = logging.getLogger("gizmo_logger")
+gizmo_logger = logging.getLogger("gizmoLogger")
 gizmo_logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
 formatter = logging.Formatter(
     fmt="%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s",
@@ -41,10 +41,7 @@ consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
 consolehandler.setFormatter(formatter)
 gizmo_logger.addHandler(filehandler)
 gizmo_logger.addHandler(consolehandler)
-gizmo_logger.propogate = False
-gizmo_logger.usb("usb")
-gizmo_logger.debug("debug")
-gizmo_logger.info("info")
+gizmo_logger.propagate = False
 
 """ setup controller """
 controller = getattr(
@@ -105,6 +102,6 @@ def make_app():
 def main():
     try:
         print(time.asctime(), f"Server started - {cfg.tcp.ip}:{cfg.tcp.port}")
-        web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port)
+        web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port, access_log=None)
     except KeyboardInterrupt:
         sys.exit()

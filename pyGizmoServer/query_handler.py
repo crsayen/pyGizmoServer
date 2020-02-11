@@ -33,7 +33,8 @@ class QueryHandler:
         path = request.path
         if path == "/model":
             path = "/"
-        self.logger.debug(f"{path}")
+        if self.logger.isEnabledFor(logging.DEBUG): 
+            self.logger.debug(f"{path}")
         data = Utility.parse_path_against_schema_and_model(
             self.model, self.schema, path, read_write="r"
         )
@@ -50,7 +51,8 @@ class QueryHandler:
         )
 
     async def handle_updates(self, updates):
-        self.logger.debug(f"{updates}")
+        if self.logger.isEnabledFor(logging.DEBUG): 
+            self.logger.debug(f"{updates}")
         outgoing = []
         if not isinstance(updates, list):
             updates = [updates]
@@ -61,8 +63,6 @@ class QueryHandler:
                 self.logger.error("path or data key not found")
                 continue
             location = dpath.util.get(self.model, path)
-            self.logger.debug(f"{location=}")
             dpath.util.set(self.model, path, merge(location, data))
-            self.logger.debug(f"{self.model=}")
             outgoing.append({"path": path, "value": dpath.util.get(self.model, path)})
         await self.subscription_server.publish(outgoing)
