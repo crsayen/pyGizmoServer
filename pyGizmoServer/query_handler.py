@@ -1,5 +1,5 @@
 import logging
-from itertool import zip_longest
+from itertools import zip_longest
 import dpath.util
 from pyGizmoServer.subscription_server import SubscriptionServer
 from pyGizmoServer.utility import Utility
