@@ -17,14 +17,12 @@ setup(
         "dpath",
         "websockets",
         "aiohttp",
-        "aiojobs",
         "jinja2",
         "aiohttp-jinja2",
         "pyusb",
         "pytest",
         "app-settings",
-        "pep8-naming",
-        "flake8"
+        "pep8-naming"
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={"console_scripts": ["gizmo=pyGizmoServer.run:main"]},
