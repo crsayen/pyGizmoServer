@@ -1,7 +1,7 @@
-import jsonpatch, json
-import copy, logging
-import asyncio
-from pyGizmoServer.utility import *
+import json
+import jsonpatch
+import logging
+from pyGizmoServer.utility import Utility
 from aiohttp import web
 
 

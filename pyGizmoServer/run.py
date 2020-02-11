@@ -1,5 +1,12 @@
-import asyncio, sys, time, json, textwrap, importlib, logging, os
-import jinja2, aiohttp_jinja2, aiojobs, pkg_resources
+import asyncio
+import sys
+import time
+import importlib
+import logging
+import os
+import jinja2
+import aiohttp_jinja2
+import pkg_resources
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from pyGizmoServer.utility import Utility
@@ -20,8 +27,8 @@ logging.USB = 15
 logging.addLevelName(logging.USB, "USB")
 logging.Logger.usb = partialmethod(logging.Logger.log, logging.USB)
 logging.usb = partial(logging.log, logging.USB)
-gizmoLogger = logging.getLogger("gizmoLogger")
-gizmoLogger.setLevel(getattr(logging, cfg.logging.file.loglevel))
+gizmo_logger = logging.getLogger("gizmo_logger")
+gizmo_logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
 formatter = logging.Formatter(
     fmt="%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
@@ -32,12 +39,12 @@ filehandler.setFormatter(formatter)
 consolehandler = logging.StreamHandler(sys.stdout)
 consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
 consolehandler.setFormatter(formatter)
-gizmoLogger.addHandler(filehandler)
-gizmoLogger.addHandler(consolehandler)
-gizmoLogger.propogate = False
-gizmoLogger.usb("usb")
-gizmoLogger.debug("debug")
-gizmoLogger.info("info")
+gizmo_logger.addHandler(filehandler)
+gizmo_logger.addHandler(consolehandler)
+gizmo_logger.propogate = False
+gizmo_logger.usb("usb")
+gizmo_logger.debug("debug")
+gizmo_logger.info("info")
 
 """ setup controller """
 controller = getattr(

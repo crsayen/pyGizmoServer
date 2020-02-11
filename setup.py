@@ -23,7 +23,8 @@ setup(
         "pyusb",
         "pytest",
         "app-settings",
-        "pep8-naming"
+        "pep8-naming",
+        "flake8"
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={"console_scripts": ["gizmo=pyGizmoServer.run:main"]},

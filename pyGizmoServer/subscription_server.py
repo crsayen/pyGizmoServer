@@ -1,5 +1,6 @@
-import websockets, json, threading, asyncio, copy
-from queue import Queue
+import websockets
+import json
+import asyncio
 import logging
 
 

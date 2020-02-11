@@ -1,8 +1,6 @@
-import jsonpatch, json, itertools
-from itertools import zip_longest
-import copy, logging
+import logging
+from itertool import zip_longest
 import dpath.util
-import io, copy, re, time, asyncio
 from pyGizmoServer.subscription_server import SubscriptionServer
 from pyGizmoServer.utility import Utility
 from aiohttp import web
@@ -15,7 +13,7 @@ def merge(a, b):
         return d
 
     if isinstance(a, list) and isinstance(b, list):
-        return [merge(x, y) for x, y in itertools.zip_longest(a, b)]
+        return [merge(x, y) for x, y in zip_longest(a, b)]
 
     return a if b == "NADA" else b
 

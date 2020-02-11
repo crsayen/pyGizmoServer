@@ -1,4 +1,4 @@
-from pyGizmoServer.query_handler import *
+from pyGizmoServer.query_handler import merge
 import pytest
 
 

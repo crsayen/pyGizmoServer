@@ -1,4 +1,4 @@
-import copy, json
+import copy
 
 
 class Utility:
@@ -10,7 +10,7 @@ class Utility:
         path: str,
         read_write: str = "r",
         toLeaves: bool = False,
-    ) -> dict:
+    ):
         """
         navigate the schema following the request's path. The destination
         should be the name of a function and associated parameters that this 
@@ -37,7 +37,7 @@ class Utility:
         while "" in paths:
             paths.remove("")
         for i, p in enumerate(paths):
-            """ 
+            """
             check if the request utilizes array indexing 
             and if so, store the index to pass to the controller
             """
@@ -49,9 +49,9 @@ class Utility:
                 else:
                     schema_location = schema_location[p]
                 model_location = model_location[p]
-            except Exception as e:
+            except Exception:
                 epath = "/" + "/".join(paths[:i])
-                if not "FAVICON" in epath:
+                if "FAVICON" not in epath:
                     err = f"PATH ERROR: {epath}/{p}"
                     break
                 else:

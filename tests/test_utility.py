@@ -1,4 +1,3 @@
-from pyGizmoServer.query_handler import QueryHandler
 from pyGizmoServer.utility import Utility
 from tests.mock_variables import MockVars
 import json
