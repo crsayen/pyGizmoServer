@@ -11,13 +11,13 @@ from aiohttp import web
 def merge(a, b):
     if isinstance(a, dict) and isinstance(b, dict):
         d = dict(a)
-        d.update({k: merge(a.get(k, None), b[k]) for k in b if b[k]})
+        d.update({k: merge(a.get(k, "NADA"), b[k]) for k in b})
         return d
 
     if isinstance(a, list) and isinstance(b, list):
         return [merge(x, y) for x, y in itertools.zip_longest(a, b)]
 
-    return a if b is None else b
+    return a if b == "NADA" else b
 
 
 class QueryHandler:
@@ -44,9 +44,7 @@ class QueryHandler:
             self.logger.error(f"{response}")
             return
         if data.get("routine") is not None:
-            getattr(self.controller, data["routine"])(
-                *data["args"]
-            )
+            getattr(self.controller, data["routine"])(*data["args"])
             self.controller.finished()
             """TODO: this doesnt do anything right now"""
         return web.json_response(
@@ -65,6 +63,8 @@ class QueryHandler:
                 self.logger.error("path or data key not found")
                 continue
             location = dpath.util.get(self.model, path)
+            self.logger.debug(f"{location=}")
             dpath.util.set(self.model, path, merge(location, data))
+            self.logger.debug(f"{self.model=}")
             outgoing.append({"path": path, "value": dpath.util.get(self.model, path)})
         await self.subscription_server.publish(outgoing)

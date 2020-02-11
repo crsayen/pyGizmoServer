@@ -1,14 +1,16 @@
 class ActCurMessage:
     def __init__(self):
         self.actmonitorRate = None
-        self.actmonitorChannels = None
-        self.actmonitorThreshold = None
+        self.actmonitorChannels = 0x0FFF
+        self.actmonitorThreshold = 60
 
     def setPwmCurrentMonitorUpdateRate(self, rate: int):
+        rate = int(rate / 50)
         self.actmonitorRate = rate
 
-    def setPwmFaultThreshold(self, Threshold: int):
-        self.actmonitorThreshold = Threshold
+    def setPwmFaultThreshold(self, threshold: int):
+        threshold = int(threshold / 50)
+        self.actmonitorThreshold = threshold
 
     #    def setPwmFaultDelay(self):
 

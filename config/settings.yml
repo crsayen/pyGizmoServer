@@ -6,5 +6,8 @@ tcp:
   port: 36364
 controller: 'TestCubeUSB'
 logging:
-  loglevel: 'INFO'
-  filename: 'gizmo.log'
+  file:
+    loglevel: 'INFO'
+    filename: 'gizmo.production.log'
+  console:
+    loglevel: 'INFO'

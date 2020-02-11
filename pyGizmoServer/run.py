@@ -1,32 +1,43 @@
+import asyncio, sys, time, json, textwrap, importlib, logging, os
+import jinja2, aiohttp_jinja2, aiojobs, pkg_resources
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from pyGizmoServer.utility import Utility
-from tests.mock_variables import MockVars
-import sys, asyncio, sys, time, json, textwrap, importlib
 from aiohttp import web
 from aiojobs.aiohttp import setup, spawn, atomic
-import time, jinja2, aiohttp_jinja2, logging, aiojobs, pkg_resources
 from app_settings import AppSettings
+from functools import partial, partialmethod
 
-import os
-os.environ['TEST_ENV'] = 'production'
-cfg = AppSettings(env_name='TEST_ENV')
+os.environ["TEST_ENV"] = "usb"
+cfg = AppSettings(env_name="TEST_ENV")
 starttime = time.strftime("%Y-%m-%d %H:%M")
 
 """ get version from setup.py """
 version = pkg_resources.require("pyGizmoServer")[0].version
 
 """ setup logging """
-logger = logging.getLogger("gizmoLogger")
-logger.setLevel(getattr(logging, cfg.logging.loglevel))
-handler = logging.FileHandler(filename=cfg.logging.filename, mode="w")
-handler.setFormatter(
-    logging.Formatter(
-        fmt="%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
+logging.USB = 15
+logging.addLevelName(logging.USB, "USB")
+logging.Logger.usb = partialmethod(logging.Logger.log, logging.USB)
+logging.usb = partial(logging.log, logging.USB)
+gizmoLogger = logging.getLogger("gizmoLogger")
+gizmoLogger.setLevel(getattr(logging, cfg.logging.file.loglevel))
+formatter = logging.Formatter(
+    fmt="%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
-logger.addHandler(handler)
+filehandler = logging.FileHandler(filename=cfg.logging.file.filename, mode="w")
+filehandler.setLevel(getattr(logging, cfg.logging.file.loglevel))
+filehandler.setFormatter(formatter)
+consolehandler = logging.StreamHandler(sys.stdout)
+consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
+consolehandler.setFormatter(formatter)
+gizmoLogger.addHandler(filehandler)
+gizmoLogger.addHandler(consolehandler)
+gizmoLogger.propogate = False
+gizmoLogger.usb("usb")
+gizmoLogger.debug("debug")
+gizmoLogger.info("info")
 
 """ setup controller """
 controller = getattr(

@@ -15,7 +15,7 @@ class MockUSB:
 
     def start(self):
         if self.callback is None:
-            raise RuntimeError('controller callback not set')
+            raise RuntimeError("controller callback not set")
         pass
 
     def setRelay(self, relay, state):

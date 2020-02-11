@@ -14,7 +14,7 @@ def merge(a, b):
     return a if b is None else b
 
 
-d1 = {"data": [{"a": 1},{"b": None},{"a": 1},{"b": 1}]}
-d2 = {"data": [{}, {"b": 2},{},{}]}
+d1 = {"data": [{"a": 1}, {"b": None}, {"a": 1}, {"b": 1}]}
+d2 = {"data": [{}, {"b": 2}, {}, {}]}
 
-print(merge(d1,d2))
+print(merge(d1, d2))

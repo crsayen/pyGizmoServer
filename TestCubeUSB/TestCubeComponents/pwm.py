@@ -12,7 +12,13 @@ class PwmMessage:
     def setPwmFrequencyB(self, hz: int):
         self.Freq[1] = hz
 
-    def sethiconf(self, idx: int, activehi: bool):
+    def sethiconf(self, idx: int, activehi: str):
+        if activehi.upper() == "HIGH":
+            activehi = True
+        elif activehi.upper() == "LOW":
+            activehi = False
+        else:
+            raise ValueError("active configuration must be either high or low")
         self.Hiconf[idx] = activehi
 
     def setPwmDutyCycle(self, idx: int, duty: int):
@@ -42,7 +48,7 @@ class PwmMessage:
             if self.Duty[i + bank * 6] != None:
                 dutymask |= 1 << i
         r = f"{6:08x}{bank:02x}{dutymask:02x}"
-        for i in range(6):
+        for i in reversed(range(6)):
             r += f"{self.Duty[i+bank*6] or 0:02x}"
         return [r]
 

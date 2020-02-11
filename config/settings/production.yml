@@ -1,4 +1,7 @@
 controller: 'TestCubeUSB'
 logging:
-  loglevel: 'DEBUG'
-  filename: 'gizmo.log'
+  file:
+    loglevel: 'INFO'
+    filename: 'gizmo.production.log'
+  console:
+    loglevel: 'INFO'

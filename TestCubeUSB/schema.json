@@ -16,7 +16,7 @@
         "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
         "pwms" : {
             "$count": 12,
-            "activeConfiguration" : {},
+            "activeConfiguration" : {"w": "sethiconf", "args": [], "$type": "string"},
             "dutyCycle" : { "w" : "setPwmDutyCycle", "args": [], "$type": "integer" },
             "enabled" : { "w" : "setPwmEnabled", "args": [], "$type": "boolean" },
             "profile" : {},
