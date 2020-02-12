@@ -12,7 +12,7 @@ setup(
         "static",
         "templates",
         "config",
-        "MockUSB"
+        "MockUSB",
     ],
     install_requires=[
         "jsonpatch",
@@ -22,9 +22,10 @@ setup(
         "jinja2",
         "aiohttp-jinja2",
         "pyusb",
+        "aiojobs",
         "pytest",
         "app-settings",
-        "pep8-naming"
+        "pep8-naming",
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={"console_scripts": ["gizmo=pyGizmoServer.run:main"]},

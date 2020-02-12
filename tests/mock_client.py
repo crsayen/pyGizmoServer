@@ -3,9 +3,21 @@ import websockets
 import aiohttp
 
 
-async def connect(path):
+async def connect(path, session):
     uri = f"ws://localhost:11111{path}"
     async with websockets.connect(uri) as websocket:
+        rx = await websocket.recv()
+        print(f"< {rx}")
+        path = "/wsinvoke"
+        value = True
+        async with session.patch(
+                "http://localhost:36364",
+                data=json.dumps({"op": "replace", "path": path, "value": value}).encode(
+                    "utf-8"
+                ),
+        ) as resp:
+            data = await resp.json()
+            print(json.dumps(data, indent=2))
         rx = await websocket.recv()
         print(f"< {rx}")
 
@@ -24,7 +36,12 @@ async def fetch(session):
         cmd.strip(" ")
         if cmd == "quit":
             continue
-        if "=" in cmd:
+        if cmd == "wsinvoke":
+            await connect("/relayController/relays", session)
+            path = "/wsinvoke"
+            value = True
+            patch = True
+        elif "=" in cmd:
             patch = True
             path, value = cmd.split("=")
             if value.isnumeric():

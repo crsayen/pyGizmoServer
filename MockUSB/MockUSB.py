@@ -5,7 +5,7 @@ class MockUSB:
     def __init__(self):
         self.callback = None
         self.msg = None
-        with open("TestCube/schema.json") as f:
+        with open("MockUSB/schema.json") as f:
             self.schema = json.load(f)
 
     def setcallback(self, callback):
@@ -27,12 +27,15 @@ class MockUSB:
     def wsinvoke(self, msg):
         print(f"wsinvoke: {msg}")
         if self.msg is None:
-            self.msg = msg
+            self.msg = {
+                "path": "/relayController/relays/0",
+                "data": {"enabled": True}
+            }
 
     async def usbrxhandler(self):
         while 1:
             if self.msg is not None:
                 print(f"handler: {self.msg}")
-                await self.callback(self.msg)
+                self.callback(self.msg)
                 self.msg = None
             await asyncio.sleep(0.001)

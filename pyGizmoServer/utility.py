@@ -1,4 +1,5 @@
 import copy
+from functools import lru_cache
 
 
 class Utility:
@@ -9,7 +10,6 @@ class Utility:
         schema: dict,
         path: str,
         read_write: str = "r",
-        toLeaves: bool = False,
     ):
         """
         navigate the schema following the request's path. The destination

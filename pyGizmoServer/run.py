@@ -15,7 +15,7 @@ from aiojobs.aiohttp import setup, spawn, atomic
 from app_settings import AppSettings
 from functools import partial, partialmethod
 
-os.environ["TEST_ENV"] = "production"
+os.environ["TEST_ENV"] = "mock"
 cfg = AppSettings(env_name="TEST_ENV")
 starttime = time.strftime("%Y-%m-%d %H:%M")
 

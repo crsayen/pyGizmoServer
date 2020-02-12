@@ -1,0 +1,7 @@
+controller: 'MockUSB'
+logging:
+  file:
+    loglevel: 'DEBUG'
+    filename: 'gizmo.production.log'
+  console:
+    loglevel: 'DEBUG'

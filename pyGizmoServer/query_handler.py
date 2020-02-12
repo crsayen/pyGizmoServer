@@ -33,7 +33,7 @@ class QueryHandler:
         path = request.path
         if path == "/model":
             path = "/"
-        if self.logger.isEnabledFor(logging.DEBUG): 
+        if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f"{path}")
         data = Utility.parse_path_against_schema_and_model(
             self.model, self.schema, path, read_write="r"
@@ -50,10 +50,9 @@ class QueryHandler:
             {"path": data["path_string"], "data": data["model_data"]}
         )
 
-    async def handle_updates(self, updates):
-        if self.logger.isEnabledFor(logging.DEBUG): 
+    def handle_updates(self, updates):
+        if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f"{updates}")
-        outgoing = []
         if not isinstance(updates, list):
             updates = [updates]
         for update in updates:
@@ -64,5 +63,6 @@ class QueryHandler:
                 continue
             location = dpath.util.get(self.model, path)
             dpath.util.set(self.model, path, merge(location, data))
-            outgoing.append({"path": path, "value": dpath.util.get(self.model, path)})
-        await self.subscription_server.publish(outgoing)
+            self.subscription_server.publish(
+                {"path": path, "value": dpath.util.get(self.model, path)}
+            )

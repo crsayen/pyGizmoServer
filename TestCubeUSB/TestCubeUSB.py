@@ -102,7 +102,7 @@ class TestCubeUSB(
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug("running")
         while 1:
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.0001)
             try:
                 msg = self.dev.read(130, 24, 100)
             except usb.core.USBError as e:
@@ -116,7 +116,7 @@ class TestCubeUSB(
             if d is None:
                 continue
             if len(d) > 0:
-                await self.callback(d)
+                self.callback(d)
 
     def recUsb(self, msg):
         _id, payload = msg[:8], msg[8:]

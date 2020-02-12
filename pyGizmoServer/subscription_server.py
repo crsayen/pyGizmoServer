@@ -2,6 +2,7 @@ import websockets
 import json
 import asyncio
 import logging
+import threading
 
 
 class SubscriptionServer:
@@ -11,24 +12,35 @@ class SubscriptionServer:
             self.logger.debug(f"{ws_ip},{ws_port}")
         self.connected = set()
         self.subscribers = {}
-        self.server = websockets.serve(self.connection_handler, ws_ip, ws_port)
-        asyncio.get_event_loop().run_until_complete(self.server)
+        self.ip = ws_ip
+        self.port = ws_port
+        threading.Thread(target=self.run_server(), args=()).start()
 
-    async def publish(self, updates):
-        for update in updates:
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f"{updates}")
-            path = update.get("path")
-            if path is None:
-                raise ValueError(f"unable to publish update, bad format: {updates}")
-            try:
-                for connection in self.connected:
-                    if connection[1] in path:
-                        if self.logger.isEnabledFor(logging.DEBUG):
-                            self.logger.debug(f"sending ws: {update}")
-                        await connection[0].send(json.dumps(update))
-            except Exception as e:
-                self.logger.error(f"{e}")
+    def run_server(self):
+        print("srtr")
+        self.subloop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.subloop)
+        self.server = websockets.serve(
+            self.connection_handler, self.ip, self.port, loop=self.subloop
+        )
+        self.subloop.run_until_complete(self.server)
+
+    def publish(self, update):
+        if self.logger.isEnabledFor(logging.DEBUG):
+            self.logger.debug(f"{update}")
+        path = update.get("path")
+        if path is None:
+            raise ValueError(f"unable to publish update, bad format: {update}")
+        try:
+            for connection in self.connected:
+                if connection[1] in path:
+                    if self.logger.isEnabledFor(logging.DEBUG):
+                        self.logger.debug(f"sending ws: {update}")
+                    asyncio.run_coroutine_threadsafe(
+                        connection[0].send(json.dumps(update)), self.subloop
+                    )
+        except Exception as e:
+            self.logger.error(f"{e}")
 
     async def connection_handler(self, websocket, path):
         if self.logger.isEnabledFor(logging.DEBUG):
