@@ -43,7 +43,8 @@ class QueryHandler:
             self.logger.error(f"{response}")
             return
         if data.get("routine") is not None:
-            getattr(self.controller, data["routine"])(*data["args"])
+            res = await getattr(self.controller, data["routine"])(*data["args"])
+            return web.json_response(res)
             self.controller.finished()
             """TODO: this doesnt do anything right now"""
         return web.json_response(

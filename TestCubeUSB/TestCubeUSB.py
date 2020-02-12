@@ -11,6 +11,7 @@ from TestCubeUSB.TestCubeComponents.actuators import ActCurMessage
 from TestCubeUSB.TestCubeComponents.frequency import FrequencyMessage
 from TestCubeUSB.TestCubeComponents.usb import UsbMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
+from TestCubeUSB.TestCubeComponents.version import VersionMessage
 
 
 class TestCubeUSB(
@@ -22,6 +23,7 @@ class TestCubeUSB(
     FrequencyMessage,
     AdcMessage,
     CanDatabaseMessage,
+    VersionMessage
 ):
     def callParentInits(self):
         RelayMessage.__init__(self)
@@ -31,6 +33,7 @@ class TestCubeUSB(
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
         AdcMessage.__init__(self)
+        VersionMessage.__init__(self)
 
     def __init__(self):
         self.logger = logging.getLogger("gizmoLogger")
@@ -40,6 +43,7 @@ class TestCubeUSB(
         self.callback = None
         self.version = None
         self.ask = None
+        self.getversion = asyncio.Event()
         AdcMessage.__init__(self)
         self.usbidparsers = {
             "00000005": self.recusb_5_pwmfreq,
@@ -94,9 +98,6 @@ class TestCubeUSB(
                 self.logger.usb(f"finished: {msg}")
             self.dev.write(2, msg)
         self.callParentInits()
-
-    async def listen(self):
-        await self.usbrxhandler()
 
     async def usbrxhandler(self):
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -383,21 +384,15 @@ class TestCubeUSB(
 
     def recusb_41_version(self, payload):
         # print("GOTIT")
-        hi, lo, patch = (
-            int(payload[:4], 16),
-            int(payload[4:8], 16),
-            int(payload[8:12], 16),
-        )
-        self.version = f"{hi}.{lo}.{patch}"
-        data = self.version
-
-        path = "/version"
-        return [{"path": path, "data": data}]
-
-    async def getFirmwareVersion(self):
-        self.ask = True
-
-    def get_version_messages(self):
-        if self.ask == None:
-            return []
-        return [f"{0x40:08x}"]
+        if len(payload) < 12:
+            self.version = "0.0.0"
+        else:
+            hi, lo, patch = (
+                int(payload[:4], 16),
+                int(payload[4:8], 16),
+                int(payload[8:12], 16),
+            )
+            self.version = f"{hi}.{lo}.{patch}"
+        if not self.getversion.is_set():
+            self.version.set()
+        return [{"path": "/version", "data": self.version}]
