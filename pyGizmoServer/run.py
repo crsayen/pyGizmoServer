@@ -20,9 +20,6 @@ configfile = sys.argv[1] if len(sys.argv) > 1 else "production"
 
 os.environ["TEST_ENV"] = configfile
 cfg = AppSettings(env_name="TEST_ENV")
-if cfg.current_env != configfile:
-    print(f"\nERROR: '{configfile}' not Found\nexiting...\n")
-    sys.exit()
 starttime = time.strftime("%Y-%m-%d %H:%M")
 
 """ get version from setup.py """
