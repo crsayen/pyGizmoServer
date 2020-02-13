@@ -67,15 +67,15 @@ def test_pwmenable():
 def test_dirate():
     dm = DiMessage()
     assert dm.get_di_messages() == []
-    dm.setDiMonitorUpdateRate(1)
+    dm.setDiMonitorUpdateRate(1 * 50)
     assert dm.get_di_messages() == ["0000000a01"]
 
 
 def test_actCur():
     am = ActCurMessage()
-    am.setPwmCurrentMonitorUpdateRate(1)
+    am.setPwmCurrentMonitorUpdateRate(1 * 50)
     am.setPwmCurrentMonitorChannels(0x555)
-    am.setPwmFaultThreshold(0x22)
+    am.setPwmFaultThreshold(0x22 * 50)
     assert am.get_actcur_messages() == ["0000000c05550122"]
 
 
@@ -88,7 +88,7 @@ def test_sendUsbMsg():
 def test_freq():
     fm = FrequencyMessage()
     fm.setFrequencyInputEnabled(0x5)
-    fm.setFrequencyMonitorRate(0x1)
+    fm.setFrequencyMonitorRate(0x1 * 50)
     assert fm.get_freq_messages() == ["0000000e0501"]
 
 

@@ -7,7 +7,7 @@ class FrequencyMessage:
         self.freqmonitorChannels = freqmask
 
     def setFrequencyMonitorRate(self, rate):
-        self.freqmonitorRate = rate
+        self.freqmonitorRate = int(rate/50)
 
     def get_freq_messages(self):
         if self.freqmonitorRate == None:
