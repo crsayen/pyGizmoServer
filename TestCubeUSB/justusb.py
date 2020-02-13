@@ -11,8 +11,6 @@ def usbdebug():
     import usb.core
 
 
-
-
 if __name__ == "__main__":
     usbdebug()
     dev = usb.core.find(find_all=True)

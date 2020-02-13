@@ -1,6 +1,7 @@
 import asyncio, json
 import websockets
 import aiohttp
+
 try:
     import readline
 except:
@@ -21,6 +22,7 @@ async def connect(path, session):
             data = await resp.json()
         rx = await websocket.recv()
         print(f"< {rx}")
+
 
 def printhelp():
     for line in [
@@ -67,9 +69,9 @@ async def fetch(session):
             if patch:
                 async with session.patch(
                     "http://localhost:36364",
-                    data=json.dumps({"op": "replace", "path": path, "value": value}).encode(
-                        "utf-8"
-                    ),
+                    data=json.dumps(
+                        {"op": "replace", "path": path, "value": value}
+                    ).encode("utf-8"),
                 ) as resp:
                     data = await resp.json()
                     if not ws:
@@ -79,18 +81,19 @@ async def fetch(session):
                     data = await resp.json()
                     print(json.dumps(data, indent=2))
         except:
-                print("invalid command")
+            print("invalid command")
 
 
 async def go():
     async with aiohttp.ClientSession() as session:
         await fetch(session)
 
+
 def main():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(go())
     loop.close()
 
+
 if __name__ == "__main__":
     main()
-

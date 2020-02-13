@@ -12,7 +12,7 @@ setup(
         "static",
         "templates",
         "config",
-        "MockUSB"
+        "MockUSB",
     ],
     install_requires=[
         "jsonpatch",
@@ -24,12 +24,14 @@ setup(
         "aiohttp-jinja2",
         "pyusb",
         "pytest",
-        "PyYAML"
+        "PyYAML",
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
-    entry_points={"console_scripts": [
-        "gizmo=pyGizmoServer.run:main",
-        "gizmocli=tests.mock_client:main",
-        "justusb=TestCubeUSB.justusb:main"
-    ]},
+    entry_points={
+        "console_scripts": [
+            "gizmo=pyGizmoServer.run:main",
+            "gizmocli=tests.mock_client:main",
+            "justusb=TestCubeUSB.justusb:main",
+        ]
+    },
 )

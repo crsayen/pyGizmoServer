@@ -147,11 +147,3 @@ class TestCubeUSB(
             return []
         result = f(payload)
         return result
-
-
-
-
-
-
-
-  

@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+
 class MockUSB:
     def __init__(self):
         self.callback = None
@@ -31,7 +32,10 @@ class MockUSB:
     def wsinvoke(self, msg):
         print(f"wsinvoke: {msg}")
         if self.msg is None:
-            self.msg = {"path": "/wsinvoke", "data": "this message arrived via websocket"}
+            self.msg = {
+                "path": "/wsinvoke",
+                "data": "this message arrived via websocket",
+            }
 
     async def getFirmwareVersion(self):
         print(id(asyncio.get_event_loop()))
