@@ -1,20 +1,23 @@
 class FrequencyMessage:
     def __init__(self):
         self.freqmonitorRate = None
-        self.freqmonitorChannels = None
+        self.speed_listinfirstmsg = [3, 2, 1, 0]
+        self.freqmonitorChannels = [1, 1, 1, 1]
 
-    def setFrequencyInputEnabled(self, freqmask: int):
-        self.freqmonitorChannels = freqmask
+    def setFrequencyInputEnabled(self, channel: int, enabled: int):
+        self.freqmonitorChannels[channel] = enabled
 
     def setFrequencyMonitorRate(self, rate):
-        self.freqmonitorRate = int(rate/50)
+        self.freqmonitorRate = int(rate / 50)
 
     def get_freq_messages(self):
-        if self.freqmonitorRate == None:
+        if self.freqmonitorRate is None:
             return []
-        if self.freqmonitorChannels == None:
+        if self.freqmonitorChannels is None:
             return []
-        return [f"{0xe:08x}{self.freqmonitorChannels:02x}{self.freqmonitorRate:02x}"]
+        channels = "".join(['1' if i else '0' for i in self.freqmonitorChannels])
+        channels = int(channels, 2)
+        return [f"{0xe:08x}{channels:02x}{self.freqmonitorRate:02x}"]
 
     def recusb_00f_speed(self, payload):
         ret = [{}] * 4

@@ -34,7 +34,7 @@ class SubscriptionServer:
             for connection in self.connected:
                 if connection[1] in path:
                     if self.logger.isEnabledFor(logging.DEBUG):
-                        self.logger.debug(f"sending ws on: {connection[1]}")
+                        self.logger.debug(f"sending ws on: {update}")
                     asyncio.run_coroutine_threadsafe(
                         connection[0].send(json.dumps(update)), self.subloop
                     )
