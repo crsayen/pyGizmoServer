@@ -21,7 +21,7 @@ class VersionMessage:
             return []
         return [f"{0x50:08x}"]
 
-    def recusb_41_version(self, payload):
+    def recusb_51_version(self, payload):
         if len(payload) < 12:
             self.version = "0.0.0"
         else:

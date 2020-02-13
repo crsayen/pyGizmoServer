@@ -39,8 +39,8 @@ def test_pwmfreq():
 
 def test_pwmhiconf():
     pm = PwmMessage()
-    pm.sethiconf(0, True)
-    pm.sethiconf(8, False)
+    pm.sethiconf(0, "HIGH")
+    pm.sethiconf(8, "LOW")
     assert pm.get_pwm_messages() == ["000000040101000100000000"]
 
 
@@ -104,4 +104,4 @@ def test_version():
     vm = VersionMessage()
     vm.ask = True
     vm.get_version_messages()
-    assert vm.get_version_messages() == ["00000040"]
+    assert vm.get_version_messages() == ["00000050"]

@@ -106,7 +106,7 @@ class Test_usbRec:
         msg = f"{id:08x}{sync:01x}{faults:03x}"
         self.processandcheck(msg)
 
-    def test_usbmsg41(self):  # version
-        id, hi, lo, patch = 0x41, 0xB, 0xA, 0xD
+    def test_usbmsg51(self):  # version
+        id, hi, lo, patch = 0x51, 0xB, 0xA, 0xD
         msg = f"{id:08x}{hi:04x}{lo:04x}{patch:04x}"
         self.processandcheck(msg)

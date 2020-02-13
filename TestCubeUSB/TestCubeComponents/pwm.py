@@ -87,3 +87,54 @@ class PwmMessage:
             + self.getUsbMsg6(1)
             + self.getUsbMsg8()
         )
+
+    def recusb_5_pwmfreq(self, payload):
+        acthi, freqa, freqb = payload[:4], payload[4:8], payload[8:12]
+        d = []
+        path = "/pwmController/bankA/frequency"
+        data = int(freqa, 16)
+        d.append({"path": path, "data": data})
+        path = "/pwmController/bankB/frequency"
+        data = int(freqb, 16)
+        d.append({"path": path, "data": data})
+        path = "/pwmController/pwms"
+        data = [
+            {"activeConfiguration": "high"}
+            if (int(acthi, 16) & (1 << x))
+            else {"activeConfiguration": "low"}
+            for x in range(12)
+        ]
+        d.append({"path": path, "data": data})
+        return d
+
+    def recusb_7_pwmdutycycle(self, payload):
+        ret = [{}] * 12
+        bank, _, dcf, dce, dcd, dcc, dcb, dca = (
+            int(payload[:2], 16),
+            int(payload[2:4], 16),
+            int(payload[4:6], 16),
+            int(payload[6:8], 16),
+            int(payload[8:10], 16),
+            int(payload[10:12], 16),
+            int(payload[12:14], 16),
+            int(payload[14:16], 16),
+        )
+        ret[6 * bank + 0] = {"dutyCycle": dca}
+        ret[6 * bank + 1] = {"dutyCycle": dcb}
+        ret[6 * bank + 2] = {"dutyCycle": dcc}
+        ret[6 * bank + 3] = {"dutyCycle": dcd}
+        ret[6 * bank + 4] = {"dutyCycle": dce}
+        ret[6 * bank + 5] = {"dutyCycle": dcf}
+        path = "/pwmController/pwms"
+        return [{"path": path, "data": ret}]
+
+    def recusb_9_pwmenable(self, payload):
+        d = []
+        enabled = int(payload[:4], 16)
+        data = [
+            {"enabled": True} if (enabled & (1 << x)) else {"enabled": False}
+            for x in range(12)
+        ]
+        path = "/pwmController/pwms"
+        d.append({"path": path, "data": data})
+        return d
