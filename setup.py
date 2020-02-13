@@ -28,5 +28,8 @@ setup(
         "pep8-naming",
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
-    entry_points={"console_scripts": ["gizmo=pyGizmoServer.run:main"]},
+    entry_points={"console_scripts": [
+        "gizmo=pyGizmoServer.run:main",
+        "gizmocli=tests.mock_client:main"
+        ]},
 )

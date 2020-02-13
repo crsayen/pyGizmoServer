@@ -28,15 +28,19 @@ async def fetch(session):
     async with session.get(f"http://localhost:36364/gizmogo") as resp:
         data = await resp.text()
         print(data)
-    print(
-        "example PATCH command: /relayController/relays/0/enabled = true\nexample GET command: relayController/relays"
-    )
+    for line in [
+        "\n\nPATCH:\t\t/relayController/relays/0/enabled=true",
+        "GET:\t\t/pwmController",
+        "WebSock:\twsinvoke",
+        "Quit:\t\tquit\n\n",
+    ]:
+        print(line)
     while cmd != "quit":
-        cmd = input("enter command ->")
+        cmd = input("enter command -> ")
         cmd.strip(" ")
         if cmd == "quit":
             continue
-        if cmd == "wsinvoke":
+        elif cmd == "wsinvoke":
             await connect("/relayController/relays", session)
             path = "/wsinvoke"
             value = True
@@ -51,6 +55,8 @@ async def fetch(session):
         else:
             patch = False
             path = cmd
+        if path[0] != "/":
+            path = "/" + path
         if patch:
             async with session.patch(
                 "http://localhost:36364",
@@ -70,7 +76,11 @@ async def go():
     async with aiohttp.ClientSession() as session:
         await fetch(session)
 
+def main():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(go())
+    loop.close()
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(go())
-loop.close()
+if __name__ == "__main__":
+    main()
+
