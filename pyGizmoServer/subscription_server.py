@@ -47,6 +47,5 @@ class SubscriptionServer:
             self.logger.debug(f"{path}")
         connection = (websocket, path)
         self.connected.add(connection)
-        await connection[0].send(f"SUCCESS: you are subscribed to {path}")
         await websocket.wait_closed()
         self.connected.remove(connection)

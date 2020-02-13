@@ -46,7 +46,7 @@ class Utility:
                     schema_location = schema_location[p]
                 model_location = model_location[p]
             except Exception:
-                epath = "/" + "/".join(paths[:i])
+                epath = "/".join(paths[:i])
                 if "FAVICON" not in epath:
                     err = f"PATH ERROR: {epath}/{p}"
                     break

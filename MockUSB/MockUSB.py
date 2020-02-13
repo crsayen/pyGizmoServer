@@ -1,11 +1,12 @@
-import asyncio, json
-
+import asyncio
+import json
 
 class MockUSB:
     def __init__(self):
         self.callback = None
         self.msg = None
         self.ask = None
+        self.running = False
         self.version = None
         self.getversion = None
         with open("MockUSB/schema.json") as f:
@@ -30,7 +31,7 @@ class MockUSB:
     def wsinvoke(self, msg):
         print(f"wsinvoke: {msg}")
         if self.msg is None:
-            self.msg = {"path": "/relayController/relays/0", "data": {"enabled": True}}
+            self.msg = {"path": "/wsinvoke", "data": "this message arrived via websocket"}
 
     async def getFirmwareVersion(self):
         print(id(asyncio.get_event_loop()))
@@ -41,12 +42,12 @@ class MockUSB:
         return [{"path": "/version", "data": self.version}]
 
     async def usbrxhandler(self):
+        self.running = True
         print(id(asyncio.get_event_loop()))
         if self.getversion is None:
             self.getversion = asyncio.Event()
         while 1:
             if self.msg is not None:
-                print(f"handler: {self.msg}")
                 self.callback(self.msg)
                 self.msg = None
             if self.ask is not None:

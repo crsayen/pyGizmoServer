@@ -11,7 +11,7 @@ from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
 from pyGizmoServer.utility import Utility
 from aiohttp import web
-from aiojobs.aiohttp import setup, spawn, atomic
+from aiojobs.aiohttp import setup
 from app_settings import AppSettings
 from functools import partial, partialmethod
 
@@ -57,8 +57,6 @@ modification_handler = ModificationHandler(controller, model=model)
 query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, controller, model=model)
 controller.setcallback(query_handler.handle_updates)
 
-coro_running = False
-
 
 @aiohttp_jinja2.template("index.html")
 async def get_index(request):
@@ -67,15 +65,6 @@ async def get_index(request):
         "version": version,
         "time_started": starttime,
     }
-
-
-@atomic
-async def start_your_engines(request):
-    global coro_running
-    if not coro_running:
-        await spawn(request, controller.usbrxhandler())
-        coro_running = True
-    return web.Response(text="VROOM")
 
 
 def get_model(request):
@@ -90,7 +79,6 @@ def make_app():
     app["static_root_url"] = "/static"
     app.router.add_get("/", get_index)
     app.router.add_static("/static", "static")
-    app.router.add_get("/gizmogo", start_your_engines)
     app.router.add_get("/model", get_model)
     app.router.add_route("GET", r"/{tail:.*}", query_handler.handle_get)
     app.router.add_route(

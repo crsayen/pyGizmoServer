@@ -4,6 +4,7 @@ import dpath.util
 from pyGizmoServer.subscription_server import SubscriptionServer
 from pyGizmoServer.utility import Utility
 from aiohttp import web
+from aiojobs.aiohttp import spawn
 
 
 def merge(a, b):
@@ -30,6 +31,8 @@ class QueryHandler:
         self.subscribers = {}
 
     async def handle_get(self, request):
+        if not self.controller.running:
+            await spawn(request, self.controller.usbrxhandler())
         path = request.path
         if path == "/model":
             path = "/"

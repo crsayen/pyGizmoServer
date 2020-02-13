@@ -42,6 +42,7 @@ class TestCubeUSB(
         self.callParentInits()
         self.callback = None
         self.version = None
+        self.running = False
         self.ask = None
         self.getVersionEvent = None
         AdcMessage.__init__(self)
@@ -100,6 +101,7 @@ class TestCubeUSB(
         self.callParentInits()
 
     async def usbrxhandler(self):
+        self.running = True
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         if self.logger.isEnabledFor(logging.DEBUG):

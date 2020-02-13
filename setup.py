@@ -24,8 +24,7 @@ setup(
         "pyusb",
         "aiojobs",
         "pytest",
-        "app-settings",
-        "pep8-naming",
+        "app-settings"
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={"console_scripts": [
