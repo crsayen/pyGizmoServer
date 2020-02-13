@@ -1,3 +1,9 @@
+tcp:
+  ip: '127.0.0.1'
+  port: 36364
+ws:
+  ip: '127.0.0.1'
+  port: 11111
 controller: 'TestCubeUSB'
 logging:
   file:

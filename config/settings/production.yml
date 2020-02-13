@@ -1,7 +1,0 @@
-controller: 'TestCubeUSB'
-logging:
-  file:
-    loglevel: 'INFO'
-    filename: 'gizmo.production.log'
-  console:
-    loglevel: 'INFO'

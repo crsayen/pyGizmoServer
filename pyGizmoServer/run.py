@@ -9,17 +9,17 @@ import aiohttp_jinja2
 import pkg_resources
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
-from pyGizmoServer.utility import Utility
+from pyGizmoServer.utility import Utility, Settings
 from aiohttp import web
 from aiojobs.aiohttp import setup
-from app_settings import AppSettings
 from functools import partial, partialmethod
 
 
 configfile = sys.argv[1] if len(sys.argv) > 1 else "production"
-
-os.environ["TEST_ENV"] = configfile
-cfg = AppSettings(env_name="TEST_ENV")
+cfg = Settings.load(configfile)
+if cfg is None:
+    print(f"\n'{configfile}' not found\nexiting...\n")
+    sys.exit()
 starttime = time.strftime("%Y-%m-%d %H:%M")
 
 """ get version from setup.py """

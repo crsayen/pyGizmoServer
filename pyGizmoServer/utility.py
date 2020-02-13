@@ -1,5 +1,5 @@
 import copy
-from functools import lru_cache
+import yaml
 
 
 class Utility:
@@ -88,3 +88,22 @@ class Utility:
         if "$type" in d:
             return None
         return {k: cls.initialize_model_from_schema(v) for k, v in d.items()}
+
+
+class DotDict(dict):
+    def __getattr__(self, item):
+        val = self[item]
+        if isinstance(val, dict):
+            return DotDict(val)
+        else:
+            return val
+
+
+class Settings:
+    @classmethod
+    def load(cls, filename):
+        try:
+            with open(f"config/{filename}.yml") as f:
+                return DotDict(yaml.full_load(f))
+        except Exception:
+            return None

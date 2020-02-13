@@ -24,7 +24,7 @@ setup(
         "aiohttp-jinja2",
         "pyusb",
         "pytest",
-        "app-settings"
+        "PyYAML"
     ],
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={"console_scripts": [
