@@ -5,9 +5,9 @@ class VersionMessage:
 
     async def getFirmwareVersion(self):
         self.ask = True
-        self.getversion.clear()
+        self.getVersionEvent.clear()
         self.finished()
-        await self.getversion.wait()
+        await self.getVersionEvent.wait()
         return [{"path": "/version", "data": self.version}]
 
     def get_version_messages(self):

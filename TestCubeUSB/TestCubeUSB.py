@@ -23,7 +23,7 @@ class TestCubeUSB(
     FrequencyMessage,
     AdcMessage,
     CanDatabaseMessage,
-    VersionMessage
+    VersionMessage,
 ):
     def callParentInits(self):
         RelayMessage.__init__(self)
@@ -43,7 +43,7 @@ class TestCubeUSB(
         self.callback = None
         self.version = None
         self.ask = None
-        self.getversion = asyncio.Event()
+        self.getVersionEvent = None
         AdcMessage.__init__(self)
         self.usbidparsers = {
             "00000005": self.recusb_5_pwmfreq,
@@ -100,6 +100,8 @@ class TestCubeUSB(
         self.callParentInits()
 
     async def usbrxhandler(self):
+        if self.getVersionEvent is None:
+            self.getVersionEvent = asyncio.Event()
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug("running")
         while 1:
@@ -393,6 +395,6 @@ class TestCubeUSB(
                 int(payload[8:12], 16),
             )
             self.version = f"{hi}.{lo}.{patch}"
-        if not self.getversion.is_set():
+        if not self.getVersionEvent.is_set():
             self.version.set()
         return [{"path": "/version", "data": self.version}]

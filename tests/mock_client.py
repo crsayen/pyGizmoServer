@@ -11,10 +11,10 @@ async def connect(path, session):
         path = "/wsinvoke"
         value = True
         async with session.patch(
-                "http://localhost:36364",
-                data=json.dumps({"op": "replace", "path": path, "value": value}).encode(
-                    "utf-8"
-                ),
+            "http://localhost:36364",
+            data=json.dumps({"op": "replace", "path": path, "value": value}).encode(
+                "utf-8"
+            ),
         ) as resp:
             data = await resp.json()
             print(json.dumps(data, indent=2))

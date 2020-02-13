@@ -5,6 +5,9 @@ class MockUSB:
     def __init__(self):
         self.callback = None
         self.msg = None
+        self.ask = None
+        self.version = None
+        self.getversion = None
         with open("MockUSB/schema.json") as f:
             self.schema = json.load(f)
 
@@ -27,15 +30,26 @@ class MockUSB:
     def wsinvoke(self, msg):
         print(f"wsinvoke: {msg}")
         if self.msg is None:
-            self.msg = {
-                "path": "/relayController/relays/0",
-                "data": {"enabled": True}
-            }
+            self.msg = {"path": "/relayController/relays/0", "data": {"enabled": True}}
+
+    async def getFirmwareVersion(self):
+        print(id(asyncio.get_event_loop()))
+        self.ask = True
+        self.getversion.clear()
+        self.finished()
+        await self.getversion.wait()
+        return [{"path": "/version", "data": self.version}]
 
     async def usbrxhandler(self):
+        print(id(asyncio.get_event_loop()))
+        if self.getversion is None:
+            self.getversion = asyncio.Event()
         while 1:
             if self.msg is not None:
                 print(f"handler: {self.msg}")
                 self.callback(self.msg)
                 self.msg = None
+            if self.ask is not None:
+                self.version = "6.6.6"
+                self.getversion.set()
             await asyncio.sleep(0.001)

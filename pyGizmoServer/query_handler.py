@@ -41,15 +41,12 @@ class QueryHandler:
         if data["error"] is not None:
             response = data["error"]
             self.logger.error(f"{response}")
-            return
-        if data.get("routine") is not None:
+        elif data.get("routine") is not None:
             res = await getattr(self.controller, data["routine"])(*data["args"])
-            return web.json_response(res)
-            self.controller.finished()
-            """TODO: this doesnt do anything right now"""
-        return web.json_response(
-            {"path": data["path_string"], "data": data["model_data"]}
-        )
+            response = res
+        else:
+            response = {"path": data["path_string"], "data": data["model_data"]}
+        return web.json_response(response)
 
     def handle_updates(self, updates):
         if self.logger.isEnabledFor(logging.DEBUG):
