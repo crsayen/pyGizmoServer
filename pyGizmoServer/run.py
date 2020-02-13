@@ -15,9 +15,14 @@ from aiojobs.aiohttp import setup
 from app_settings import AppSettings
 from functools import partial, partialmethod
 
-os.environ["TEST_ENV"] = "mock"
-os.environ["PYTHONASYNCIODEBUG"] = "1"
+
+configfile = sys.argv[1] if len(sys.argv) > 1 else "production"
+
+os.environ["TEST_ENV"] = configfile
 cfg = AppSettings(env_name="TEST_ENV")
+if cfg.current_env != configfile:
+    print(f"\nERROR: '{configfile}' not Found\nexiting...\n")
+    sys.exit()
 starttime = time.strftime("%Y-%m-%d %H:%M")
 
 """ get version from setup.py """

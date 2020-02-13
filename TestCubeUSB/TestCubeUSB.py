@@ -1,8 +1,9 @@
 import usb.core
 from usb.backend import libusb1
 import usb.util
-import time, threading, time, logging
-import asyncio, json
+import logging
+import asyncio
+import json
 from TestCubeUSB.TestCubeComponents.adc import AdcMessage
 from TestCubeUSB.TestCubeComponents.pwm import PwmMessage
 from TestCubeUSB.TestCubeComponents.relay import RelayMessage
@@ -38,7 +39,7 @@ class TestCubeUSB(
     def __init__(self):
         self.logger = logging.getLogger("gizmoLogger")
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug("TescubeUSB()")
+            self.logger.debug("init")
         self.callParentInits()
         self.callback = None
         self.version = None
@@ -62,7 +63,7 @@ class TestCubeUSB(
             "00000211": self.recusb_211_adc,
             "00000013": self.recusb_13_relay,
             "0000001d": self.recusb_1d_actfault,
-            "00000041": self.recusb_41_version,
+            "00000051": self.recusb_41_version,
         }
         self.actcurrent_listinfirstmsg = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         self.adc_listinfirstmsg = []
@@ -77,9 +78,17 @@ class TestCubeUSB(
     def start(self):
         if self.callback is None:
             raise RuntimeError("controller callback not set")
-        self.dev = usb.core.find(idVendor=0x2B87, idProduct=0x0001)
-        if self.dev is None:
-            raise ValueError("Device not found")
+        self.dev = None
+        devs = usb.core.find(idVendor=0x2B87, idProduct=0x0001, find_all=True)
+        if devs is not None:
+            for dev in devs:
+                try:
+                    dev.write(2, "0000050")
+                except Exception:
+                    continue
+                self.dev = dev
+                return
+        raise ValueError("Device not found")
 
     def finished(self):
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -101,9 +110,9 @@ class TestCubeUSB(
         self.callParentInits()
 
     async def usbrxhandler(self):
-        self.running = True
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
+        self.running = True
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug("running")
         while 1:
@@ -134,6 +143,8 @@ class TestCubeUSB(
                 return []
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
+        if f is None:
+            return []
         result = f(payload)
         return result
 
@@ -158,7 +169,7 @@ class TestCubeUSB(
 
     def recusb_7_pwmdutycycle(self, payload):
         ret = [{}] * 12
-        bank, mo, dcf, dce, dcd, dcc, dcb, dca = (
+        bank, _, dcf, dce, dcd, dcc, dcb, dca = (
             int(payload[:2], 16),
             int(payload[2:4], 16),
             int(payload[4:6], 16),
@@ -375,7 +386,7 @@ class TestCubeUSB(
         return [{"path": path, "data": data}]
 
     def recusb_1d_actfault(self, payload):
-        sync, faults = (int(payload[:1], 16), int(payload[1:4], 16))
+        _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
         data = [
             {"currentMonitor": {"faulty": True}}
             if (faults & (1 << x))
@@ -385,18 +396,3 @@ class TestCubeUSB(
 
         path = "/pwmController/pwms"
         return [{"path": path, "data": data}]
-
-    def recusb_41_version(self, payload):
-        # print("GOTIT")
-        if len(payload) < 12:
-            self.version = "0.0.0"
-        else:
-            hi, lo, patch = (
-                int(payload[:4], 16),
-                int(payload[4:8], 16),
-                int(payload[8:12], 16),
-            )
-            self.version = f"{hi}.{lo}.{patch}"
-        if not self.getVersionEvent.is_set():
-            self.version.set()
-        return [{"path": "/version", "data": self.version}]

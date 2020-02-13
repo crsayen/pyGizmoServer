@@ -52,11 +52,11 @@ class QueryHandler:
         return web.json_response(response)
 
     def handle_updates(self, updates):
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"{updates}")
         if not isinstance(updates, list):
             updates = [updates]
         for update in updates:
+            if self.logger.isEnabledFor(logging.DEBUG):
+                self.logger.debug(f"{update['path']}")
             data = update.get("data")
             path = update.get("path")
             if isinstance(update, str) or data is None or path is None:

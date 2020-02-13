@@ -53,7 +53,9 @@
     },
     "canDatabase" : { "w" : "setCanDatabase", "args": [], "$type": "object"  },
     "usb":{
-        "message": {"w": "sendrawusb", "args": [], "$type": "string"}
+        "txMessage": {"w": "sendrawusb", "args": [], "$type": "string"},
+        "rxMessage": {"$type": "string"},
+        "rxCount": {"$type": "integer"}
     },
     "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
     "wsinvoke": {"w": "wsinvoke", "args": [], "$type": "string" },

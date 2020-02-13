@@ -17,7 +17,6 @@ class SubscriptionServer:
         threading.Thread(target=self.run_server(), args=()).start()
 
     def run_server(self):
-        print("srtr")
         self.subloop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.subloop)
         self.server = websockets.serve(
@@ -27,7 +26,7 @@ class SubscriptionServer:
 
     def publish(self, update):
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"{update}")
+            self.logger.debug(f"{update['path']}")
         path = update.get("path")
         if path is None:
             raise ValueError(f"unable to publish update, bad format: {update}")
@@ -35,7 +34,7 @@ class SubscriptionServer:
             for connection in self.connected:
                 if connection[1] in path:
                     if self.logger.isEnabledFor(logging.DEBUG):
-                        self.logger.debug(f"sending ws: {update}")
+                        self.logger.debug(f"sending ws on: {connection[1]}")
                     asyncio.run_coroutine_threadsafe(
                         connection[0].send(json.dumps(update)), self.subloop
                     )

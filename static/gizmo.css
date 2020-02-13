@@ -55,7 +55,7 @@ a:hover ,
 a:focus ,
 a:active
 {
-	color:#808080;
+	color:#adadad;
 }
 
 
@@ -135,7 +135,7 @@ a:active
 	vertical-align:middle;
 	margin:0 16px;
 	letter-spacing:-2px;
-	color:#808080;
+	color:#adadad;
 }
 
 .header>h3
@@ -191,7 +191,7 @@ a:active
 	box-shadow: -3px 3px 8px 1px #181818;
 	background-color: rgb(43, 43, 43);
 	padding: 0.5em;
-	color:#808080;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
+	color:#adadad;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
 	font-weight: bold;
 }
 
@@ -209,7 +209,7 @@ a:active
 	width: max-content;
 	margin:0 0 0 32px;
 	border:0px solid #000;
-	background-color:#808080;
+	background-color:#adadad;
 	padding: 8px;
 	color:#000;
 	font-family: 'Courier New', Courier, monospace;
@@ -226,7 +226,7 @@ a:active
 	border-width: 0;
 	background-color: #202020;
 	padding: 8px;
-	color: #808080;		/* I don't know what "rgb(226, 226, 226)" is, but I'm not using it. Too much contrast. */
+	color: #adadad;		/* I don't know what "rgb(226, 226, 226)" is, but I'm not using it. Too much contrast. */
 	text-transform:uppercase;
 	font-family:Helvetica,Arial,sans-serif;
 	font-weight: 600;
@@ -243,7 +243,7 @@ a:active
 	border:none;
 	background-color: #404040;
 	padding: 2em;
-	color: #808080;		/* Grey Text */
+	color: #adadad;		/* Grey Text */
 	letter-spacing:1px;
 	font-family: 'Courier New', Courier, monospace;
 	font-weight: 600;

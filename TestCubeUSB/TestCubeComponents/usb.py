@@ -6,6 +6,6 @@ class UsbMessage:
         self.usbmsg = msg
 
     def get_sendusb_messages(self):
-        if self.usbmsg == None:
+        if self.usbmsg is None:
             return []
         return [self.usbmsg]
