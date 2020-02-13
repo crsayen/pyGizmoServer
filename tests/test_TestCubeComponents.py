@@ -87,7 +87,10 @@ def test_sendUsbMsg():
 
 def test_freq():
     fm = FrequencyMessage()
-    fm.setFrequencyInputEnabled(0x5)
+    fm.setFrequencyInputEnabled(0, 1)
+    fm.setFrequencyInputEnabled(2, 1)
+    fm.setFrequencyInputEnabled(1, 0)
+    fm.setFrequencyInputEnabled(3, 0)
     fm.setFrequencyMonitorRate(0x1 * 50)
     assert fm.get_freq_messages() == ["0000000e0501"]
 

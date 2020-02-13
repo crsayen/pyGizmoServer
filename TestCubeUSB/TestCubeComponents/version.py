@@ -36,6 +36,6 @@ class VersionMessage:
                 int(payload[8:12], 16),
             )
             self.version = f"{hi}.{lo}.{patch}"
-        if self.getFirmwareVersion is not None and not self.getVersionEvent.is_set():
+        if self.getVersionEvent is not None and not self.getVersionEvent.is_set():
             self.getVersionEvent.set()
         return [{"path": "/version", "data": self.version}]
