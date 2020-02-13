@@ -48,11 +48,11 @@ def test_pwmduty():
     pm = PwmMessage()
     pm.setPwmDutyCycle(0, 50)
     pm.setPwmDutyCycle(4, 50)
-    assert pm.get_pwm_messages() == ["000000060011320000003200"]
+    assert pm.get_pwm_messages() == ["000000060011003200000032"]
     pm.setPwmDutyCycle(6, 50)
     assert pm.get_pwm_messages() == [
-        "000000060011320000003200",
-        "000000060101320000000000",
+        "000000060011003200000032",
+        "000000060101000000000032",
     ]
 
 
