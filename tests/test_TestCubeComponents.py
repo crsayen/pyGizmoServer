@@ -73,9 +73,9 @@ def test_dirate():
 
 def test_actCur():
     am = ActCurMessage()
-    am.setPwmCurrentMonitorUpdateRate(1)
+    am.setPwmCurrentMonitorUpdateRate(1 * 50)
     am.setPwmCurrentMonitorChannels(0x555)
-    am.setPwmFaultThreshold(0x22)
+    am.setPwmFaultThreshold(0x22 * 50)
     assert am.get_actcur_messages() == ["0000000c05550122"]
 
 
