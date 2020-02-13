@@ -3,7 +3,7 @@ class DiMessage:
         self.dimonitorrate = None
 
     def setDiMonitorUpdateRate(self, rate: int):
-        self.dimonitorrate = rate
+        self.dimonitorrate = int(rate / 50)
 
     def get_di_messages(self):
         if self.dimonitorrate == None:
