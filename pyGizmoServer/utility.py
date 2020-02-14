@@ -1,5 +1,6 @@
 import copy
 import yaml
+import os
 
 
 class Utility:
@@ -103,7 +104,8 @@ class Settings:
     @classmethod
     def load(cls, filename):
         try:
-            with open(f"config/{filename}.yml") as f:
-                return DotDict(yaml.full_load(f))
-        except Exception:
+            with open(f"./config/{filename}.yml") as f:
+                return DotDict(yaml.load(f, Loader=yaml.CLoader))
+        except Exception as e:
+            print(f"{e}")
             return None

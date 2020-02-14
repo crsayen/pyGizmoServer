@@ -84,7 +84,8 @@ class TestCubeUSB(
             for dev in devs:
                 try:
                     dev.write(2, "0000050")
-                except Exception:
+                except Exception as e:
+                    print(f"{e}")
                     continue
                 self.dev = dev
                 return
