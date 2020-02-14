@@ -2,6 +2,15 @@ var treevisible = false;
 var model_buttonbar = [];
 var model;
 
+
+
+var app2 = new Vue({
+    el: '#app-2',
+    data: {
+      message: 'You loaded this page on ' + new Date().toLocaleString()
+    }
+  })
+
 function create_button_bar(roots){
     var btn_bar = document.createElement("div");
     btn_bar.id = "model_buttonbar";
