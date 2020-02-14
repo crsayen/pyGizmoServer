@@ -83,6 +83,8 @@ def test_sendUsbMsg():
     um = UsbMessage()
     um.sendrawusb("1234")
     assert um.get_sendusb_messages() == ["1234"]
+    um.sendrawusb(["1","2",'3'])
+    assert um.get_sendusb_messages() == ["1","2",'3']
 
 
 def test_freq():
