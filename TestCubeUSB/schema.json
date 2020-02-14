@@ -55,7 +55,8 @@
     "usb":{
         "txMessage": {"w": "sendrawusb", "args": [], "$type": "string"},
         "rxMessage": {"$type": "string"},
-        "rxCount": {"$type": "integer"}
+        "rxCount": {"$type": "integer"},
+        "usbinfo":{"$type": "string"}
     },
     "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
     "wsinvoke": {"w": "wsinvoke", "args": [], "$type": "string" },
