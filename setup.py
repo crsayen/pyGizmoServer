@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="pyGizmoServer",
     version="1.0.3",
-    python_requires=">=3.8",
+    python_requires=">=3.6",
     packages=[
         "TestCubeUSB",
         "MockUSB",
