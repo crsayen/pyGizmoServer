@@ -13,7 +13,7 @@ from TestCubeUSB.TestCubeComponents.frequency import FrequencyMessage
 from TestCubeUSB.TestCubeComponents.usb import UsbMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeUSB.TestCubeComponents.version import VersionMessage
-
+import copy
 
 class TestCubeUSB(
     RelayMessage,
@@ -47,6 +47,7 @@ class TestCubeUSB(
         self.ask = None
         self.getVersionEvent = None
         AdcMessage.__init__(self)
+        self.usbrxcount=0
         self.usbidparsers = {
             "00000005": self.recusb_5_pwmfreq,
             "00000007": self.recusb_7_pwmdutycycle,
@@ -87,6 +88,20 @@ class TestCubeUSB(
                 except Exception:
                     continue
                 self.dev = dev
+                d = str(dev).split("\n")
+                devdict = {}
+                for line in d:
+                    if 'DEVICE ID' in line:
+                        s = line.split(" ")
+                        #print(s)
+                        devdict['deviceid'] = s[2]
+                        devdict['bus'] = s[5] + "." + s[7]
+
+                    elif ':' in line:
+                        k,v = line.split(':')[0].strip(),line.split(':')[1].strip()
+                        devdict[k] = v
+                #print(devdict)
+                self.callback({"path": "/usb/usbinfo", "data": devdict})
                 return
         raise ValueError("Device not found")
 
@@ -126,6 +141,11 @@ class TestCubeUSB(
             msg = "".join([chr(x) for x in msg])
             if self.logger.isEnabledFor(logging.USB):
                 self.logger.usb(f"{msg}")
+            self.usbrxcount += 1
+            self.callback([{"path": "/usb/rxMessage", "data": msg},
+                {"path": "/usb/rxCount" , "data": self.usbrxcount},
+            ])
+
             d = self.recUsb(msg)
             if d is None:
                 continue
