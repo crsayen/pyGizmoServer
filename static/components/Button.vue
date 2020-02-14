@@ -1,5 +1,5 @@
 <template>
-  <button :class="type"><slot/></Button>
+  <button :class="type"><slot></Button>
 </template>
 
 <script>
@@ -10,8 +10,8 @@ props: [ 'type' ]
 
 </script>
 <style scoped>
-button.primary {
-background: blue;
-color: white;
+  button.primary {
+    background: blue;
+    color: white;
 }
 </style>
