@@ -20,7 +20,7 @@ class ModificationHandler:
             await spawn(request, self.controller.usbrxhandler())
         request = json.loads(await request.text())
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"{request['path']}")
+            self.logger.debug(f"{request}")
         if not isinstance(request, list):
             request = [request]
         response = []

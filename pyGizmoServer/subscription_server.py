@@ -23,6 +23,7 @@ class SubscriptionServer:
             self.connection_handler, self.ip, self.port, loop=self.subloop
         )
         self.subloop.run_until_complete(self.server)
+        
 
     def publish(self, update):
         if self.logger.isEnabledFor(logging.DEBUG):
@@ -30,16 +31,31 @@ class SubscriptionServer:
         path = update.get("path")
         if path is None:
             raise ValueError(f"unable to publish update, bad format: {update}")
-        try:
-            for connection in self.connected:
-                if connection[1] in path:
-                    if self.logger.isEnabledFor(logging.DEBUG):
-                        self.logger.debug(f"sending ws on: {update}")
-                    asyncio.run_coroutine_threadsafe(
-                        connection[0].send(json.dumps(update)), self.subloop
+        #try:
+        for connection in self.connected:
+            if path == connection[1]:
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f"sending ws on: {update}")
+                asyncio.run_coroutine_threadsafe(
+                    connection[0].send(json.dumps(update)), self.subloop
+                )
+            elif path in connection[1]:
+                locupdate = update["value"].copy()
+                locpath = connection[1][len(path):]
+                for p in locpath.split('/'):
+                    if p == '': 
+                        continue
+                    if p.isnumeric():
+                        p = int(p)
+                    locupdate = locupdate[p]
+                newupdate = {"path": connection[1], "value": locupdate}
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug(f"sending ws on: {newupdate}")
+                asyncio.run_coroutine_threadsafe(
+                    connection[0].send(json.dumps(newupdate)), self.subloop
                     )
-        except Exception as e:
-            self.logger.error(f"{e}")
+        #except Exception as e:
+            #self.logger.error(f"{e}")
 
     async def connection_handler(self, websocket, path):
         if self.logger.isEnabledFor(logging.DEBUG):

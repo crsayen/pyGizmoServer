@@ -33,9 +33,9 @@ class QueryHandler:
     async def handle_get(self, request):
         if not self.controller.running:
             await spawn(request, self.controller.usbrxhandler())
-        path = request.path
-        if path == "/model":
-            path = "/"
+        if request.path == "/schema":
+            return web.json_response(self.controller.schema)
+        path, getmodel = ("/", True) if request.path == "/model" else (request.path, False)
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f"{path}")
         data = Utility.parse_path_against_schema_and_model(
@@ -49,6 +49,8 @@ class QueryHandler:
             response = res
         else:
             response = {"path": data["path_string"], "data": data["model_data"]}
+        if getmodel:
+            response["controller"] = self.controller.__class__.__name__
         return web.json_response(response)
 
     def handle_updates(self, updates):

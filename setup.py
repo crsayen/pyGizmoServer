@@ -13,6 +13,8 @@ setup(
         "templates",
         "config",
         "MockUSB",
+        "public",
+        "src"
     ],
     install_requires=[
         "jsonpatch",
@@ -29,9 +31,9 @@ setup(
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={
         "console_scripts": [
-            "gizmo=pyGizmoServer.run:main",
-            "gizmocli=tests.mock_client:main",
-            "justusb=TestCubeUSB.justusb:main",
+            "egizmo=pyGizmoServer.run:main",
+            "egizmocli=tests.mock_client:main",
+            "ejustusb=TestCubeUSB.justusb:main",
         ]
     },
 )

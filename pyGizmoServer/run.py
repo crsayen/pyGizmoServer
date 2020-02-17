@@ -60,28 +60,23 @@ query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, controller, model=model)
 controller.setcallback(query_handler.handle_updates)
 
 
-@aiohttp_jinja2.template("index.html")
 async def get_index(request):
-    return {
-        "title": cfg.controller,
-        "version": version,
-        "time_started": starttime,
-    }
+    return web.FileResponse('./dist/index.html')
 
 
-def get_model(request):
-    return query_handler.handle_get(request)
+async def get_favicon(request):
+     return web.FileResponse('./dist/favicon.ico')
 
 
 def make_app():
     controller.start()
 
     app = web.Application(loop=asyncio.get_event_loop())
-    aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(["templates", "static"]))
-    app["static_root_url"] = "/static"
+    app["static_root_url"] = "/src"
     app.router.add_get("/", get_index)
-    app.router.add_static("/static", "static")
-    app.router.add_get("/model", get_model)
+    app.router.add_get("/favicon", get_favicon)
+    app.router.add_static("/js", path="./dist/js")
+    app.router.add_static("/css", path="./dist/css")
     app.router.add_route("GET", r"/{tail:.*}", query_handler.handle_get)
     app.router.add_route(
         "PATCH", r"/{tail:.*}", modification_handler.handle_patch_from_client
