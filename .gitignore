@@ -1,7 +1,6 @@
 .installed.cfg
 bin
 develop-eggs
-dist
 downloads
 eggs
 parts
@@ -18,7 +17,6 @@ lib64
 
 .DS_Store
 node_modules
-/dist
 
 # local env files
 .env.local
