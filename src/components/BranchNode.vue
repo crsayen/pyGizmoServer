@@ -1,7 +1,7 @@
 <template>
     <div class="node">
-        <div>{{ label }}</div>
-        <LeafNode
+        <div class="lbl">{{ label }}</div>
+        <leafnode
             v-for="node in leafnodes"
             :label="node.label"
             :type="node.type"
@@ -9,33 +9,33 @@
             :readable="node.readable"
             :path="node.path"
             :key="node.id"
-        ></LeafNode>
-        <BranchNode 
+        ></leafnode>
+        <branchnode 
             v-for="node in branchnodes" 
             :nodes="node.nodes" 
             :label="node.label"
             :key="node.id"
         >
-        </BranchNode>
+        </branchnode>
     </div>
 </template>
 
 
 <script>
-import LeafNode from './LeafNode.vue'
+import leafnode from './leafnode.vue'
 
 export default { 
-    name: 'BranchNode',
     props: [ 'label', 'nodes'],
+    name: 'branchnode',
     components : {
-        LeafNode
+        leafnode,
     },
     computed: {
         leafnodes() {
-            return this.nodes.map(node => node.isleaf)
+            return this.nodes.filter(node => node.isleaf)
         },
         branchnodes() {
-            return this.nodes.map(node => !node.isleaf)
+            return this.nodes.filter(node => !node.isleaf)
         }
     }
 }
@@ -43,14 +43,18 @@ export default {
 
 <style scoped>
     .node{
-        padding: 1em;
-        letter-spacing:1px;
+        padding: 10px;
+        letter-spacing: 1px;
         font-family: 'Courier New', Courier, monospace;
-        margin: 1em 0.5em;
+        margin: 10px;
+        margin-left: 1px;
         box-shadow: -3px 3px 8px 1px #181818;
-        background-color: rgb(43, 43, 43);
-        padding: 0.5em;
-        color:#adadad;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
+        background-color: rgb(59, 59, 59);
+        color:rgb(224, 224, 224);
         font-weight: bold;
+        min-width: max-content;
+    }
+    .lbl {
+        margin-left: 20px;
     }
 </style>

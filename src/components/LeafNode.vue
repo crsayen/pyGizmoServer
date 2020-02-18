@@ -1,30 +1,35 @@
 <template>
-<div class="node">
-    {{ label }} 
-    <div v-if="writable">
-        <input v-if="type == 'boolean'" type="checkbox" v-model="outValue"/>
-        <input v-else-if="type == 'integer'" type="number" v-model.lazy="outValue"/>
-        <input v-else type="Text" v-model.lazy="outValue"/>
+    <div class="leaf node">
+        <div class="disp">
+            {{ label }}: 
+            <div class="value">
+                {{ value }}
+            </div>
+        </div>
+        <div v-if="writable" class="inp">
+            <input v-if="type == 'boolean'" type="checkbox" v-model="outValue"/>
+            <input v-else-if="type == 'integer'" type="number" v-model.lazy="outValue"/>
+            <input v-else type="Text" v-model.lazy="outValue"/>
+        </div>
+        <div class="btnBox">
+            <div v-if="readable">
+                    <button @click="get"
+                    class="getBtn"
+                    :disabled="watching"
+                    :class="{enabled: !watching, disabled: watching}"
+                >GET</button>
+            </div>
+            <div v-if="true">
+                <button
+                    class="watchBtn"
+                    type="button"
+                    @click="watch_unwatch" 
+                    v-text="watching ? 'WATCHING' : 'WATCH'"
+                    :class="{on: watching, off: !watching}"
+                ></button>
+            </div>
+        </div>
     </div>
-    <div v-if="readable">
-        <button @click="get"
-        v-text="get"
-        class="btn"
-        :disabled="watching"
-        :class="{disabled: watching}"
-        ></button>
-    </div>
-    <div v-if="watchable">
-        <button 
-        class='btn' 
-        type="button" 
-        @click="watch_unwatch" 
-        v-text="watching ? watch : watching"
-        :class="{active: !watching}"
-    ></button>
-    </div>
-    <div class="disp">{{ value }}</div>
-</div>
 </template>
 
 
@@ -36,12 +41,12 @@ export default {
     data() { 
         return {
             outValue: null,
-            value: null,
+            value: "unknown",
             ws: null,
             watching: false
         } 
     },
-    name: 'LeafNode',
+    name: 'leafnode',
     methods: {
         update(data) {
             this.value = data
@@ -52,60 +57,142 @@ export default {
                 return response.json()
             })
             .then((json) => {
-                if (!this.readable){
-                    this.value = json.data
+                if (!this.watching){
+                    console.log(json)
+                    this.value = json[0].data
                 }
             })
         },
+        patch(value) {
+            fetch(this.path, { headers: { 
+                    "Content-Type": "application/json; charset=utf-8" 
+                },
+                method: 'PATCH',
+                body: JSON.stringify({
+                    op: 'replace',
+                    path: this.path,
+                    value: value
+                })
+            })
+            .then((response) => response.json())
+            .then((res) => {
+                if (!this.watching) {
+                    this.value = res[0].data
+                }
+            }
+        )},
         watch_unwatch() {
-            if (this.watching) {
-                this.ws = new ws(this.$shared.wspath + this.path)
-                this.ws.onmessage = (data) => this.value = data.value
+            if (!this.watching) {
+                this.ws = new ws('ws://localhost:11111' + this.path)
+                this.ws.onmessage = (data) => this.value = JSON.parse(data.data).value
                 this.watching = true
+            }else{
+                this.ws.close()
+                this.ws = null
+                this.watching = false
             }
         }
     },
     watch: {
-        outValue: (oldVal, newVal) => {
+        outValue: function(newVal, oldVal) {
             if (newVal != oldVal){
                 // everything gets turned to strings unless I parse it now
                 if (typeof newVal != "string") { newVal = JSON.parse(newVal)}
-                this.$shared.patchReplace(this.path, newVal)
-                .then((response) => response.json())
-                .then((res) => (this.watching) ? this.value : res.data)
+                this.patch(newVal)
             }
         }
     },
     destroyed() {
-        this.ws.destroy()
+        if (this.ws !== null){
+            this.ws.close()
+        }
     }
 }
 </script>
 
 <style scoped>
-    .node{
-        padding: 1em;
-        letter-spacing:1px;
+    *{
+        user-select: none;
         font-family: 'Courier New', Courier, monospace;
-        margin: 1em 0.5em;
-        box-shadow: -3px 3px 8px 1px #181818;
-        background-color: rgb(43, 43, 43);
-        padding: 0.5em;
-        color:#adadad;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
-        font-weight: bold;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
-    .btn {
-        background: #565656;
+    .node.leaf {
+        padding: 10px 0 10px 20px;
+        margin-left: 10px;
+        background-color: #555f57;
+        display: grid;
+        grid-template-columns: max-content max-content max-content;
+        grid-template-rows: min-content min-content min-content;
+        border-radius: 0.5em;
+        box-shadow: -3px 3px 8px 1px #272727;
+        grid-template-areas: 
+            "topl topc topr"
+            "midl midc midr"
+            "botl botc botr";
     }
-    .active {
+    .btnBox {
+        grid-area: topr;
+        display:flex;
+        flex-direction: column;
+        width: max-content;
+    }
+    .getBtn ,
+    .watchBtn {
+        font-weight: 600;
+        font-family: Helvetica,Arial,sans-serif;
+        border: None;
+        padding: 10px;
+        margin: 5px;
+        border-radius: 0.5em;
+        background: #333333;
+        text-transform: uppercase;
+        color: #e4e4e4;
+    }
+    .getBtn {
+        align-self: flex-end;
+        width: min-content;
+    }
+    .watchBtn {
+        align-self: flex-start;
+        width:min-content;
+    }
+    .getBtn:hover ,
+    .watchBtn:hover {
+        background: #4e4e4e;
+    }
+    .getBtn:focus ,
+    .watchBtn:focus {
+        outline: none;
+    }
+    .disabled ,
+    .disabled:hover{
+        background: #e4e4e4;
+        color: #646464;
+        opacity: 20%;
+        
+    }
+    .watchBtn.on {
         background: #457e55;
     }
-    .disabled {
-        background: #7f7f7f;
-        color: #646464;
+    .watchBtn.on:hover {
+        background: #5faa74;
     }
     .disp {
-        color: white;
-        font-weight: 900;
+        grid-area: topl;
+        margin: 10px;
+        margin-bottom: 3px;
+        margin-top: 3px;
     }
-</style>
+    .value {
+        font-style: italic;
+        font-weight:bold;
+        font-size: 110%;
+        color: rgb(255, 255, 255);
+    }
+    .inp {
+        grid-area: botl;
+        margin: 10px;
+        margin-top: 2px;
+    }
+</style>top
