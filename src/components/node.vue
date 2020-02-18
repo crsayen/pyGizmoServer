@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div v-if="isleaf" id="leaf">
+    <div v-if="isleaf" class="leaf">
         {{ label }} 
         <div v-if="!nodes.writable">
             <input v-if="nodes.type == 'boolean'" type="checkbox" v-model="outval"/>
@@ -109,10 +109,10 @@ export default {
         box-shadow: -3px 3px 8px 1px #181818;
         background-color: rgb(43, 43, 43);
         padding: 0.5em;
-        color:#adadad;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
+        color:#adadad;
         font-weight: bold;
     }
-    #leaf{
+    .leaf{
         padding: 1em;
         letter-spacing:1px;
         font-family: 'Courier New', Courier, monospace;
@@ -120,7 +120,7 @@ export default {
         box-shadow: -3px 3px 8px 1px #181818;
         background-color: rgb(43, 43, 43);
         padding: 0.5em;
-        color:#adadad;		/* I'm not sure what "rgb(241, 237, 231)" is, but I'm not using it ( too much contrast ) . */
+        color:#adadad;
         font-weight: bold;
     }
     .disp {
