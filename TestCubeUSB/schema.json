@@ -51,7 +51,47 @@
             "enabled" : { "w" : "setFrequencyInputEnabled", "args": [], "$type": "boolean" }
         }
     },
-    "canDatabase" : { "w" : "setCanDatabase", "args": [], "$type": "object"  },
+    "canDatabase" : {
+        "txDefinitions": {
+            "$routines": {"w": "writeToTxDb", "a": "addToTxDb"},
+            "$proto": {
+                "$routines": {"w": "writeTxMessage","args": ["$proto"],"$type": "object", "r": "fname"},
+                "fields": {
+                    "$routines": {"w": "setTxField","args": ["$proto"],"$type": "object", "r": "fname"},
+                    "$proto": {
+                        "startBit": null,
+                        "size": null,
+                        "endianness": null,
+                        "gain": null,
+                        "offset": null,
+                        "rollMin": null,
+                        "rollMax": null,
+                        "divisor": null,
+                        "initialValue": null,
+                        "finalXorValue": null
+                    }
+                },
+                "template": [null],
+                "repeatRate": null
+            }
+        },
+        "rxMessages": {
+            "$proto": {
+                "messageId": null,
+                "canPort": null,
+                "fields": {
+                    "$proto": {
+                        "endianness": null,
+                        "gain": null,
+                        "offset": null,
+                        "size": null,
+                        "startBit": null
+                }
+            },
+                "payloadSize": null
+            }
+        }
+    },
     "usb":{
         "txMessage": {"w": "sendrawusb", "args": [], "$type": "string"},
         "rxMessage": {"$type": "string"},
