@@ -72,12 +72,13 @@ export default {
                 body: JSON.stringify({
                     op: 'replace',
                     path: this.path,
-                    value: value
+                    value: (isNaN(value)) ? value : Number(value)
                 })
             })
             .then((response) => response.json())
             .then((res) => {
                 if (!this.watching) {
+                    console.log(res)
                     this.value = res[0].data
                 }
             }
@@ -85,7 +86,10 @@ export default {
         watch_unwatch() {
             if (!this.watching) {
                 this.ws = new ws('ws://localhost:11111' + this.path)
-                this.ws.onmessage = (data) => this.value = JSON.parse(data.data).value
+                this.ws.onmessage = (data) => {
+                    console.log(data)
+                    this.value = JSON.parse(data.data).value
+                }
                 this.watching = true
             }else{
                 this.ws.close()
@@ -99,6 +103,7 @@ export default {
             if (newVal != oldVal){
                 // everything gets turned to strings unless I parse it now
                 if (typeof newVal != "string") { newVal = JSON.parse(newVal)}
+                console.log(newVal)
                 this.patch(newVal)
             }
         }

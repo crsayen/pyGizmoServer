@@ -11,7 +11,7 @@
             v-text="(expanded) ? '-' : '+'"
         ></b-button>
         <b-collapse
-            :visible="this.isroot || (!this.root && this.nodes.length < 2)"
+            :visible="this.isroot || (!this.isroot && this.nodes.length < 2)"
             :id="'collapse-' + this.label"
             class="mt-2"
         >
