@@ -1,42 +1,90 @@
+.btn:focus,.btn:active:focus,.btn.active:focus,
+.btn.focus,.btn:active.focus,.btn.active.focus {
+    outline: none;
+}
+#root{
+    margin: auto;
+}
+.node{
+    padding: 10px;
+    padding-bottom: 0;
+    letter-spacing: 1px;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 10px;
+    margin-bottom: 0;
+    margin-left: 1px;
+    margin-right: 40px;
+    background-color: rgb(59, 59, 59);
+    color:rgb(240, 238, 227);
+    font-weight: 300;
+    min-width: max-content;
+    max-width: 50em;
+    justify-self: center;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", 
+        "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    -webkit-box-shadow: -2px 0px 12px -2px rgba(0,0,0,0.77);
+    -moz-box-shadow: -2px 0px 12px -2px rgba(0,0,0,0.77);
+    box-shadow: -2px 0px 12px -2px rgba(0,0,0,0.77);
+}
 .node.leaf {
-    padding: 10px 0 10px 20px;
-    margin-left: 10px;
-    background-color: #555f57;
     display: grid;
-    grid-template-columns: max-content max-content max-content;
+    padding: 15px;
+    margin-top: 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    box-shadow: none;
+    border: solid 1px rgb(37, 37, 37);
+    grid-template-columns: max-content auto auto;
     grid-template-rows: min-content min-content min-content;
-    border-radius: 0.5em;
-    box-shadow: -3px 3px 8px 1px #272727;
     grid-template-areas: 
-        "topl topc topr"
-        "midl midc midr"
-        "botl botc botr";
+        "topl top r"
+        "midl mid r"
+        "bot bot bot";
+}
+.expander {
+    border: none !important;
+    background-color: rgb(37, 37, 37);
+    padding: 2px;
+    margin: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    color: #ffffff;
+    border-radius: 0;
+}
+.expander:focus,
+.expander.active,
+.expander:hover{
+    border: none !important;
+    box-shadow: none !important;
+    background-color: rgb(49, 49, 49) !important;
+}
+.expander:focus{
+    border: none !important;
+    box-shadow: none !important;
+    background-color: rgb(49, 49, 49) !important;;
 }
 .btnBox {
-    grid-area: topr;
+    grid-area: r;
     display:flex;
+    justify-self: right;
     flex-direction: column;
     width: max-content;
 }
 .getBtn ,
 .watchBtn {
-    font-weight: 600;
-    font-family: Helvetica,Arial,sans-serif;
+    letter-spacing: 1px;
     border: None;
     padding: 10px;
     margin: 5px;
-    border-radius: 0.5em;
+    border-radius: 3px;
     background: #333333;
-    text-transform: uppercase;
     color: #e4e4e4;
-}
-.getBtn {
     align-self: flex-end;
     width: min-content;
+    color: rgb(146, 146, 146);
 }
 .watchBtn {
     align-self: flex-start;
-    width:min-content;
 }
 .getBtn:hover ,
 .watchBtn:hover {
@@ -55,39 +103,43 @@
 }
 .watchBtn.on {
     background: #457e55;
+    color: rgb(34, 34, 34);
 }
 .watchBtn.on:hover {
     background: #5faa74;
 }
-.disp {
+.label {
+    background-clip: padding-box;
+    position: relative;
+    background-color: rgb(59, 59, 59);
+    border: solid 1px rgb(37, 37, 37);
+    border-bottom: none;
     grid-area: topl;
     margin: 10px;
-    margin-bottom: 3px;
+    margin-bottom: -10px;
     margin-top: 3px;
+    padding: 10px 20px;
+    width: min-content;
+    z-index: 2;
+}
+.valueBox {
+    display: flex;
+    flex-direction: row;
+    grid-area: bot;
+    font-size: 110%;
+    margin-top: 10px;
 }
 .value {
-    font-style: italic;
-    font-weight:bold;
-    font-size: 110%;
+    background: rgb(85, 85, 85);
+    outline: solid 1px #4b534d;
+    margin-left: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     color: rgb(255, 255, 255);
 }
-.inp {
-    grid-area: botl;
+.input {
+    grid-area: midl;
     margin: 10px;
-    margin-top: 2px;
-}
-.node{
-    padding: 10px;
-    letter-spacing: 1px;
-    font-family: 'Courier New', Courier, monospace;
-    margin: 10px;
-    margin-left: 1px;
-    box-shadow: -3px 3px 8px 1px #181818;
-    background-color: rgb(59, 59, 59);
-    color:rgb(224, 224, 224);
-    font-weight: bold;
-    min-width: max-content;
-}
-.lbl {
-    margin-left: 20px;
+    margin-bottom: 2px;
+    justify-self: center;
 }

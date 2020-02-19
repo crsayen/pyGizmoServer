@@ -1,13 +1,15 @@
 <template>
     <div class="leaf node">
-        <div class="disp">
-            {{ label }}: 
-            <div class="value">
-                {{ value }}
-            </div>
+        <div class="labelBox">
+            {{ label }}
         </div>
-        <div v-if="writable" class="inp">
-            <input v-if="type == 'boolean'" type="checkbox" v-model="outValue"/>
+        <div class="valueBox">
+            <div class='valueLabel'>state:</div>
+            <div class="value">{{ value }}</div>
+        </div>
+        <div v-if="writable" class="input">
+            <b-form-checkbox switch size="lg" v-if="type == 'boolean'" v-model="outValue">
+            </b-form-checkbox>
             <input v-else-if="type == 'integer'" type="number" v-model.lazy="outValue"/>
             <input v-else type="Text" v-model.lazy="outValue"/>
         </div>
@@ -24,7 +26,7 @@
                     class="watchBtn"
                     type="button"
                     @click="watch_unwatch" 
-                    v-text="watching ? 'WATCHING' : 'WATCH'"
+                    v-text="watching ? 'watching' : 'watch'"
                     :class="{on: watching, off: !watching}"
                 ></button>
             </div>
@@ -58,7 +60,6 @@ export default {
             })
             .then((json) => {
                 if (!this.watching){
-                    console.log(json)
                     this.value = json[0].data
                 }
             })
