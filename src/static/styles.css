@@ -1,0 +1,93 @@
+.node.leaf {
+    padding: 10px 0 10px 20px;
+    margin-left: 10px;
+    background-color: #555f57;
+    display: grid;
+    grid-template-columns: max-content max-content max-content;
+    grid-template-rows: min-content min-content min-content;
+    border-radius: 0.5em;
+    box-shadow: -3px 3px 8px 1px #272727;
+    grid-template-areas: 
+        "topl topc topr"
+        "midl midc midr"
+        "botl botc botr";
+}
+.btnBox {
+    grid-area: topr;
+    display:flex;
+    flex-direction: column;
+    width: max-content;
+}
+.getBtn ,
+.watchBtn {
+    font-weight: 600;
+    font-family: Helvetica,Arial,sans-serif;
+    border: None;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 0.5em;
+    background: #333333;
+    text-transform: uppercase;
+    color: #e4e4e4;
+}
+.getBtn {
+    align-self: flex-end;
+    width: min-content;
+}
+.watchBtn {
+    align-self: flex-start;
+    width:min-content;
+}
+.getBtn:hover ,
+.watchBtn:hover {
+    background: #4e4e4e;
+}
+.getBtn:focus ,
+.watchBtn:focus {
+    outline: none;
+}
+.disabled ,
+.disabled:hover{
+    background: #e4e4e4;
+    color: #646464;
+    opacity: 20%;
+    
+}
+.watchBtn.on {
+    background: #457e55;
+}
+.watchBtn.on:hover {
+    background: #5faa74;
+}
+.disp {
+    grid-area: topl;
+    margin: 10px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+.value {
+    font-style: italic;
+    font-weight:bold;
+    font-size: 110%;
+    color: rgb(255, 255, 255);
+}
+.inp {
+    grid-area: botl;
+    margin: 10px;
+    margin-top: 2px;
+}
+.node{
+    padding: 10px;
+    letter-spacing: 1px;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 10px;
+    margin-left: 1px;
+    box-shadow: -3px 3px 8px 1px #181818;
+    background-color: rgb(59, 59, 59);
+    color:rgb(224, 224, 224);
+    font-weight: bold;
+    min-width: max-content;
+}
+.lbl {
+    margin-left: 20px;
+}

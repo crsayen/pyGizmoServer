@@ -10,6 +10,8 @@
             :path="node.path"
             :key="node.id"
         ></leafnode>
+        <b-button v-b-toggle='this.path' variant="primary">Toggle Collapse</b-button>
+        <b-collapse id="this.path" class="mt-2">
         <branchnode 
             v-for="node in branchnodes" 
             :nodes="node.nodes" 
@@ -17,6 +19,7 @@
             :key="node.id"
         >
         </branchnode>
+        </b-collapse>
     </div>
 </template>
 
@@ -40,21 +43,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-    .node{
-        padding: 10px;
-        letter-spacing: 1px;
-        font-family: 'Courier New', Courier, monospace;
-        margin: 10px;
-        margin-left: 1px;
-        box-shadow: -3px 3px 8px 1px #181818;
-        background-color: rgb(59, 59, 59);
-        color:rgb(224, 224, 224);
-        font-weight: bold;
-        min-width: max-content;
-    }
-    .lbl {
-        margin-left: 20px;
-    }
-</style>
