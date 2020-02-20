@@ -9,11 +9,12 @@ def usbdebug():
 
     os.environ["PYUSB_DEBUG"] = "debug"
     import usb.core
+    devs = usb.core.find(find_all=True)
+    for dev in devs:
+        dev.set_configuration()
+        print(dev)
 
-    print(usb.core.find())
-
-
-if __name__ == "__main__":
+def main():
     usbdebug()
     dev = usb.core.find(idVendor=0x2B87, idProduct=0x0001)
     if dev is None:
@@ -36,3 +37,6 @@ if __name__ == "__main__":
             if "time" not in str(e):
                 print(f"USB: {e}")
             continue
+
+if __name__ == "__main__":
+    main()

@@ -1,74 +1,28 @@
 import Vue from 'vue'
-import Node from './components/node.vue'
-import VueNativeSock from 'vue-native-websocket'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './static/styles.css'
+import branchnode from './components/branchnode.vue'
+
+Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
-
-/* This is temporary data, in reality this will be fetched */
-// let data = {
-//   relayController:{
-//     relays: [
-//       {enabled: true},
-//       {enabled: false},
-//     ]
-//   },
-//   pwmController: {
-//     pwmMonitorUpdateRate: 100,
-//     bankA: {
-//       frequency: 1000
-//     },
-//     bankB: {
-//       frequency: 1234
-//     },
-//     pwms: [
-//       {
-//         enabled: false,
-//         dutyCycle: 50
-//       },
-//       {
-//         enabled: false,
-//         dutyCycle: 50
-//       },
-//     ]
-//   }
-// }
-
 
 function makenode(key, val, path){
     let obj = new Object();
     obj.path = path + '/' + key;
     obj.label = key;
-    obj.nodes = parsetree(val, obj.path);
+    if(val.$type){
+        obj.type = val.$type
+        obj.isleaf = true
+        obj.readable = (val.r) ? true : false
+        obj.writable = (val.w) ? true : false
+    }else{
+        obj.isleaf = false
+        obj.nodes = parseschema(val, obj.path);
+    }
     return obj
-}
-
-function smakenode(key, val, path){
-    let obj = new Object();
-    obj.path = path + '/' + key;
-    obj.label = key;
-    obj.nodes = parseschema(val, obj.path);
-    return obj
-}
-
-function parsetree(item, path) {
-    if (typeof item === "object" && item !== null){
-        let nodes = [];
-        for (let [key, val] of Object.entries(item)){
-            nodes.push(makenode(key, val, path));
-        }
-        return nodes
-    }
-    else if (Array.isArray(item)) {
-        return item.map((value, index) => makenode(String(index), value, path))
-    }
-    else{
-        let obj = new Object();
-        obj.label = '';
-        obj.path = path;
-        obj.value = item;
-        obj.type = String(typeof item);
-        return obj;
-    }
 }
 
 function parseschema(item, path) {
@@ -78,34 +32,19 @@ function parseschema(item, path) {
             let count = item.$count
             delete item.$count
             for(let i = 0; i < count; i++){
-                nodes.push(smakenode(String(i), item, path))
+                nodes.push(makenode(String(i), item, path))
             }
             return nodes
         }
-        else if(item.$type){
-            console.log("type")
-            let obj = new Object()
-            obj.label = ''
-            obj.path = path
-            obj.value = "unknown"
-            obj.type = item.$type
-            obj.readable = (item.r) ? false : true
-            obj.writable = (item.w) ? false : true
-            return obj
-        }
         for (let [key, val] of Object.entries(item)){
-            if (key == "$count"){
+            if (key == "$count" || key == "controller"){
                 continue
             }
-            nodes.push(smakenode(key, val, path));
+            nodes.push(makenode(key, val, path));
         }
         return nodes
     }
 }
-
-Vue.use(VueNativeSock, 'ws://localhost:11111/', {
-  connectManually: true,
-})
 
 fetch("/schema")
 .then(async (response) => {
@@ -120,7 +59,7 @@ fetch("/schema")
             tree
         },
         components: {
-            Node
+            branchnode
         }
     })
 })

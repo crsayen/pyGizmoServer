@@ -9,8 +9,6 @@ setup(
         "MockUSB",
         "pyGizmoServer",
         "tests",
-        "static",
-        "templates",
         "config",
         "MockUSB",
         "public",
@@ -31,9 +29,9 @@ setup(
     package_data={"schemas": ["*.txt", "*.json"], "": ["*.md"]},
     entry_points={
         "console_scripts": [
-            "egizmo=pyGizmoServer.run:main",
-            "egizmocli=tests.mock_client:main",
-            "ejustusb=TestCubeUSB.justusb:main",
+            "gizmo=pyGizmoServer.run:main",
+            "gizmocli=tests.mock_client:main",
+            "justusb=TestCubeUSB.justusb:main",
         ]
     },
 )

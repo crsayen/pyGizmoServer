@@ -34,7 +34,9 @@ class QueryHandler:
         if not self.controller.running:
             await spawn(request, self.controller.usbrxhandler())
         if request.path == "/schema":
-            return web.json_response(self.controller.schema)
+            resp = self.controller.schema.copy()
+            resp["controller"] = self.controller.__class__.__name__
+            return web.json_response(resp)
         path, getmodel = ("/", True) if request.path == "/model" else (request.path, False)
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(f"{path}")

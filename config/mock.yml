@@ -8,6 +8,6 @@ controller: 'MockUSB'
 logging:
   file:
     loglevel: 'DEBUG'
-    filename: 'gizmo.production.log'
+    filename: 'gizmo.mock.log'
   console:
     loglevel: 'DEBUG'
