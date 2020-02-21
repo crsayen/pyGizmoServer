@@ -20,7 +20,7 @@ class SubscriptionServer:
         self.subloop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.subloop)
         self.server = websockets.serve(
-            self.connection_handler, self.ip, self.port, loop=self.subloop
+            self.connection_handler, self.ip, self.port, loop=self.subloop, max_size=1024
         )
         self.subloop.run_until_complete(self.server)
         
