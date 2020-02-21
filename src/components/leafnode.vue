@@ -85,7 +85,7 @@ export default {
         )},
         watch_unwatch() {
             if (!this.watching) {
-                this.ws = new ws('ws://localhost:11111' + this.path)
+                this.ws = new ws('ws://96.85.100.187:11111' + this.path)
                 this.ws.onmessage = (data) => {
                     console.log(data)
                     this.value = JSON.parse(data.data).value
