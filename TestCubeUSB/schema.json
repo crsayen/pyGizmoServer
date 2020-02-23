@@ -58,7 +58,6 @@
         "rxCount": {"$type": "integer"},
         "usbinfo":{"$type": "string"}
     },
-    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
-    "wsinvoke": {"w": "wsinvoke", "args": [], "$type": "string" },
-    "thermometer": {"w": "readLabJackAdd", "args": [1234], "$type": "string" }
+    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
+    
 }

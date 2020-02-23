@@ -81,6 +81,9 @@ def make_app():
     app.router.add_route(
         "PATCH", r"/{tail:.*}", modification_handler.handle_patch_from_client
     )
+    app.router.add_route(
+        "POST", r"/{tail:.*}", modification_handler.handle_patch_from_client
+    )
     setup(app)
     return app
 
