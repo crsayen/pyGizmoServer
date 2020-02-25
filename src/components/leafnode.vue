@@ -19,7 +19,7 @@
                     class="getBtn"
                     :disabled="watching"
                     :class="{enabled: !watching, disabled: watching}"
-                >GET</button>
+                >get</button>
             </div>
             <div v-if="true">
                 <button
@@ -77,7 +77,6 @@ export default {
                     alert(res[0].error)
                 }
                 if (!this.watching) {
-                    console.log(res)
                     this.value = res[0].data
                 }
             }
@@ -86,7 +85,6 @@ export default {
             if (!this.watching) {
                 this.ws = new ws('ws://96.85.100.187:11111' + this.path)
                 this.ws.onmessage = (data) => {
-                    console.log(data)
                     this.value = JSON.parse(data.data).value
                 }
                 this.watching = true

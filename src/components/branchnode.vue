@@ -1,6 +1,6 @@
 <template>
-    <div class="node">
-        <div class="label">{{ label }}</div>
+    <div :class="(this.isroot) ? 'node nroot' : 'node'">
+        <div v-if="!this.isroot" class="label">{{ label }}</div>
         <b-button
             size='sm'
             block
