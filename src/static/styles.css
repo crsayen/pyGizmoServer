@@ -84,11 +84,12 @@ body,
     color: #898989;
     border-radius: 0;
 }
-.btn-secondary:not(:disabled):not(.disabled).active,
-.btn-secondary:not(:disabled):not(.disabled).active:focus{
+
+.expander.btn-secondary:not(:disabled):not(.disabled).active,
+.expander.btn-secondary:not(:disabled):not(.disabled).active:focus{
     background-color: rgb(95, 95, 95);
 }
-.btn-secondary:not(:disabled):not(.disabled).active:focus:hover,
+.expander.btn-secondary:not(:disabled):not(.disabled).active:focus:hover,
 .expander:focus:hover,
 .expander:hover{
     box-shadow: none !important;
