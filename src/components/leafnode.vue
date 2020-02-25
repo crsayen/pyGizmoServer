@@ -64,19 +64,18 @@ export default {
                 }
             })
         },
-        patch(value) {
+        patch(body) {
             fetch(this.path, { headers: { 
                     "Content-Type": "application/json; charset=utf-8" 
                 },
                 method: 'PATCH',
-                body: JSON.stringify({
-                    op: 'replace',
-                    path: this.path,
-                    value: (isNaN(value)) ? value : Number(value)
-                })
+                body: body
             })
             .then((response) => response.json())
             .then((res) => {
+                if (res[0].error){
+                    alert(res[0].error)
+                }
                 if (!this.watching) {
                     console.log(res)
                     this.value = res[0].data
@@ -100,11 +99,15 @@ export default {
     },
     watch: {
         outValue: function(newVal, oldVal) {
+            let body
             if (newVal != oldVal){
-                // everything gets turned to strings unless I parse it now
-                if (typeof newVal != "string") { newVal = JSON.parse(newVal)}
-                console.log(newVal)
-                this.patch(newVal)
+                body = JSON.stringify({
+                    op: 'replace',
+                    path: this.path,
+                    value: (["string", "hex", "integer"].includes(this.type)) ? 
+                        ((this.type == "integer") ? Number(newVal) : String(newVal)) : newVal
+                })
+                this.patch(body)
             }
         }
     },

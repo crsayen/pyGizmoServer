@@ -13,14 +13,14 @@
             "frequency" : { "w" : "setPwmFrequencyB",  "args": [], "$type": "integer" }
         },
         "pwmCurrentMonitorUpdateRate" : { "w" : "setPwmCurrentMonitorUpdateRate", "args": [], "$type": "integer" },
+        "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
         "pwms" : {
             "$count": 12,
-            "activeConfiguration" : {},
+            "activeConfiguration" : {"w": "sethiconf", "args": [], "$type": "string"},
             "dutyCycle" : { "w" : "setPwmDutyCycle", "args": [], "$type": "integer" },
             "enabled" : { "w" : "setPwmEnabled", "args": [], "$type": "boolean" },
             "profile" : {},
             "currentMonitor" : {
-                "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
                 "faultDelay" : { "w" : "setPwmFaultDelay", "args": [], "$type": "integer" },
                 "faulty" : { "args": [], "$type": "boolean" },
                 "measuredCurrent" : { "args": [], "$type": "integer" },
@@ -44,18 +44,20 @@
         }
     },
     "frequencyInputController" : {
-        "frequencyMonitorRate" : { "$type" : "integer" },
+        "frequencyMonitorRate" : { "w": "setFrequencyMonitorRate","$type" : "integer", "args": [] },
         "frequencyInputs" :{
             "$count": 4,
             "measuredFrequency" : {  "args": [], "$type": "integer" },
             "enabled" : { "w" : "setFrequencyInputEnabled", "args": [], "$type": "boolean" }
         }
     },
-    "canDatabase" : { "w" : "setCanDatabase", "args": [], "$type": "object"  },
+    "canDatabase" : { "$type": "string"},
     "usb":{
-        "message": {"w": "sendrawusb", "args": [], "$type": "string"}
+        "txMessage": {"w": "sendrawusb", "args": [], "$type": "hex"},
+        "rxMessage": {"$type": "hex"},
+        "rxCount": {"$type": "integer"},
+        "usbinfo":{"$type": "string"}
     },
-    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
-    "wsinvoke": {"w": "wsinvoke", "args": [], "$type": "string" },
-    "thermometer": {"w": "readLabJackAdd", "args": [1234], "$type": "string" }
+    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
+    
 }
