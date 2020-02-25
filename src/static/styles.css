@@ -11,7 +11,7 @@
 body,
 .nroot,
 #root{
-    background-color: #343434;
+    background-color: #3d3d3d;
 }
 #head{
     text-align: center;
@@ -22,14 +22,10 @@ body,
     position: sticky;
     padding-bottom: 10px;
     z-index: 100;
+    /* border-bottom: solid 1px rgb(30, 30, 30); */
 }
 #root{
     margin: auto;
-}
-.node,
-#head{
-    -webkit-box-shadow: -1px 2px 16px -7px #000000; 
-    box-shadow: -1px 2px 16px -7px #000000;
 }
 .node{
     padding: 10px;
@@ -39,14 +35,19 @@ body,
     margin-bottom: 10px;
     margin-left: 1px;
     margin-right: 20px;
+    -webkit-box-shadow: 1px -4px 29px -17px #000000; 
+    box-shadow: 1px -4px 29px -17px #000000;
     background-color: rgb(59, 59, 59);
     color:rgb(240, 238, 227);
     font-weight: 300;
     min-width: max-content;
     max-width: 50em;
-    /* font-family: "HelveticaNeue-Light", "Helvetica Neue Light", 
-        "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; */
     font-family: "Courier New", Courier, monospace;
+}
+.nroot,
+.node.leaf{
+    -webkit-box-shadow: none; 
+    box-shadow: none;
 }
 .node.leaf {
     display: grid;
@@ -55,9 +56,6 @@ body,
     margin-top: -1;
     margin-left: -11px;
     margin-right: -11px;
-    -webkit-box-shadow: none; 
-    box-shadow: none;
-    box-shadow: none;
     grid-template-columns: max-content auto auto;
     grid-template-rows: min-content min-content min-content;
     grid-template-areas: 
@@ -65,13 +63,14 @@ body,
         "midl mid r"
         "bot bot r";
 }
-.node,
+.node.leaf,
 .expander,
 .btn-secondary:not(:disabled):not(.disabled).active,
 .expander:focus,
 .expander:hover,
 .label{
-    border: solid 1px rgb(30, 30, 30);
+    /* border: solid 1px rgb(30, 30, 30); */
+    border: none;
 }
 .expander,
 .expander:focus,
@@ -89,13 +88,11 @@ body,
 .btn-secondary:not(:disabled):not(.disabled).active:focus{
     background-color: rgb(95, 95, 95);
 }
-.btn-secondary:not(:disabled):not(.disabled).active:hover{
-    background-color: rgb(85, 85, 85);
-}
-
+.btn-secondary:not(:disabled):not(.disabled).active:focus:hover,
+.expander:focus:hover,
 .expander:hover{
     box-shadow: none !important;
-    background-color: rgb(85, 85, 85);
+    background-color: rgb(75, 75, 75);
     color: #898989;
 }
 .btnBox {
@@ -104,8 +101,7 @@ body,
     justify-self: right;
     flex-direction: column;
     width: max-content;
-    margin-bottom: -9px;
-    margin-top: 3px;
+    margin-top: 10px;
 }
 .getBtn ,
 .watchBtn {
@@ -168,7 +164,7 @@ body,
 }
 .expander,
 .expander:focus,
-.btn-secondary:not(:disabled):not(.disabled).active
+.btn-secondary:not(:disabled):not(.disabled).active,
 .node.leaf,
 .label {
     background-color: rgb(51, 51, 51);
@@ -211,5 +207,6 @@ body,
   }
   .nroot{
     margin-bottom: 0;
+    border: 0;
     height: 100%;
 }
