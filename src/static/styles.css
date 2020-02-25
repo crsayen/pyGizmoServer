@@ -9,23 +9,27 @@
     display: none;
 }
 body,
-.nroot,
 #root{
     background-color: #3d3d3d;
 }
 #head{
     text-align: center;
+    align-self: center;
     background-color: rgb(42, 42, 42);
+    width: 100vw;
     color: rgb(240, 238, 227);
-    font-size: 200%;
     top: 0;
-    position: sticky;
+    position: fixed;
     padding-bottom: 10px;
     z-index: 100;
     /* border-bottom: solid 1px rgb(30, 30, 30); */
 }
 #root{
     margin: auto;
+    margin-bottom: 0;
+    margin-top: 30px;
+    border: 0;
+    height: 100%;
 }
 .node{
     padding: 10px;
@@ -34,17 +38,17 @@ body,
     margin-top: 0px;
     margin-bottom: 10px;
     margin-left: 1px;
-    margin-right: 20px;
+    margin-right: 5px;
     -webkit-box-shadow: 1px -4px 29px -17px #000000; 
     box-shadow: 1px -4px 29px -17px #000000;
     background-color: rgb(59, 59, 59);
     color:rgb(240, 238, 227);
     font-weight: 300;
-    min-width: max-content;
+    /* min-width: max-content; */
     max-width: 50em;
     font-family: "Courier New", Courier, monospace;
 }
-.nroot,
+#root,
 .node.leaf{
     -webkit-box-shadow: none; 
     box-shadow: none;
@@ -58,8 +62,9 @@ body,
     margin-right: -11px;
     grid-template-columns: max-content auto auto;
     grid-template-rows: min-content min-content min-content;
+    overflow-x: auto;
     grid-template-areas: 
-        "topl top r"
+        "t t r"
         "midl mid r"
         "bot bot r";
 }
@@ -108,13 +113,16 @@ body,
 .watchBtn {
     letter-spacing: 1px;
     border: None;
-    padding: 10px;
+    padding: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin: 5px;
     border-radius: 3px;
     background: #2a2a2a;
     align-self: flex-end;
-    width: min-content;
-    min-width: 8em;
+    width: max-content;
+    min-width: 7em;
+    font-size: 90%;
     color: rgb(199, 199, 199);
 }
 .watchBtn {
@@ -147,7 +155,6 @@ body,
     position: relative;
     border-bottom: none;
     border-radius: 5px 5px 0 0;
-    grid-area: topl;
     margin: 10px;
     margin-left: 1px;
     margin-bottom: -10px;
@@ -155,6 +162,10 @@ body,
     padding: 10px 20px;
     width: min-content;
     z-index: 2;
+}
+.labelBox{
+    grid-area: t;
+    justify-self: left;
 }
 .labelBox,
 .label {
@@ -188,7 +199,10 @@ body,
     margin: 10px;
     margin-left: 0;
     margin-bottom: 2px;
-    justify-self: center;
+    justify-self: left;
+}
+input{
+    max-width: 8em;
 }
 
 .value,
@@ -206,8 +220,3 @@ body,
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Opera and Firefox */
   }
-  .nroot{
-    margin-bottom: 0;
-    border: 0;
-    height: 100%;
-}
