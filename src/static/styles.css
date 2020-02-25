@@ -1,138 +1,116 @@
-.btn:focus,.btn:active:focus,.btn.active:focus,
-.btn.focus,.btn:active.focus,.btn.active.focus {
-    outline: none;
+/* font-family : "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica , Arial , "Lucida Grande" , sans-serif ; */
+
+body
+{
+	background : #666666 ;
+	color : #f0eee3 ;
+	font-family: monospace ;
+	font-weight: 300 ;
 }
-#root{
-    margin: auto;
+
+#root
+{
+	margin : auto ;
+	border : none ;
+	max-width: 512px ;
+	background-color : #333333 ;	
 }
-.node{
-    padding: 10px;
-    padding-bottom: 0;
-    letter-spacing: 1px;
-    font-family: 'Courier New', Courier, monospace;
-    margin-top: 9px;
-    margin-bottom: -1px;
-    margin-left: 1px;
-    margin-right: 40px;
-    background-color: rgb(59, 59, 59);
-    color:rgb(240, 238, 227);
-    font-weight: 300;
-    min-width: max-content;
-    max-width: 50em;
-    justify-self: center;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", 
-        "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    border: solid 1px rgb(37, 37, 37);
+
+.node
+{
+	margin : 16px ;
+	min-width : min-content ;
+	border: solid 1px #252525;
 }
-.node.leaf {
-    display: grid;
-    padding: 15px;
-    padding-top: 5px;
-    margin-top: 9px;
-    margin-left: -11px;
-    margin-right: -11px;
-    box-shadow: none;
-    border: solid 1px rgb(37, 37, 37);
-    grid-template-columns: max-content auto auto;
-    grid-template-rows: min-content min-content min-content;
-    grid-template-areas: 
-        "topl top r"
-        "midl mid r"
-        "bot bot bot";
+.node.leaf
+{
+	padding: 16px ;
 }
-.expander {
-    background-color: rgb(68, 68, 68);
-    border: solid 1px rgb(37, 37, 37) !important;
-    padding: 2px;
-    margin: 10px;
-    margin-left: -11px;
-    color: #ffffff;
-    border-radius: 0;
+
+.label
+{
+	position : relative ;
+	padding : 16px ;
+	width : min-content ;
 }
-.expander:focus,
-.expander:hover{
-    box-shadow: none !important;
-    background-color: rgb(85, 85, 85);
-    border: solid 1px rgb(37, 37, 37) !important;
-}
-.btnBox {
-    grid-area: r;
-    display:flex;
-    justify-self: right;
-    flex-direction: column;
-    width: max-content;
-}
-.getBtn ,
-.watchBtn {
-    letter-spacing: 1px;
-    border: None;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 3px;
-    background: #333333;
-    color: #e4e4e4;
-    align-self: flex-end;
-    width: min-content;
-    color: rgb(146, 146, 146);
-}
-.watchBtn {
-    align-self: flex-start;
-}
-.getBtn:hover ,
-.watchBtn:hover {
-    background: #4e4e4e;
-}
-.getBtn:focus ,
-.watchBtn:focus {
-    outline: none;
-}
-.disabled ,
-.disabled:hover{
-    background: #e4e4e4;
-    color: #646464;
-    opacity: 20%;
-    
-}
-.watchBtn.on {
-    background: #457e55;
-    color: rgb(34, 34, 34);
-}
-.watchBtn.on:hover {
-    background: #5faa74;
-}
-.label {
-    background-clip: padding-box;
-    position: relative;
-    background-color: rgb(59, 59, 59);
-    border: solid 1px rgb(37, 37, 37);
-    border-bottom: none;
-    grid-area: topl;
-    margin: 10px;
-    margin-left: 1px;
-    margin-bottom: -10px;
-    margin-top: 3px;
-    padding: 10px 20px;
-    width: min-content;
-    z-index: 2;
-}
+
+
+/* Value */
+
 .valueBox {
-    display: flex;
-    flex-direction: row;
-    grid-area: bot;
-    font-size: 110%;
-    margin-top: 10px;
+	display: flex;
+	flex-direction: row;
+	font-size: 110%;
+	margin-top: 10px;
 }
 .value {
-    background: rgb(85, 85, 85);
-    outline: solid 1px #4b534d;
-    margin-left: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: rgb(255, 255, 255);
+	background: rgb(85, 85, 85);
+	outline: solid 1px #4b534d;
+	margin-left: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: rgb(255, 255, 255);
 }
 .input {
-    grid-area: midl;
-    margin: 10px;
-    margin-bottom: 2px;
-    justify-self: center;
+	margin: 10px;
+	margin-bottom: 2px;
+	justify-self: center;
+}
+
+
+
+button
+{
+	display : inline-block ;
+	border : none ;
+	outline : none ;
+}
+
+button.expander
+{
+	background-color : #444444 ;
+	color : inherit ;
+	padding : 16px ;
+	width : 100% ;
+}
+
+button.expander:focus ,
+button.expander:hover
+{
+	background-color : #666666 ;
+}
+
+button.getBtn ,
+button.watchBtn
+{
+	letter-spacing : 1px ;
+	padding : 10px ;
+	margin : 5px ;
+	background : #333333 ;
+	color : #e4e4e4 ;
+	width : min-content ;
+}
+
+button.getBtn:hover ,
+button.watchBtn:hover
+{
+	background : #4e4e4e ;
+}
+
+button.disabled ,
+button.disabled:hover
+{
+	background : #e4e4e4 ;
+	color : #646464 ;
+}
+
+button.watchBtn.on
+{
+	background : #457e55 ;
+	color: #222222 ;
+}
+
+button.watchBtn.on:hover
+{
+	background : #5faa74 ;
 }

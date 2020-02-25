@@ -1,15 +1,6 @@
 <template>
     <div class="node">
         <div class="label">{{ label }}</div>
-        <b-button
-            size='sm'
-            block
-            class="expander"
-            :pressed.sync="expanded"
-            v-if="!this.isroot && this.nodes.length > 1"
-            v-b-toggle="'collapse-' + this.label" 
-            v-text="(expanded) ? '-' : '+'"
-        ></b-button>
         <b-collapse
             :visible="this.isroot || (!this.isroot && this.nodes.length < 2)"
             :id="'collapse-' + this.label"
@@ -32,6 +23,15 @@
                 :key="node.id"
             ></leafnode>
         </b-collapse>
+        <b-button
+            size='sm'
+            block
+            class="expander"
+            :pressed.sync="expanded"
+            v-if="!this.isroot && this.nodes.length > 1"
+            v-b-toggle="'collapse-' + this.label" 
+            v-text="(expanded) ? '-' : '+'"
+        ></b-button>
     </div>
 </template>
 
