@@ -32,13 +32,9 @@ body,
     height: 100%;
 }
 .node{
-    padding: 10px;
-    padding-bottom: 0;
+    padding: 10px 5px 0 5px;
     font-family: 'Courier New', Courier, monospace;
-    margin-top: 0px;
-    margin-bottom: 10px;
-    margin-left: 1px;
-    margin-right: 5px;
+    margin: 5px 0px 10px 1px;
     -webkit-box-shadow: 1px -4px 29px -17px #000000; 
     box-shadow: 1px -4px 29px -17px #000000;
     background-color: rgb(59, 59, 59);
@@ -55,18 +51,14 @@ body,
 }
 .node.leaf {
     display: grid;
-    padding: 15px;
-    padding-top: 5px;
-    margin-top: -1;
-    margin-left: -11px;
-    margin-right: -11px;
-    grid-template-columns: max-content auto auto;
+    padding: 5px 5px 5px 10px;
+    height: max-content;
+    grid-template-columns: minmax(50%,auto) auto;
     grid-template-rows: min-content min-content min-content;
-    overflow-x: auto;
     grid-template-areas: 
-        "t t r"
-        "midl mid r"
-        "bot bot r";
+        "t r"
+        "m r"
+        "b r";
 }
 .node.leaf,
 .expander,
@@ -85,7 +77,7 @@ body,
     margin: 10px;
     margin-bottom: 10px;
     box-shadow: none !important;
-    margin-left: -11px;
+    margin-left: -5px;
     color: #898989;
     border-radius: 0;
 }
@@ -107,15 +99,12 @@ body,
     justify-self: right;
     flex-direction: column;
     width: max-content;
-    margin-top: 10px;
 }
 .getBtn ,
 .watchBtn {
     letter-spacing: 1px;
     border: None;
-    padding: 5px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 5px 10px 5px;
     margin: 5px;
     border-radius: 3px;
     background: #2a2a2a;
@@ -155,11 +144,8 @@ body,
     position: relative;
     border-bottom: none;
     border-radius: 5px 5px 0 0;
-    margin: 10px;
-    margin-left: 1px;
-    margin-bottom: -10px;
-    margin-top: 3px;
-    padding: 10px 20px;
+    margin: 1px 10px -10px 1px;
+    padding: 5px 15px;
     width: min-content;
     z-index: 2;
 }
@@ -184,8 +170,7 @@ body,
 .valueBox {
     display: flex;
     flex-direction: row;
-    grid-area: bot;
-    margin-top: 10px;
+    grid-area: b;
 }
 .value {
     background: rgb(70, 70, 70);
@@ -193,12 +178,13 @@ body,
     padding-left: 10px;
     padding-right: 10px;
     color: rgb(255, 255, 255);
+    max-width: 100%;
+    height: max-content;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 .input {
-    grid-area: midl;
-    margin: 10px;
-    margin-left: 0;
-    margin-bottom: 2px;
+    grid-area: m;
     justify-self: left;
 }
 input{
