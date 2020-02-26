@@ -1,0 +1,116 @@
+/* font-family : "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica , Arial , "Lucida Grande" , sans-serif ; */
+
+body
+{
+	background : #666666 ;
+	color : #f0eee3 ;
+	font-family: monospace ;
+	font-weight: 300 ;
+}
+
+#root
+{
+	margin : auto ;
+	border : none ;
+	max-width: 512px ;
+	background-color : #333333 ;	
+}
+
+.node
+{
+	margin : 16px ;
+	min-width : min-content ;
+	border: solid 1px #252525;
+}
+.node.leaf
+{
+	padding: 16px ;
+}
+
+.label
+{
+	position : relative ;
+	padding : 16px ;
+	width : min-content ;
+}
+
+
+/* Value */
+
+.valueBox {
+	display: flex;
+	flex-direction: row;
+	font-size: 110%;
+	margin-top: 10px;
+}
+.value {
+	background: rgb(85, 85, 85);
+	outline: solid 1px #4b534d;
+	margin-left: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: rgb(255, 255, 255);
+}
+.input {
+	margin: 10px;
+	margin-bottom: 2px;
+	justify-self: center;
+}
+
+
+
+button
+{
+	display : inline-block ;
+	border : none ;
+	outline : none ;
+}
+
+button.expander
+{
+	background-color : #444444 ;
+	color : inherit ;
+	padding : 16px ;
+	width : 100% ;
+}
+
+button.expander:focus ,
+button.expander:hover
+{
+	background-color : #666666 ;
+}
+
+button.getBtn ,
+button.watchBtn
+{
+	letter-spacing : 1px ;
+	padding : 10px ;
+	margin : 5px ;
+	background : #333333 ;
+	color : #e4e4e4 ;
+	width : min-content ;
+}
+
+button.getBtn:hover ,
+button.watchBtn:hover
+{
+	background : #4e4e4e ;
+}
+
+button.disabled ,
+button.disabled:hover
+{
+	background : #e4e4e4 ;
+	color : #646464 ;
+}
+
+button.watchBtn.on
+{
+	background : #457e55 ;
+	color: #222222 ;
+}
+
+button.watchBtn.on:hover
+{
+	background : #5faa74 ;
+}

@@ -49,9 +49,9 @@ function parseschema(item, path) {
 fetch("/schema")
 .then(async (response) => {
     let model = await response.json()
-    console.log(model)
     let tree = new Object()
     tree.label = model.controller
+    document.getElementById('head').innerText = tree.label
     tree.nodes = parseschema(model, '');
     new Vue({
         el: '#app',

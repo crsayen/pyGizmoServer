@@ -33,7 +33,7 @@ class ModificationHandler:
             )
             if data["error"] is not None:
                 self.logger.error(f"{data['error']}")
-                return web.json_response({"error": data["error"]})
+                return web.json_response([{"error": data["error"]}])
             value = r.get("value")
             if value is not None:
                 data["args"].append(value)
@@ -43,8 +43,8 @@ class ModificationHandler:
             except Exception as e:
                 if self.logger.isEnabledFor(logging.DEBUG):
                     self.logger.debug(f"{e}")
-                data["error"] = f"bad request: {r}"
-                return web.json_response(data)
+                data["error"] = f"bad request: {r}\n{e}"
+                return web.json_response([{"error": data["error"]}])
             r["path"] = data["path_string"]
             response.append({"path": data["path_string"], "data": value})
         self.controller.finished()

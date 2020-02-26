@@ -1,116 +1,222 @@
-/* font-family : "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica , Arial , "Lucida Grande" , sans-serif ; */
+.btn:focus,.btn:active:focus,.btn.active:focus,
+.btn.focus,.btn:active.focus,.btn.active.focus {
+    outline: none;
+}
+*{
+    -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+body,
+#root{
+    background-color: #3d3d3d;
+}
+#head{
+    text-align: center;
+    align-self: center;
+    background-color: rgb(42, 42, 42);
+    width: 100vw;
+    color: rgb(240, 238, 227);
+    top: 0;
+    position: fixed;
+    padding-bottom: 10px;
+    z-index: 100;
+    /* border-bottom: solid 1px rgb(30, 30, 30); */
+}
+#root{
+    margin: auto;
+    margin-bottom: 0;
+    margin-top: 30px;
+    border: 0;
+    height: 100%;
+}
+.node{
+    padding: 10px;
+    padding-bottom: 0;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 1px;
+    margin-right: 5px;
+    -webkit-box-shadow: 1px -4px 29px -17px #000000; 
+    box-shadow: 1px -4px 29px -17px #000000;
+    background-color: rgb(59, 59, 59);
+    color:rgb(240, 238, 227);
+    font-weight: 300;
+    /* min-width: max-content; */
+    max-width: 50em;
+    font-family: "Courier New", Courier, monospace;
+}
+#root,
+.node.leaf{
+    -webkit-box-shadow: none; 
+    box-shadow: none;
+}
+.node.leaf {
+    display: grid;
+    padding: 15px;
+    padding-top: 5px;
+    margin-top: -1;
+    margin-left: -11px;
+    margin-right: -11px;
+    grid-template-columns: max-content auto auto;
+    grid-template-rows: min-content min-content min-content;
+    overflow-x: auto;
+    grid-template-areas: 
+        "t t r"
+        "midl mid r"
+        "bot bot r";
+}
+.node.leaf,
+.expander,
+.btn-secondary:not(:disabled):not(.disabled).active,
+.expander:focus,
+.expander:hover,
+.label{
+    /* border: solid 1px rgb(30, 30, 30); */
+    border: none;
+}
+.expander,
+.expander:focus,
+.btn-secondary:not(:disabled):not(.disabled).active {
 
-body
-{
-	background : #666666 ;
-	color : #f0eee3 ;
-	font-family: monospace ;
-	font-weight: 300 ;
+    /* padding: 2px; */
+    margin: 10px;
+    margin-bottom: 10px;
+    box-shadow: none !important;
+    margin-left: -11px;
+    color: #898989;
+    border-radius: 0;
 }
 
-#root
-{
-	margin : auto ;
-	border : none ;
-	max-width: 512px ;
-	background-color : #333333 ;	
+.expander.btn-secondary:not(:disabled):not(.disabled).active,
+.expander.btn-secondary:not(:disabled):not(.disabled).active:focus{
+    background-color: rgb(95, 95, 95);
 }
-
-.node
-{
-	margin : 16px ;
-	min-width : min-content ;
-	border: solid 1px #252525;
+.expander.btn-secondary:not(:disabled):not(.disabled).active:focus:hover,
+.expander:focus:hover,
+.expander:hover{
+    box-shadow: none !important;
+    background-color: rgb(75, 75, 75);
+    color: #898989;
 }
-.node.leaf
-{
-	padding: 16px ;
+.btnBox {
+    grid-area: r;
+    display:flex;
+    justify-self: right;
+    flex-direction: column;
+    width: max-content;
+    margin-top: 10px;
 }
-
-.label
-{
-	position : relative ;
-	padding : 16px ;
-	width : min-content ;
+.getBtn ,
+.watchBtn {
+    letter-spacing: 1px;
+    border: None;
+    padding: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 5px;
+    border-radius: 3px;
+    background: #2a2a2a;
+    align-self: flex-end;
+    width: max-content;
+    min-width: 7em;
+    font-size: 90%;
+    color: rgb(199, 199, 199);
 }
-
-
-/* Value */
-
+.watchBtn {
+    align-self: flex-start;
+}
+.getBtn:hover ,
+.watchBtn:hover {
+    background: #4e4e4e;
+}
+.getBtn:focus ,
+.watchBtn:focus {
+    outline: none;
+}
+.disabled ,
+.disabled:hover{
+    background: #e4e4e4;
+    color: #646464;
+    opacity: 20%;
+    
+}
+.watchBtn.on {
+    background: #457e55;
+    color: rgb(34, 34, 34);
+}
+.watchBtn.on:hover {
+    background: #5faa74;
+}
+.label {
+    background-size: 100% 101%;
+    position: relative;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin: 10px;
+    margin-left: 1px;
+    margin-bottom: -10px;
+    margin-top: 3px;
+    padding: 10px 20px;
+    width: min-content;
+    z-index: 2;
+}
+.labelBox{
+    grid-area: t;
+    justify-self: left;
+}
+.labelBox,
+.label {
+    letter-spacing: 1px;
+    font-weight: 500;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", 
+        "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+.expander,
+.expander:focus,
+.btn-secondary:not(:disabled):not(.disabled).active,
+.node.leaf,
+.label {
+    background-color: rgb(51, 51, 51);
+}
 .valueBox {
-	display: flex;
-	flex-direction: row;
-	font-size: 110%;
-	margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    grid-area: bot;
+    margin-top: 10px;
 }
 .value {
-	background: rgb(85, 85, 85);
-	outline: solid 1px #4b534d;
-	margin-left: 10px;
-	padding-left: 10px;
-	padding-right: 10px;
-	color: rgb(255, 255, 255);
+    background: rgb(70, 70, 70);
+    margin-left: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: rgb(255, 255, 255);
 }
 .input {
-	margin: 10px;
-	margin-bottom: 2px;
-	justify-self: center;
+    grid-area: midl;
+    margin: 10px;
+    margin-left: 0;
+    margin-bottom: 2px;
+    justify-self: left;
+}
+input{
+    max-width: 8em;
 }
 
-
-
-button
-{
-	display : inline-block ;
-	border : none ;
-	outline : none ;
-}
-
-button.expander
-{
-	background-color : #444444 ;
-	color : inherit ;
-	padding : 16px ;
-	width : 100% ;
-}
-
-button.expander:focus ,
-button.expander:hover
-{
-	background-color : #666666 ;
-}
-
-button.getBtn ,
-button.watchBtn
-{
-	letter-spacing : 1px ;
-	padding : 10px ;
-	margin : 5px ;
-	background : #333333 ;
-	color : #e4e4e4 ;
-	width : min-content ;
-}
-
-button.getBtn:hover ,
-button.watchBtn:hover
-{
-	background : #4e4e4e ;
-}
-
-button.disabled ,
-button.disabled:hover
-{
-	background : #e4e4e4 ;
-	color : #646464 ;
-}
-
-button.watchBtn.on
-{
-	background : #457e55 ;
-	color: #222222 ;
-}
-
-button.watchBtn.on:hover
-{
-	background : #5faa74 ;
-}
+.value,
+.label,
+.watchBtn,
+.getBtn,
+.expander,
+.valueBox,
+.labelBox {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Opera and Firefox */
+  }

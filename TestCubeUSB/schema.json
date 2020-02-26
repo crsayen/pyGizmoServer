@@ -53,8 +53,8 @@
     },
     "canDatabase" : { "$type": "string"},
     "usb":{
-        "txMessage": {"w": "sendrawusb", "args": [], "$type": "string"},
-        "rxMessage": {"$type": "string"},
+        "txMessage": {"w": "sendrawusb", "args": [], "$type": "hex"},
+        "rxMessage": {"$type": "hex"},
         "rxCount": {"$type": "integer"},
         "usbinfo":{"$type": "string"}
     },

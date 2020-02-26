@@ -19,7 +19,7 @@
                     class="getBtn"
                     :disabled="watching"
                     :class="{enabled: !watching, disabled: watching}"
-                >GET</button>
+                >get</button>
             </div>
             <div v-if="true">
                 <button
@@ -64,21 +64,19 @@ export default {
                 }
             })
         },
-        patch(value) {
+        patch(body) {
             fetch(this.path, { headers: { 
                     "Content-Type": "application/json; charset=utf-8" 
                 },
                 method: 'PATCH',
-                body: JSON.stringify({
-                    op: 'replace',
-                    path: this.path,
-                    value: (isNaN(value)) ? value : Number(value)
-                })
+                body: body
             })
             .then((response) => response.json())
             .then((res) => {
+                if (res[0].error){
+                    alert(res[0].error)
+                }
                 if (!this.watching) {
-                    console.log(res)
                     this.value = res[0].data
                 }
             }
@@ -87,7 +85,6 @@ export default {
             if (!this.watching) {
                 this.ws = new ws('ws://96.85.100.187:11111' + this.path)
                 this.ws.onmessage = (data) => {
-                    console.log(data)
                     this.value = JSON.parse(data.data).value
                 }
                 this.watching = true
@@ -100,11 +97,15 @@ export default {
     },
     watch: {
         outValue: function(newVal, oldVal) {
+            let body
             if (newVal != oldVal){
-                // everything gets turned to strings unless I parse it now
-                if (typeof newVal != "string") { newVal = JSON.parse(newVal)}
-                console.log(newVal)
-                this.patch(newVal)
+                body = JSON.stringify({
+                    op: 'replace',
+                    path: this.path,
+                    value: (["string", "hex", "integer"].includes(this.type)) ? 
+                        ((this.type == "integer") ? Number(newVal) : String(newVal)) : newVal
+                })
+                this.patch(body)
             }
         }
     },
