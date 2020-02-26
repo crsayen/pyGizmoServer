@@ -56,7 +56,7 @@ model = Utility.initialize_model_from_schema(controller.schema)
 
 """ setup modification, query handlers """
 modification_handler = ModificationHandler(controller, model=model)
-query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, controller, model=model)
+query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, cfg.ws.url, controller, model=model)
 controller.setcallback(query_handler.handle_updates)
 
 

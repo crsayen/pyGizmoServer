@@ -20,6 +20,7 @@
                 :nodes="node.nodes" 
                 :label="node.label"
                 :key="node.id"
+                :wsurl="wsurl"
             >
             </branchnode>
             <leafnode
@@ -30,6 +31,7 @@
                 :readable="node.readable"
                 :path="node.path"
                 :key="node.id"
+                :wsurl="wsurl"
             ></leafnode>
         </b-collapse>
     </div>
@@ -40,7 +42,7 @@
 import leafnode from './leafnode.vue'
 
 export default { 
-    props: [ 'label', 'nodes', 'isroot'],
+    props: [ 'label', 'nodes', 'isroot', 'wsurl'],
     name: 'branchnode',
     data() {return {expanded: false}},
     components : {

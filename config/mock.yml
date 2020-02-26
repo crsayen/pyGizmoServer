@@ -4,6 +4,7 @@ tcp:
 ws:
   ip: '0.0.0.0'
   port: 11111
+  url: 'ws://localhost'
 controller: 'MockUSB'
 logging:
   file:

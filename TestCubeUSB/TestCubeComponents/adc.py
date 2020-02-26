@@ -3,8 +3,9 @@ import logging
 
 class AdcMessage:
     def __init__(self):
-        self.AdcChannels = 0x3F
+        self.AdcChannels = 0xFF
         self.AdcRate = None
+        self.ret = [None] * 8
 
     def setAdcMonitorUpdateRate(self, rate: int):
         self.AdcRate = int(rate / 50)
@@ -23,7 +24,7 @@ class AdcMessage:
         return [f"{0x10:08x}{self.AdcChannels:02x}{self.AdcRate:02x}"]
 
     def recusb_011_adc(self, payload):
-        ret = [{}] * 8
+        ret = [None] * 8
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
             int(payload[:4], 16),
@@ -40,12 +41,16 @@ class AdcMessage:
             return None
         for ch, v in zip(thismsg, [cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"measuredVoltage": v}
-        path = "/adcInputController/adcInputs"
-        return [{"path": path, "data": ret}]
+                ret[ch] = v
+        path = "/adcInputController/adcInputVoltages"
+        if self.adc_listinfirstmsg[3:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
+
 
     def recusb_111_adc(self, payload):
-        ret = [{}] * 8
+        ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -59,12 +64,16 @@ class AdcMessage:
             return None
         for ch, v in zip(thismsg, [cd, cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"measuredVoltage": v}
-        path = "/adcInputController/adcInputs"
-        return [{"path": path, "data": ret}]
+                ret[ch] = v
+        path = "/adcInputController/adcInputVoltages"
+        if self.adc_listinfirstmsg[7:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
+
 
     def recusb_211_adc(self, payload):
-        ret = [{}] * 8
+        ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -78,6 +87,6 @@ class AdcMessage:
             return None
         for ch, v in zip(thismsg, [cd, cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"measuredVoltage": v}
-        path = "/adcInputController/adcInputs"
+                ret[ch] = v
+        path = "/adcInputController/adcInputVoltages"
         return [{"path": path, "data": ret}]

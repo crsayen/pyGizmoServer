@@ -78,6 +78,8 @@ class Utility:
     @classmethod
     def initialize_model_from_schema(cls, d):
         if "$count" in d:
+            if "$type" in d:
+                return [None] * d["$count"]
             return [
                 {
                     k: cls.initialize_model_from_schema(v)

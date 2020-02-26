@@ -4,6 +4,7 @@ tcp:
 ws:
   ip: '0.0.0.0'
   port: 11111
+  url: 'ws://96.85.100.187'
 controller: 'TestCubeUSB'
 logging:
   file:

@@ -20,11 +20,12 @@ def merge(a, b):
 
 
 class QueryHandler:
-    def __init__(self, ws_ip, ws_port, controller, model=None):
+    def __init__(self, ws_ip, ws_port, ws_url, controller, model=None):
         self.controller = controller
         self.schema = controller.schema
         self.model = model
         self.err = None
+        self.wsurl = ws_url
         self.logger = logging.getLogger("gizmoLogger")
         self.logger.debug("init")
         self.subscription_server = SubscriptionServer(ws_ip, ws_port)
@@ -35,6 +36,7 @@ class QueryHandler:
             await spawn(request, self.controller.usbrxhandler())
         if request.path == "/schema":
             resp = self.controller.schema.copy()
+            resp["wsurl"] = self.wsurl
             resp["controller"] = self.controller.__class__.__name__
             return web.json_response(resp)
         path, getmodel = ("/", True) if request.path == "/model" else (request.path, False)

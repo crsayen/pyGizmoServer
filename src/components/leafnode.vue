@@ -14,7 +14,7 @@
             <input v-else type="Text" v-model.lazy="outValue"/>
         </div>
         <div class="btnBox">
-            <div v-if="readable">
+            <div v-if="true">
                     <button @click="get"
                     class="getBtn"
                     :disabled="watching"
@@ -39,7 +39,7 @@
 const ws = require('isomorphic-ws')
 
 export default {
-    props: [ 'label', 'type', "writable", "readable", "path"],
+    props: [ 'label', 'type', "writable", "readable", "path", "wsurl"],
     data() { 
         return {
             outValue: null,
@@ -59,8 +59,9 @@ export default {
                 return response.json()
             })
             .then((json) => {
+                console.log(json)
                 if (!this.watching){
-                    this.value = json[0].data
+                    this.value = (json[0]) ? json[0].data : json.data
                 }
             })
         },
@@ -83,7 +84,7 @@ export default {
         )},
         watch_unwatch() {
             if (!this.watching) {
-                this.ws = new ws('ws://96.85.100.187:11111' + this.path)
+                this.ws = new ws(this.wsurl + ':11111' + this.path)
                 this.ws.onmessage = (data) => {
                     this.value = JSON.parse(data.data).value
                 }

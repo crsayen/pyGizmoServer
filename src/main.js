@@ -13,34 +13,40 @@ function makenode(key, val, path){
     let obj = new Object();
     obj.path = path + '/' + key;
     obj.label = key;
-    if(val.$type){
-        obj.type = val.$type
-        obj.isleaf = true
-        obj.readable = (val.r) ? true : false
-        obj.writable = (val.w) ? true : false
-    }else{
-        obj.isleaf = false
-        obj.nodes = parseschema(val, obj.path);
-    }
+    obj.isleaf = false
+    obj.nodes = parseschema(val, obj.path);
+    return obj
+}
+function makeleaf(key, val, path){
+    let obj = new Object();
+    obj.path = path + '/' + key;
+    obj.label = key;
+    obj.type = val.$type
+    obj.isleaf = true
+    obj.readable = (val.r) ? true : false
+    obj.writable = (val.w) ? true : false
     return obj
 }
 
 function parseschema(item, path) {
     if (typeof item === "object" && item !== null){
         let nodes = []
-        if (typeof(item.$count) == "number") {
+        if (item.$count) {
+            console.log(item)
             let count = item.$count
             delete item.$count
+            let make = (item.$type) ? makeleaf : makenode
             for(let i = 0; i < count; i++){
-                nodes.push(makenode(String(i), item, path))
+                nodes.push(make(String(i), item, path))
             }
             return nodes
         }
         for (let [key, val] of Object.entries(item)){
-            if (key == "$count" || key == "controller"){
+            if (["$count", "controller", "wsurl"].includes(key)){
                 continue
             }
-            nodes.push(makenode(key, val, path));
+            let make = (val.$type && !val.$count) ? makeleaf : makenode
+            nodes.push(make(key, val, path));
         }
         return nodes
     }
@@ -53,10 +59,12 @@ fetch("/schema")
     tree.label = model.controller
     document.getElementById('head').innerText = tree.label
     tree.nodes = parseschema(model, '');
+    console.log(tree)
     new Vue({
         el: '#app',
         data: {
-            tree
+            tree: tree,
+            wsurl: model.wsurl
         },
         components: {
             branchnode
