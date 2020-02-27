@@ -32,7 +32,6 @@ function parseschema(item, path) {
     if (typeof item === "object" && item !== null){
         let nodes = []
         if (item.$count) {
-            console.log(item)
             let count = item.$count
             delete item.$count
             let make = (item.$type) ? makeleaf : makenode
