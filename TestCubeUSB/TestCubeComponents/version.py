@@ -8,7 +8,6 @@ class VersionMessage:
         pass
 
     async def getFirmwareVersion(self):
-        print("get ver")
         self.ask = True
         self.finished()
         if self.getVersionEvent is None:

@@ -3,40 +3,11 @@ import sys
 import time
 import importlib
 import json
-import copy
-from pyGizmoServer.utility import Settings
+from pyGizmoServer.utility import Settings, makeresolver
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
 from aiojobs.aiohttp import spawn
-
-
-def makeresolver(schema) -> callable:
-    def f(d, p, r):
-        count = d.get("$count")
-        if count:
-            d = copy.deepcopy(d)
-            del d["$count"]
-            for i in range(count):
-                f(d, f"{p}/{i}", r)
-            return
-        if d.get("$type"):
-            res = copy.deepcopy(d)
-            if res.get("args") is not None:
-                res["args"].extend([int(i) for i in p.split("/") if i.isdigit()])
-            r[p] = res
-            return
-        for k, v in d.items():
-            if v.get("$type"):
-                res = copy.deepcopy(v)
-                if res.get("args") is not None:
-                    res["args"].extend([int(i) for i in p.split("/") if i.isdigit()])
-                r[p] = res
-            f(v, f"{p}/{k}", r)
-
-    propsdict = {}
-    f(schema, "", propsdict)
-    return lambda x: propsdict.get(x)
 
 
 async def handlepatch(request):
@@ -96,7 +67,7 @@ async def get_favicon(request):
 
 def make_app():
     controller.start()
-    app = web.Application(loop=asyncio.get_event_loop())
+    app = web.Application()
     app["static_root_url"] = "/src"
     app.router.add_get("/", get_index)
     app.router.add_get("/FAVICON", get_favicon)
