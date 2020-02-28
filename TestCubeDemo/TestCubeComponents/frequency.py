@@ -15,8 +15,8 @@ class FrequencyMessage:
             return []
         if self.freqmonitorChannels is None:
             return []
-        channels = "".join(['1' if i else '0' for i in self.freqmonitorChannels])
-        #print(channels)
+        channels = "".join(["1" if i else "0" for i in self.freqmonitorChannels])
+        # print(channels)
         channels = int(channels[::-1], 2)
         return [f"{0xe:08x}{channels:02x}{self.freqmonitorRate:02x}"]
 

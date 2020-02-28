@@ -12,7 +12,7 @@ setup(
         "config",
         "MockUSB",
         "public",
-        "src"
+        "src",
     ],
     install_requires=[
         "jsonpatch",

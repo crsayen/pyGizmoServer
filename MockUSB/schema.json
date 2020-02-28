@@ -1,7 +1,8 @@
 {
     "relayController": {
         "relays" : {
-            "$count": 6, "w": "setRelay", "args": [], "$type": "boolean"
+            "$count": 6,
+            "enabled": { "w": "setRelay", "args": [], "$type": "boolean" }
         }
     },
     "pwmController" : {

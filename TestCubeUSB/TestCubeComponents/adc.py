@@ -48,7 +48,6 @@ class AdcMessage:
         else:
             self.ret = ret
 
-
     def recusb_111_adc(self, payload):
         ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
@@ -70,7 +69,6 @@ class AdcMessage:
             return [{"path": path, "data": ret}]
         else:
             self.ret = ret
-
 
     def recusb_211_adc(self, payload):
         ret = self.ret

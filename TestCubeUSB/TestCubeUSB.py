@@ -15,6 +15,7 @@ from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeUSB.TestCubeComponents.version import VersionMessage
 import copy
 
+
 class TestCubeUSB(
     RelayMessage,
     PwmMessage,
@@ -37,9 +38,6 @@ class TestCubeUSB(
         VersionMessage.__init__(self)
 
     def __init__(self):
-        self.logger = logging.getLogger("gizmoLogger")
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug("init")
         self.callParentInits()
         self.callback = None
         self.version = None
@@ -47,7 +45,7 @@ class TestCubeUSB(
         self.ask = None
         self.getVersionEvent = None
         AdcMessage.__init__(self)
-        self.usbrxcount=0
+        self.usbrxcount = 0
         self.usbidparsers = {
             "00000005": self.recusb_5_pwmfreq,
             "00000007": self.recusb_7_pwmdutycycle,
@@ -92,23 +90,21 @@ class TestCubeUSB(
                 d = str(dev).split("\n")
                 devdict = {}
                 for line in d:
-                    if 'DEVICE ID' in line:
+                    if "DEVICE ID" in line:
                         s = line.split(" ")
-                        #print(s)
-                        devdict['deviceid'] = s[2]
-                        devdict['bus'] = s[5] + "." + s[7]
+                        # print(s)
+                        devdict["deviceid"] = s[2]
+                        devdict["bus"] = s[5] + "." + s[7]
 
-                    elif ':' in line:
-                        k,v = line.split(':')[0].strip(),line.split(':')[1].strip()
+                    elif ":" in line:
+                        k, v = line.split(":")[0].strip(), line.split(":")[1].strip()
                         devdict[k] = v
-                #print(devdict)
+                # print(devdict)
                 self.callback({"path": "/usb/usbinfo", "data": devdict})
                 return
         raise ValueError("Device not found")
 
     def finished(self):
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"finished")
         msgs = (
             self.get_relay_messages()
             + self.get_pwm_messages()
@@ -120,8 +116,6 @@ class TestCubeUSB(
             + self.get_version_messages()
         )
         for msg in msgs:
-            if self.logger.isEnabledFor(logging.USB):
-                self.logger.usb(f"finished: {msg}")
             self.dev.write(2, msg)
         self.callParentInits()
 
@@ -129,23 +123,20 @@ class TestCubeUSB(
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         self.running = True
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug("running")
         while 1:
             await asyncio.sleep(0.0001)
             try:
                 msg = self.dev.read(130, 24, 100)
             except usb.core.USBError as e:
-                if "time" not in str(e):
-                    self.logger.error(f"ERROR: {e}")
                 continue
             msg = "".join([chr(x) for x in msg])
-            if self.logger.isEnabledFor(logging.USB):
-                self.logger.usb(f"{msg}")
             self.usbrxcount += 1
-            self.callback([{"path": "/usb/rxMessage", "data": msg},
-                {"path": "/usb/rxCount" , "data": self.usbrxcount},
-            ])
+            self.callback(
+                [
+                    {"path": "/usb/rxMessage", "data": msg},
+                    {"path": "/usb/rxCount", "data": self.usbrxcount},
+                ]
+            )
 
             d = self.recUsb(msg)
             if d is None:
@@ -157,13 +148,10 @@ class TestCubeUSB(
         _id, payload = msg[:8], msg[8:]
         try:
             f = self.usbidparsers.get(_id.lower())
-            if self.logger.isEnabledFor(logging.USB):
-                self.logger.usb(f"{f.__name__}")
             if f is None:
-                self.logger.error(f"TescubeUSB: ID not found in {self.usbidparsers}")
                 return []
-        except Exception as e:
-            self.logger.error(f"ERROR: {e}")
+        except Exception:
+            pass
         if f is None:
             return []
         result = f(payload)

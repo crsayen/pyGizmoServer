@@ -15,6 +15,7 @@ from TestCubeDemo.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeDemo.TestCubeComponents.version import VersionMessage
 import copy
 
+
 class TestCubeDemo(
     RelayMessage,
     PwmMessage,
@@ -47,7 +48,7 @@ class TestCubeDemo(
         self.ask = None
         self.getVersionEvent = None
         AdcMessage.__init__(self)
-        self.usbrxcount=0
+        self.usbrxcount = 0
         self.usbidparsers = {
             "00000005": self.recusb_5_pwmfreq,
             "00000007": self.recusb_7_pwmdutycycle,
@@ -92,16 +93,16 @@ class TestCubeDemo(
                 d = str(dev).split("\n")
                 devdict = {}
                 for line in d:
-                    if 'DEVICE ID' in line:
+                    if "DEVICE ID" in line:
                         s = line.split(" ")
-                        #print(s)
-                        devdict['deviceid'] = s[2]
-                        devdict['bus'] = s[5] + "." + s[7]
+                        # print(s)
+                        devdict["deviceid"] = s[2]
+                        devdict["bus"] = s[5] + "." + s[7]
 
-                    elif ':' in line:
-                        k,v = line.split(':')[0].strip(),line.split(':')[1].strip()
+                    elif ":" in line:
+                        k, v = line.split(":")[0].strip(), line.split(":")[1].strip()
                         devdict[k] = v
-                #print(devdict)
+                # print(devdict)
                 self.callback({"path": "/usb/usbinfo", "data": devdict})
                 return
         raise ValueError("Device not found")
@@ -143,9 +144,12 @@ class TestCubeDemo(
             if self.logger.isEnabledFor(logging.USB):
                 self.logger.usb(f"{msg}")
             self.usbrxcount += 1
-            self.callback([{"path": "/usb/rxMessage", "data": msg},
-                {"path": "/usb/rxCount" , "data": self.usbrxcount},
-            ])
+            self.callback(
+                [
+                    {"path": "/usb/rxMessage", "data": msg},
+                    {"path": "/usb/rxCount", "data": self.usbrxcount},
+                ]
+            )
 
             d = self.recUsb(msg)
             if d is None:

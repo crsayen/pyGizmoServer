@@ -24,8 +24,6 @@ class VersionMessage:
         return [f"{0x50:08x}"]
 
     def recusb_51_version(self, payload):
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"{payload}")
         if len(payload) < 12:
             self.version = "0.0.0"
         else:
