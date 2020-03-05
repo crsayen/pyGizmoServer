@@ -26,6 +26,10 @@ class MockUSB:
             raise RuntimeError("controller callback not set")
         pass
 
+    async def tend(self, func, args):
+        if not self.running:
+            await func(args, self.usbrxhandler())
+
     def setRelay(self, relay, state):
         self.relays[relay] = state
         self.msg = {

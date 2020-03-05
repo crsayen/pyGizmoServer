@@ -1,9 +1,9 @@
-import asyncio
 import sys
 import time
 import importlib
 import json
-from pyGizmoServer.utility import Settings, makeresolver
+from pyGizmoServer.utility import loadconfig, \
+    makeresolver, debug, setuplog, ensurelist
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
@@ -11,13 +11,11 @@ from aiojobs.aiohttp import spawn
 
 
 async def handlepatch(request):
-    if not controller.running:
-        await spawn(request, controller.usbrxhandler())
+    await controller.tend(spawn, request)
     request = json.loads(await request.text())
-    if not isinstance(request, list):
-        request = [request]
+    debug(request)
     response = []
-    for r in request:
+    for r in ensurelist(request):
         path, value = r.get("path"), r.get("value")
         props = resolver(path)
         if not (
@@ -27,20 +25,12 @@ async def handlepatch(request):
         getattr(controller, props["w"])(*(props["args"] + [value]))
         response.append({"path": path, "data": value})
     controller.finished()
-    """
-    create and apply the requested PATCH to the model
-    """
     return web.json_response(response)
 
 
 async def handleget(request):
-    if not controller.running:
-        await spawn(request, controller.usbrxhandler())
-    if request.path == "/schema":
-        resp = controller.schema.copy()
-        resp["wsurl"] = cfg.ws.url
-        resp["controller"] = controller.__class__.__name__
-        return web.json_response(resp)
+    debug(request.path)
+    await controller.tend(spawn, request)
     props = resolver(request.path)
     if props and props.get("r"):
         response = await getattr(controller, props["r"])(*props.get("args"))
@@ -50,11 +40,20 @@ async def handleget(request):
 
 
 def handleupdates(updates):
+    debug(updates)
     if not isinstance(updates, list):
         updates = [updates]
     for update in updates:
-        path, data = update.get("data"), update.get("path")
+        data, path = update.get("data"), update.get("path")
         subscription_server.publish({"path": path, "value": data})
+
+
+async def get_schema(request):
+    debug(request.path)
+    resp = controller.schema.copy()
+    resp["wsurl"] = cfg.ws.url
+    resp["controller"] = controller.__class__.__name__
+    return web.json_response(resp)
 
 
 async def get_index(request):
@@ -73,6 +72,7 @@ def make_app():
     app.router.add_get("/FAVICON", get_favicon)
     app.router.add_static("/js", path="./dist/js")
     app.router.add_static("/css", path="./dist/css")
+    app.router.add_route("GET", "/schema", get_schema)
     app.router.add_route("GET", r"/{tail:.*}", handleget)
     app.router.add_route("PATCH", r"/{tail:.*}", handlepatch)
     app.router.add_route("POST", r"/{tail:.*}", handlepatch)
@@ -89,7 +89,8 @@ def main():
 
 
 configfile = sys.argv[1] if len(sys.argv) > 1 else "production"
-cfg = Settings.load(configfile)
+cfg = loadconfig(configfile)
+setuplog(cfg)
 if cfg is None:
     print(f"\n'{configfile}' not found\nexiting...\n")
     sys.exit()

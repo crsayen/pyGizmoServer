@@ -2,7 +2,7 @@ import websockets
 import json
 import asyncio
 import threading
-import dpath
+from dpath.util import get
 from pyGizmoServer.utility import debug
 
 
@@ -13,7 +13,7 @@ class SubscriptionServer:
         self.subscribers = {}
         self.ip = ws_ip
         self.port = ws_port
-        threading.Thread(target=self.run_server(), args=()).start()
+        threading.Thread(self.run_server()).start()
 
     def run_server(self):
         self.subloop = asyncio.new_event_loop()
@@ -27,23 +27,23 @@ class SubscriptionServer:
         self.subloop.run_until_complete(self.server)
 
     def publish(self, update):
-        debug(f"{update['path']}")
+        debug(f"{update}")
         path = update.get("path")
         for con, sub in [
             connection for connection in self.connected
             if path in connection[1] or path == connection[1]
         ]:
-            debug(path)
             data = {
                 "path": sub,
-                "value": dpath.util.get(
+                "value": get(
                     update["value"],
                     sub[len(path):]
                 )
             } if path != sub else update
             debug(f"sending ws on: {data}")
             asyncio.run_coroutine_threadsafe(
-                con.send(json.dumps(data)), self.subloop
+                con.send(json.dumps(data)),
+                self.subloop
             )
 
     async def connection_handler(self, websocket, path):

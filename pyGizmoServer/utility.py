@@ -6,6 +6,24 @@ import sys
 logger = logging.getLogger('gizmoLogger')
 
 
+def setuplog(cfg):
+    logger = logging.getLogger("gizmoLogger")
+    logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
+    formatter = logging.Formatter(
+        fmt="%(asctime)s.%(msecs)03d %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    filehandler = logging.FileHandler(filename=cfg.logging.file.filename, mode="w")
+    filehandler.setLevel(getattr(logging, cfg.logging.file.loglevel))
+    filehandler.setFormatter(formatter)
+    consolehandler = logging.StreamHandler(sys.stdout)
+    consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
+    consolehandler.setFormatter(formatter)
+    logger.addHandler(filehandler)
+    logger.addHandler(consolehandler)
+    logger.propagate = False
+
+
 def makeresolver(schema) -> callable:
     def f(d, p, r):
         count = d.get("$count")
@@ -43,18 +61,20 @@ class DotDict(dict):
             return val
 
 
-class Settings:
-    @classmethod
-    def load(cls, filename):
-        try:
-            with open(f"./config/{filename}.yml") as f:
-                return DotDict(yaml.load(f, Loader=yaml.CLoader))
-        except Exception:
-            with open(f"./config/{filename}.yml") as f:
-                return DotDict(yaml.load(f, Loader=yaml.FullLoader))
-        except Exception as e:
-            print(f"{e}")
-            return None
+def loadconfig(filename):
+    try:
+        with open(f"./config/{filename}.yml") as f:
+            return DotDict(yaml.load(f, Loader=yaml.CLoader))
+    except Exception:
+        with open(f"./config/{filename}.yml") as f:
+            return DotDict(yaml.load(f, Loader=yaml.FullLoader))
+    except Exception as e:
+        print(f"{e}")
+        return None
+
+
+def ensurelist(item):
+    return item if isinstance(item, list) else [item]
 
 
 def debug(msg):

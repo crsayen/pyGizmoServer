@@ -72,6 +72,10 @@ class TestCubeUSB(
         with open("TestCubeUSB/schema.json") as f:
             self.schema = json.load(f)
 
+    async def tend(self, func, args):
+        if not self.running:
+            await func(args, self.usbrxhandler())
+
     def setcallback(self, callback):
         if not callable(callback):
             raise ValueError("callback must be a function")
