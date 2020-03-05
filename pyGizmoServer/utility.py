@@ -1,5 +1,9 @@
 import yaml
 import copy
+import logging
+import sys
+
+logger = logging.getLogger('gizmoLogger')
 
 
 def makeresolver(schema) -> callable:
