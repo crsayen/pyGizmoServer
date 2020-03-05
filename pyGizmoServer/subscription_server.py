@@ -34,20 +34,19 @@ class SubscriptionServer:
         path = update.get("path")
         for con, sub in [
             connection for connection in self.connected
-            if path in connection[1]
+            if path in connection[1] or path == connection[1]
         ]:
             debug(path)
-            if path != sub:
-                update = {
-                    "path": sub,
-                    "value": dpath.util.get(
-                        update["value"],
-                        sub[len(path):]
-                    )
-                }
-            debug(f"sending ws on: {update}")
+            data = {
+                "path": sub,
+                "value": dpath.util.get(
+                    update["value"],
+                    sub[len(path):]
+                )
+            } if path != sub else update
+            debug(f"sending ws on: {data}")
             asyncio.run_coroutine_threadsafe(
-                con.send(json.dumps(update)), self.subloop
+                con.send(json.dumps(data)), self.subloop
             )
 
     async def connection_handler(self, websocket, path):

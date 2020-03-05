@@ -45,15 +45,25 @@ gizmo_logger.propagate = False
 
 """ setup controller """
 controller = getattr(
-    importlib.import_module(f"{cfg.controller}.{cfg.controller}"), cfg.controller
+    importlib.import_module(f"{cfg.controller}.{cfg.controller}"),
+    cfg.controller
 )()
 
 """ set initial model """
 model = Utility.initialize_model_from_schema(controller.schema)
 
 """ setup modification, query handlers """
-modification_handler = ModificationHandler(controller, model=model)
-query_handler = QueryHandler(cfg.ws.ip, cfg.ws.port, cfg.ws.url, controller, model=model)
+modification_handler = ModificationHandler(
+    controller,
+    model=model
+)
+query_handler = QueryHandler(
+    cfg.ws.ip,
+    cfg.ws.port,
+    cfg.ws.url,
+    controller,
+    model=model
+)
 controller.setcallback(query_handler.handle_updates)
 
 
@@ -62,7 +72,7 @@ async def get_index(request):
 
 
 async def get_favicon(request):
-     return web.FileResponse('./dist/favicon.ico')
+    return web.FileResponse('./dist/favicon.ico')
 
 
 def make_app():
@@ -91,3 +101,8 @@ def main():
         web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port, access_log=None)
     except KeyboardInterrupt:
         sys.exit()
+
+
+if __name__ == "__main__":
+    main()
+    

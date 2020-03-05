@@ -2,8 +2,9 @@ import logging
 from itertools import zip_longest
 import dpath.util
 from pyGizmoServer.subscription_server import SubscriptionServer
-from pyGizmoServer.utility import Utility
+from pyGizmoServer.utility import Utility, debug
 from aiohttp import web
+import json
 from aiojobs.aiohttp import spawn
 
 
@@ -27,7 +28,7 @@ class QueryHandler:
         self.err = None
         self.wsurl = ws_url
         self.logger = logging.getLogger("gizmoLogger")
-        self.logger.debug("init")
+        debug("init")
         self.subscription_server = SubscriptionServer(ws_ip, ws_port)
         self.subscribers = {}
 
@@ -39,9 +40,9 @@ class QueryHandler:
             resp["wsurl"] = self.wsurl
             resp["controller"] = self.controller.__class__.__name__
             return web.json_response(resp)
-        path, getmodel = ("/", True) if request.path == "/model" else (request.path, False)
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(f"{path}")
+        path, getmodel = ("/", True) if \
+            request.path == "/model" else (request.path, False)
+        debug(f"{path}")
         data = Utility.parse_path_against_schema_and_model(
             self.model, self.schema, path, read_write="r"
         )
@@ -58,11 +59,10 @@ class QueryHandler:
         return web.json_response(response)
 
     def handle_updates(self, updates):
+        debug(updates)
         if not isinstance(updates, list):
             updates = [updates]
         for update in updates:
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(f"{update['path']}")
             data = update.get("data")
             path = update.get("path")
             if isinstance(update, str) or data is None or path is None:
@@ -70,6 +70,7 @@ class QueryHandler:
                 continue
             location = dpath.util.get(self.model, path)
             dpath.util.set(self.model, path, merge(location, data))
+            debug(json.dumps(self.model, indent=2))
             self.subscription_server.publish(
                 {"path": path, "value": dpath.util.get(self.model, path)}
             )

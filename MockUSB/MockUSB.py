@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-from pyGizmoServer.utility import debug
 
 
 class MockUSB:
@@ -13,6 +12,7 @@ class MockUSB:
         self.running = False
         self.version = None
         self.getversion = None
+        self.relays = [False] * 6
         with open("MockUSB/schema.json") as f:
             self.schema = json.load(f)
 
@@ -27,10 +27,10 @@ class MockUSB:
         pass
 
     def setRelay(self, relay, state):
-        debug(f"{relay=}{state=}")
+        self.relays[relay] = state
         self.msg = {
-            "path": f"/relayController/relays/{relay}",
-            "data": state,
+            "path": f"/relayController/relays",
+            "data": self.relays,
         }
 
     def finished(self):
