@@ -1,5 +1,7 @@
 import asyncio
 import json
+import logging
+from pyGizmoServer.utility import debug
 
 
 class MockUSB:
@@ -7,6 +9,7 @@ class MockUSB:
         self.callback = None
         self.msg = None
         self.ask = None
+        self.logger = logging.getLogger('gizmoLogger')
         self.running = False
         self.version = None
         self.getversion = None
@@ -24,7 +27,11 @@ class MockUSB:
         pass
 
     def setRelay(self, relay, state):
-        pass
+        debug(f"{relay=}{state=}")
+        self.msg = {
+            "path": f"/relayController/relays/{relay}",
+            "data": state,
+        }
 
     def finished(self):
         pass
@@ -47,11 +54,11 @@ class MockUSB:
 
     async def usbrxhandler(self):
         self.running = True
-        print(id(asyncio.get_event_loop()))
         if self.getversion is None:
             self.getversion = asyncio.Event()
         while 1:
             if self.msg is not None:
+                self.logger
                 self.callback(self.msg)
                 self.msg = None
             if self.ask is not None:

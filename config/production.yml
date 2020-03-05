@@ -4,11 +4,11 @@ tcp:
 ws:
   ip: '0.0.0.0'
   port: 11111
-  url: 'ws://96.85.100.187'
+  url: 'ws://localhost'
 controller: 'TestCubeUSB'
 logging:
   file:
-    loglevel: 'INFO'
+    loglevel: 'DEBUG'
     filename: 'gizmo.production.log'
   console:
-    loglevel: 'INFO'
+    loglevel: 'DEBUG'

@@ -31,9 +31,9 @@
         "adcInputMonitorRate" : { "w" : "setAdcMonitorUpdateRate", "args": [], "$type": "integer" },
         "adcInputs" : {
             "$count": 8,
-            "measuredVoltage" : {  "args": [], "$type": "integer" },
             "enabled" : { "w" : "setAdcEnabled",  "args": [], "$type": "boolean" }
-        }
+        },
+        "adcInputVoltages": { "$count": 8, "args": [], "$type": "integer" }
     },
     "digitalInputController" : {
         "digitalInputMonitorRate" : { "w" : "setDiMonitorUpdateRate", "args": [], "$type": "integer" },

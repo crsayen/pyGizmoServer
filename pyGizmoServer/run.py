@@ -3,9 +3,6 @@ import sys
 import time
 import importlib
 import logging
-import os
-import jinja2
-import aiohttp_jinja2
 import pkg_resources
 from pyGizmoServer.modification_handler import ModificationHandler
 from pyGizmoServer.query_handler import QueryHandler
@@ -33,7 +30,7 @@ logging.usb = partial(logging.log, logging.USB)
 gizmo_logger = logging.getLogger("gizmoLogger")
 gizmo_logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
 formatter = logging.Formatter(
-    fmt="%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s",
+    fmt="%(asctime)s.%(msecs)03d %(levelname)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 filehandler = logging.FileHandler(filename=cfg.logging.file.filename, mode="w")

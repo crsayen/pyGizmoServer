@@ -19,6 +19,6 @@ class RelayMessage:
 
     def recusb_13_relay(self, payload):
         enabled = int(payload[:2], 16)
-        data = [(enabled & (1 << x)) for x in range(6)]
+        data = [not not (enabled & (1 << x)) for x in range(6)]
         path = "/relayController/relays"
         return [{"path": path, "data": data}]
