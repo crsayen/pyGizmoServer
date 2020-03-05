@@ -14,6 +14,7 @@ from TestCubeUSB.TestCubeComponents.usb import UsbMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeUSB.TestCubeComponents.version import VersionMessage
 import copy
+from pyGizmoServer.utility import debug
 
 
 class TestCubeUSB(
@@ -38,6 +39,8 @@ class TestCubeUSB(
         VersionMessage.__init__(self)
 
     def __init__(self):
+        self.logger = logging.getLogger("gizmoLogger")
+        debug("init")
         self.callParentInits()
         self.callback = None
         self.version = None
@@ -105,6 +108,7 @@ class TestCubeUSB(
         raise ValueError("Device not found")
 
     def finished(self):
+        debug(f"finished")
         msgs = (
             self.get_relay_messages()
             + self.get_pwm_messages()
@@ -123,6 +127,7 @@ class TestCubeUSB(
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         self.running = True
+        debug("running")
         while 1:
             await asyncio.sleep(0.0001)
             try:

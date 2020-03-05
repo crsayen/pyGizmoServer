@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from pyGizmoServer.utility import debug
 
 
 class VersionMessage:
@@ -23,6 +24,7 @@ class VersionMessage:
         return [f"{0x50:08x}"]
 
     def recusb_51_version(self, payload):
+        debug(f"{payload}")
         if len(payload) < 12:
             self.version = "0.0.0"
         else:

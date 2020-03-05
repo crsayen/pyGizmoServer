@@ -51,3 +51,9 @@ class Settings:
         except Exception as e:
             print(f"{e}")
             return None
+
+
+def debug(msg):
+    if not logger.isEnabledFor(logging.DEBUG):
+        return
+    logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
