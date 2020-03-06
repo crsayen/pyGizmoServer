@@ -12,6 +12,7 @@ class MockUSB:
         self.running = False
         self.version = None
         self.getversion = None
+        self.onslaught = False
         self.relays = [False] * 6
         with open("MockUSB/schema.json") as f:
             self.schema = json.load(f)
@@ -56,16 +57,29 @@ class MockUSB:
         await self.getversion.wait()
         return [{"path": "/version", "data": self.version}]
 
+    def flood(self, time):
+        self.onslaught = time
+
     async def usbrxhandler(self):
         self.running = True
         if self.getversion is None:
             self.getversion = asyncio.Event()
         while 1:
-            if self.msg is not None:
+            if self.onslaught:
+                if self.msg is None:
+                    self.msg = {
+                        "path": f"/relayController/relays",
+                        "data": [True] + ([False] * 5)
+                    }
+                old = self.msg['data']
+                self.msg['data'] = old[1:] + old[:1]
+                self.callback(self.msg)
+                await asyncio.sleep(float(self.onslaught) / 1000)
+            elif self.msg is not None:
                 self.logger
                 self.callback(self.msg)
                 self.msg = None
             if self.ask is not None:
                 self.version = "6.6.6"
                 self.getversion.set()
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0)

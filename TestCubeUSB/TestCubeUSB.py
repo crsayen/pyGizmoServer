@@ -133,7 +133,7 @@ class TestCubeUSB(
         self.running = True
         debug("running")
         while 1:
-            await asyncio.sleep(0.0001)
+            await asyncio.sleep(0)
             try:
                 msg = self.dev.read(130, 24, 100)
             except usb.core.USBError as e:
