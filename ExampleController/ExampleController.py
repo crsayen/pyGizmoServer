@@ -41,5 +41,5 @@ class ExampleController(Controller):
         self.stridx %= 3
         self.counter += 1
         self.counter %= 100
-        self.send("/watch_me_concatenate", self.concat)
+        self.send("/watch_me_read", self.concat)
         self.send("/watch_me_count", self.counter)
