@@ -57,6 +57,7 @@
         "rxCount": {"$type": "integer"},
         "usbinfo":{"$type": "string"}
     },
-    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
+    "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" },
+        "flood" : { "w" : "flood",  "args": [], "$type": "integer" }
     
 }

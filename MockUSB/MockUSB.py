@@ -12,6 +12,7 @@ class MockUSB(Controller):
         self.logger = logging.getLogger('gizmoLogger')
         self.version = None
         self.getversion = None
+        self.onslaught = False
         self.relays = [False] * 6
 
     def setup(self):
