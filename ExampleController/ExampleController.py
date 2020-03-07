@@ -9,6 +9,7 @@ class ExampleController(Controller):
         self.counter = 0
         self.strings = ["a", "b", "c"]
         self.concat = ''.join(self.strings)
+        self.stridx = 0
 
     """
     Setup gets called once at startup.
@@ -34,8 +35,10 @@ class ExampleController(Controller):
     Use this to send real time updates to the client
     """
     async def handler(self):
-        await asyncio.sleep(0.1)
-        self.concat = ''.join(self.strings)
+        await asyncio.sleep(0.2)
+        self.concat = self.strings[self.stridx]
+        self.stridx += 1
+        self.stridx %= 3
         self.counter += 1
         self.counter %= 100
         self.send("/watch_me_concatenate", self.concat)

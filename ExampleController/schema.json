@@ -2,6 +2,6 @@
     "list_of_strings" : {
         "$count": 3, "w": "setString", "r": "getString", "args": [], "$type": "string"
     },
-    "watch_me_concatenate" : {"$type": "string"},
+    "watch_me_read" : {"$type": "string"},
     "watch_me_count": {"$type": "integer"}
 }
