@@ -1,34 +1,22 @@
 import asyncio
-import json
 import logging
+from pyGizmoServer.controller import Controller
 
 
-class MockUSB:
-    def __init__(self):
+class MockUSB(Controller):
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
         self.callback = None
         self.msg = None
         self.ask = None
         self.logger = logging.getLogger('gizmoLogger')
-        self.running = False
         self.version = None
         self.getversion = None
         self.relays = [False] * 6
-        with open("MockUSB/schema.json") as f:
-            self.schema = json.load(f)
 
-    def setcallback(self, callback):
-        if not callable(callback):
-            raise ValueError("callback must be a function")
-        self.callback = callback
-
-    def start(self):
-        if self.callback is None:
-            raise RuntimeError("controller callback not set")
-        pass
-
-    async def tend(self, func, args):
-        if not self.running:
-            await func(args, self.usbrxhandler())
+    def setup(self):
+        if self.getversion is None:
+            self.getversion = asyncio.Event()
 
     def setRelay(self, relay, state):
         self.relays[relay] = state
@@ -37,7 +25,7 @@ class MockUSB:
             "data": self.relays,
         }
 
-    def finished(self):
+    def finished_processing_request(self):
         pass
 
     def wsinvoke(self, msg):
@@ -52,20 +40,16 @@ class MockUSB:
         print(id(asyncio.get_event_loop()))
         self.ask = True
         self.getversion.clear()
-        self.finished()
+        self.finished_processing_request()
         await self.getversion.wait()
-        return [{"path": "/version", "data": self.version}]
+        return self.version
 
-    async def usbrxhandler(self):
+    async def handler(self):
         self.running = True
-        if self.getversion is None:
-            self.getversion = asyncio.Event()
-        while 1:
-            if self.msg is not None:
-                self.logger
-                self.callback(self.msg)
-                self.msg = None
-            if self.ask is not None:
-                self.version = "6.6.6"
-                self.getversion.set()
-            await asyncio.sleep(0.001)
+        if self.msg is not None:
+            self.logger
+            self.callback(self.msg)
+            self.msg = None
+        if self.ask is not None:
+            self.version = "6.6.6"
+            self.getversion.set()

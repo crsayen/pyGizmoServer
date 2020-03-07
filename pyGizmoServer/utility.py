@@ -77,6 +77,10 @@ def ensurelist(item):
     return item if isinstance(item, list) else [item]
 
 
+def log(msg):
+    logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
+
+
 def debug(msg):
     if not logger.isEnabledFor(logging.DEBUG):
         return

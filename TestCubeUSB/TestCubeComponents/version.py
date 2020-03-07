@@ -16,7 +16,7 @@ class VersionMessage:
         else:
             self.getVersionEvent.clear()
         await self.getVersionEvent.wait()
-        return [{"path": "/version", "data": self.version}]
+        return self.version
 
     def get_version_messages(self):
         if self.ask is None:

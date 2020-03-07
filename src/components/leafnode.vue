@@ -4,7 +4,6 @@
             {{ label }}
         </div>
         <div class="valueBox">
-            <div class='valueLabel'>state:</div>
             <div class="value">{{ value }}</div>
         </div>
         <div v-if="writable" class="input">
@@ -14,7 +13,7 @@
             <input v-else type="Text" v-model.lazy="outValue"/>
         </div>
         <div class="btnBox">
-            <div v-if="true">
+            <div v-if="readable">
                     <button @click="get"
                     class="getBtn"
                     :disabled="watching"
@@ -84,6 +83,7 @@ export default {
         )},
         watch_unwatch() {
             if (!this.watching) {
+                this.get()
                 this.ws = new ws(this.wsurl + ':11111' + this.path)
                 this.ws.onmessage = (data) => {
                     this.value = JSON.parse(data.data).value
@@ -109,6 +109,9 @@ export default {
                 this.patch(body)
             }
         }
+    },
+    mounted() {
+        this.get()
     },
     destroyed() {
         if (this.ws !== null){

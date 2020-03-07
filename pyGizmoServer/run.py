@@ -8,63 +8,66 @@ from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
 from aiojobs.aiohttp import spawn
+from typing import List, Dict, Tuple, Optional, Union
 
 
-async def handlepatch(request):
+async def handlepatch(request: web.Request) -> web.Response:
     await controller.tend(spawn, request)
-    request = json.loads(await request.text())
+    patchlist: List[Dict[str, any]] = ensurelist(json.loads(await request.text()))
     debug(request)
-    response = []
-    for r in ensurelist(request):
-        path, value = r.get("path"), r.get("value")
-        props = resolver(path)
+    response: List = []
+    for patch in patchlist:
+        path, value = patch.get("path"), patch.get("value")
+        props: Dict[str, str] = resolver(path)
         if not (
             props and value is not None and hasattr(controller, props.get("w"))
         ):
-            return web.json_response([{"error": f"bad request: {r}"}])
+            return web.json_response([{"error": f"bad request: {patch}"}])
         getattr(controller, props["w"])(*(props["args"] + [value]))
         response.append({"path": path, "data": value})
-    controller.finished()
+    controller.finished_processing_request()
     return web.json_response(response)
 
 
-async def handleget(request):
+async def handleget(request: web.Request) -> web.Response:
     debug(request.path)
     await controller.tend(spawn, request)
-    props = resolver(request.path)
+    props: Dict[str, str] = resolver(request.path)
     if props and props.get("r"):
-        response = await getattr(controller, props["r"])(*props.get("args"))
+        response = [{
+            "path": request.path,
+            "data": await getattr(controller, props["r"])(*props.get("args"))
+        }]
     else:
         return web.json_response([{"error": f"bad request: {request}"}])
     return web.json_response(response)
 
 
-def handleupdates(updates):
+def handleupdates(updates: Union[Dict[str, any], List[Dict[str, any]]]) -> None:
     debug(updates)
-    if not isinstance(updates, list):
-        updates = [updates]
+    updates = ensurelist(updates)
     for update in updates:
         data, path = update.get("data"), update.get("path")
         subscription_server.publish({"path": path, "value": data})
 
 
-async def get_schema(request):
+async def get_schema(request: web.Request) -> web.Response:
     debug(request.path)
-    resp = controller.schema.copy()
-    resp["wsurl"] = cfg.ws.url
-    resp["controller"] = controller.__class__.__name__
-    return web.json_response(resp)
+    response: Dict[str, Dict] = controller.schema.copy()
+    response["wsurl"] = cfg.ws.url
+    response["controller"] = controller.__class__.__name__
+    return web.json_response(response)
 
 
-async def get_index(request):
+async def get_index(request: web.Request) -> web.Response:
     return web.FileResponse("./dist/index.html")
 
 
-async def get_favicon(request):
+async def get_favicon(request: web.Request) -> web.Response:
     return web.FileResponse("./dist/favicon.ico")
 
 
-def make_app():
+def make_app() -> web.Application:
     controller.start()
     app = web.Application()
     app["static_root_url"] = "/src"
@@ -88,17 +91,17 @@ def main():
         sys.exit()
 
 
-configfile = sys.argv[1] if len(sys.argv) > 1 else "production"
-cfg = loadconfig(configfile)
+configfile: str = sys.argv[1] if len(sys.argv) > 1 else "production"
+cfg: Dict[str, any] = loadconfig(configfile)
 setuplog(cfg)
 if cfg is None:
     print(f"\n'{configfile}' not found\nexiting...\n")
     sys.exit()
-subscription_server = SubscriptionServer(cfg.ws.ip, cfg.ws.port)
+subscription_server: SubscriptionServer = SubscriptionServer(cfg.ws.ip, cfg.ws.port)
 controller = getattr(
     importlib.import_module(f"{cfg.controller}.{cfg.controller}"), cfg.controller
 )()
-resolver = makeresolver(controller.schema)
+resolver: callable = makeresolver(controller.schema)
 controller.setcallback(handleupdates)
 
 
