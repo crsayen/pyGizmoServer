@@ -38,4 +38,4 @@ class ExampleController(Controller):
         await asyncio.sleep(0.2)
         self.read_idx += 1
         self.read_idx %= 3
-        self.send("/watch_me_read", self.strings[read_idx])
+        self.send("/watch_me_read", self.strings[self.read_idx])
