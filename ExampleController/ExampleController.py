@@ -8,7 +8,8 @@ class ExampleController(Controller):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.counter = 0
-        self.strings = ["a", "b", "c"]
+        self.strings = ["chris", "looks", "and", "smells", "good"]
+        self.wait = 0.2
         self.read_idx = 0
 
     """
@@ -27,15 +28,21 @@ class ExampleController(Controller):
     def setString(self, index, value):
         self.strings[index] = value
 
+    def setwpm(self, wpm):
+        self.wait = wpm / 1000.0 / 60.0
+
     async def getnumber(self):
         return random.randint(0, 100)
+
+    def setbool(self, *args):
+        pass
 
     """
     The handler gets called repeatedly.
     Use this to send real time updates to the client
     """
     async def handler(self):
-        await asyncio.sleep(0.2)
+        await asyncio.sleep(self.wait)
         self.read_idx += 1
-        self.read_idx %= 3
+        self.read_idx %= 5
         self.send("/watch_me_read", self.strings[self.read_idx])

@@ -1,7 +1,31 @@
 {
-    "strings_to_read" : {
-        "$count": 3, "w": "setString", "args": [], "$type": "string"
+    "reader":{
+        "strings_to_read" : {
+            "$count": 5, "w": "setString", "args": [], "$type": "string"
+        },
+        "words_per_minute": {"w": "setwpm", "args": [], "$type": "integer"},
+        "watch_me_read" : {"$type": "string"}
     },
-    "watch_me_read" : {"$type": "string"},
-    "get_a_number": {"r": "getnumber", "args": [], "$type": "integer"}
+    "get_a_number": {"r": "getnumber", "args": [], "$type": "integer"},
+    "groups": {
+        "$count": 3,
+        "boolean": {"w": "setbool", "args": [], "$type": "boolean"},
+        "very": {
+            "deeply": {
+                "nested": {
+                    "nest": {
+                        "of": {
+                            "nothing": {
+                                "but": {
+                                    "a": {
+                                        "list": {"$count":3, "$type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
