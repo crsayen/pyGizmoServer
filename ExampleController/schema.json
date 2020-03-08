@@ -1,7 +1,7 @@
 {
-    "list_of_strings" : {
-        "$count": 3, "w": "setString", "r": "getString", "args": [], "$type": "string"
+    "strings_to_read" : {
+        "$count": 3, "w": "setString", "args": [], "$type": "string"
     },
     "watch_me_read" : {"$type": "string"},
-    "watch_me_count": {"$type": "integer"}
+    "get_a_number": {"r": "getnumber", "args": [], "$type": "integer"}
 }
