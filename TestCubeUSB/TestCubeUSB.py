@@ -68,7 +68,6 @@ class TestCubeUSB(
 
     def setup(self):
         self.dev = None
-        self.usbgen = self.usb_read_generator()
         devs = usb.core.find(idVendor=0x2B87, idProduct=0x0001, find_all=True)
         if devs is not None:
             for dev in devs:
@@ -102,19 +101,11 @@ class TestCubeUSB(
             self.dev.write(2, msg)
         self.call_parent_inits()
 
-    @aioify
-    def usb_read_generator(self):
-        while 1:
-            try:
-                yield self.dev.read(130, 24, 1000)
-            except usb.core.USBError:
-                pass
-
     async def handler(self):
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         try:
-            msg = await self.usbgen.__anext__()
+            msg = self.dev.read(130, 24, 1)
         except usb.core.USBError:
             return
         msg = "".join([chr(x) for x in msg])

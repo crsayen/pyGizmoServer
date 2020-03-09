@@ -8,7 +8,7 @@ ws:
 controller: 'TestCubeUSB'
 logging:
   file:
-    loglevel: 'DEBUG'
+    loglevel: 'INFO'
     filename: 'gizmo.production.log'
   console:
-    loglevel: 'DEBUG'
+    loglevel: 'INFO'

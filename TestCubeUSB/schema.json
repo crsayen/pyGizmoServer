@@ -37,10 +37,8 @@
     },
     "digitalInputController" : {
         "digitalInputMonitorRate" : { "w" : "setDiMonitorUpdateRate", "args": [], "$type": "integer" },
-        "digitalInputs" :{
-            "$count": 12,
-            "high" : {  "args": [], "$type": "boolean" }
-        }
+        "digitalInputs" :{ "$count": 12, "args": [], "$type": "boolean" }
+        
     },
     "frequencyInputController" : {
         "frequencyMonitorRate" : { "w": "setFrequencyMonitorRate","$type" : "integer", "args": [] },

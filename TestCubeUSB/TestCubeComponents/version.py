@@ -10,7 +10,7 @@ class VersionMessage():
 
     async def getFirmwareVersion(self):
         self.ask = True
-        self.finished()
+        self.finished_processing_request()
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         else:

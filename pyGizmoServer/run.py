@@ -14,7 +14,7 @@ from typing import List, Dict, Tuple, Optional, Union
 async def handlepatch(request: web.Request) -> web.Response:
     await controller.tend(spawn, request)
     patchlist: List[Dict[str, any]] = ensurelist(json.loads(await request.text()))
-    debug(request)
+    debug(patchlist)
     response: List = []
     for patch in patchlist:
         path, value = patch.get("path"), patch.get("value")

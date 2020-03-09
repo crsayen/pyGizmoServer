@@ -111,7 +111,7 @@ export default {
         }
     },
     mounted() {
-        this.get()
+        if (this.readable){this.get()}
     },
     destroyed() {
         if (this.ws !== null){
