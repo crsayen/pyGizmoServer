@@ -8,15 +8,25 @@ class MockVars:
             "adcInputController": {
                 "adcInputMonitorRate": 0,
                 "adcInputs": [
-                    {"measuredVoltage": 1, "enabled": False},
-                    {"measuredVoltage": 2, "enabled": False},
-                    {"measuredVoltage": 3, "enabled": False},
-                    {"measuredVoltage": 4, "enabled": False},
-                    {"measuredVoltage": 5, "enabled": False},
-                    {"measuredVoltage": 6, "enabled": False},
-                    {"measuredVoltage": 7, "enabled": False},
-                    {"measuredVoltage": 8, "enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
+                    {"enabled": False},
                 ],
+                "adcInputVoltages": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ]
             },
             "frequencyInputController": {
                 "frequencyInputs": [
@@ -44,12 +54,12 @@ class MockVars:
             },
             "relayController": {
                 "relays": [
-                    {"enabled": True},
-                    {"enabled": False},
-                    {"enabled": False},
-                    {"enabled": False},
-                    {"enabled": True},
-                    {"enabled": False},
+                    True,
+                    False,
+                    False,
+                    False,
+                    True,
+                    False,
                 ]
             },
             "pwmController": {

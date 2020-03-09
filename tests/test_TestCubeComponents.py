@@ -102,7 +102,7 @@ def test_adcrequest():
     # am.setAdcEnabled(True,0x5)
     # default changed to all on
     am.setAdcMonitorUpdateRate(0x11 * 50)
-    assert am.get_adc_messages() == ["000000103f11"]
+    assert am.get_adc_messages() == ["00000010ff11"]
 
 
 def test_version():

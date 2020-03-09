@@ -1,6 +1,8 @@
-from TestCubeUSB.TestCubeUSB import *
-from pyGizmoServer.utility import Utility
+from TestCubeUSB.TestCubeUSB import TestCubeUSB
+from tests.TestUtility import TestUtility
 from tests.mock_variables import MockVars
+import json
+import warnings
 
 
 class Test_usbRec:
@@ -18,15 +20,17 @@ class Test_usbRec:
             assert md == pd, f"usb data does not match model {loc}"
 
     def processandcheck(self, msg):
-        d = self.controller.recUsb(msg)
+        d = self.controller.rec_usb(msg)
+        if d is None:
+            warnings.warn(UserWarning(f"rec_usb({msg}) returned None"))
+        else:
+            for pd in d:
+                results = TestUtility.parse_path_against_schema_and_model(
+                    path=pd["path"], schema=self.schema, model=self.mockvars.mock_model
+                )
+                self.checkmatch(results["model_data"], pd["data"], pd["path"])
 
-        for pd in d:
-            results = Utility.parse_path_against_schema_and_model(
-                path=pd["path"], schema=self.schema, model=self.mockvars.mock_model
-            )
-            self.checkmatch(results["model_data"], pd["data"], pd["path"])
-
-    def callback():
+    def callback(self):
         print("callback")
 
     def setup(self):
