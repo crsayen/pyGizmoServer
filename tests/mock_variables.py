@@ -38,18 +38,18 @@ class MockVars:
             },
             "digitalInputController": {
                 "digitalInputs": [
-                    {"high": True},
-                    {"high": False},
-                    {"high": True},
-                    {"high": False},
-                    {"high": True},
-                    {"high": False},
-                    {"high": True},
-                    {"high": False},
-                    {"high": True},
-                    {"high": False},
-                    {"high": True},
-                    {"high": False},
+                    True,
+                    False,
+                    True,
+                    False,
+                    True,
+                    False,
+                    True,
+                    False,
+                    True,
+                    False,
+                    True,
+                    False
                 ]
             },
             "relayController": {
@@ -180,10 +180,7 @@ class MockVars:
             },
             "digitalInputController" : {
                 "digitalInputMonitorRate" : { "w" : "setDiMonitorUpdateRate", "args": [], "$type": "integer" },
-                "digitalInputs" :{
-                    "$count": 12,
-                    "high" : {  "args": [], "$type": "boolean" }
-                }
+                "digitalInputs" : {"$count": 12, "args": [], "$type": "boolean" }
             },
             "frequencyInputController" : {
                 "frequencyMonitorRate" : { "w": "setFrequencyMonitorRate","$type" : "integer", "args": [] },
@@ -201,5 +198,5 @@ class MockVars:
                 "usbinfo":{"$type": "string"}
             },
             "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
-            
+
         }
