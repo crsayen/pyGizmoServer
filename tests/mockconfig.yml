@@ -1,0 +1,14 @@
+tcp:
+  ip: '0.0.0.0'
+  port: 36364
+ws:
+  ip: '0.0.0.0'
+  port: 11111
+  url: 'ws://localhost'
+controller: 'TestCubeUSB'
+logging:
+  file:
+    loglevel: 'INFO'
+    filename: 'gizmo.development.log'
+  console:
+    loglevel: 'INFO'

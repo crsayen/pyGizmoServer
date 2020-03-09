@@ -44,7 +44,8 @@ def makeresolver(schema) -> callable:
                 res = copy.deepcopy(v)
                 if res.get("args") is not None:
                     res["args"].extend([int(i) for i in p.split("/") if i.isdigit()])
-                r[p] = res
+                if not v.get("$count"):
+                    r[p] = res
             f(v, f"{p}/{k}", r)
 
     propsdict = {}
