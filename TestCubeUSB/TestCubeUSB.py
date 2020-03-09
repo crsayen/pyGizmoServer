@@ -1,7 +1,8 @@
 import usb.core
 import usb.util
 import asyncio
-from pyGizmoServer.controller import ControllerABC
+from aioify import aioify
+from pyGizmoServer.controller import Controller
 from TestCubeUSB.TestCubeComponents.adc import AdcMessage
 from TestCubeUSB.TestCubeComponents.pwm import PwmMessage
 from TestCubeUSB.TestCubeComponents.relay import RelayMessage
@@ -15,7 +16,7 @@ from pyGizmoServer.utility import debug
 
 
 class TestCubeUSB(
-    ControllerABC,
+    Controller,
     RelayMessage,
     PwmMessage,
     DiMessage,
@@ -38,11 +39,11 @@ class TestCubeUSB(
 
     def __init__(self):
         debug("init")
+        Controller.__init__(self)
         self.call_parent_inits()
         self.version = None
         self.ask = None
         self.getVersionEvent = None
-        AdcMessage.__init__(self)
         self.usbrxcount = 0
         self.usbidparsers = {
             "00000005": self.rec_usb_5_pwmfreq,
@@ -64,10 +65,10 @@ class TestCubeUSB(
         }
         self.actcurrent_listinfirstmsg = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         self.adc_listinfirstmsg = []
-        self.handler = self.usbrxhandler
 
     def setup(self):
         self.dev = None
+        self.usbgen = self.usb_read_generator()
         devs = usb.core.find(idVendor=0x2B87, idProduct=0x0001, find_all=True)
         if devs is not None:
             for dev in devs:
@@ -83,13 +84,13 @@ class TestCubeUSB(
                     elif ":" in line:
                         k, v = line.split(":")[0].strip(), line.split(":")[1].strip()
                         devdict[k] = v
-                self.callback({"path": "/usb/usbinfo", "data": devdict})
+                self.send("/usb/usbinfo", devdict)
                 return
         raise ValueError("Device not found")
 
     def finished_processing_request(self):
         debug(f"finished")
-        msgs = [self.get_relay_messages()]
+        msgs = self.get_relay_messages()
         msgs += self.get_pwm_messages()
         msgs += self.get_di_messages()
         msgs += self.get_actcur_messages()
@@ -101,16 +102,24 @@ class TestCubeUSB(
             self.dev.write(2, msg)
         self.call_parent_inits()
 
+    @aioify
+    def usb_read_generator(self):
+        while 1:
+            try:
+                yield self.dev.read(130, 24, 1000)
+            except usb.core.USBError:
+                pass
+
     async def handler(self):
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         try:
-            msg = self.dev.read(130, 24, 100)
+            msg = await self.usbgen.__anext__()
         except usb.core.USBError:
             return
         msg = "".join([chr(x) for x in msg])
         self.usbrxcount += 1
-        self.callback(
+        self.send( updates = 
             [
                 {"path": "/usb/rxMessage", "data": msg},
                 {"path": "/usb/rxCount", "data": self.usbrxcount},
@@ -121,7 +130,7 @@ class TestCubeUSB(
         if d is None:
             return
         if len(d) > 0:
-            self.callback(d)
+            self.send(updates = d)
 
     def rec_usb(self, msg):
         _id, payload = msg[:8], msg[8:]

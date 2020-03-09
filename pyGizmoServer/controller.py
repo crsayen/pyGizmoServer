@@ -1,5 +1,6 @@
 import json
 import asyncio
+from typing import overload, List, Any
 
 
 class Controller():
@@ -34,9 +35,12 @@ class Controller():
         raise NotImplementedError
 
     def finished_processing_request(self):
-        raise NotImplementedError
+        raise NotImplementedError  
 
-    def send(self, path, data):
+    def send(self, path: str = None, data: Any = None, updates: List = None):
+        if updates is not None:
+            self.callback(updates)
+            return
         self.callback({
             "path": path,
             "data": data

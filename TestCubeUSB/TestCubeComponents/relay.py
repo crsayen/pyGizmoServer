@@ -11,13 +11,13 @@ class RelayMessage:
         mask = 0
         val = 0
         for i in range(0, len(self.RelayStates)):
-            if self.RelayStates[i] != None:
+            if self.RelayStates[i] is not None:
                 mask |= 1 << i
                 if self.RelayStates[i]:
                     val |= 1 << i
         return [f"{0x12:08x}{mask:02x}{val:02x}"]
 
-    def recusb_13_relay(self, payload):
+    def rec_usb_13_relay(self, payload):
         enabled = int(payload[:2], 16)
         data = [not not (enabled & (1 << x)) for x in range(6)]
         path = "/relayController/relays"

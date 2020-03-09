@@ -88,7 +88,7 @@ class PwmMessage:
             + self.getUsbMsg8()
         )
 
-    def recusb_5_pwmfreq(self, payload):
+    def rec_usb_5_pwmfreq(self, payload):
         acthi, freqa, freqb = payload[:4], payload[4:8], payload[8:12]
         d = []
         path = "/pwmController/bankA/frequency"
@@ -107,7 +107,7 @@ class PwmMessage:
         d.append({"path": path, "data": data})
         return d
 
-    def recusb_7_pwmdutycycle(self, payload):
+    def rec_usb_7_pwmdutycycle(self, payload):
         ret = [{}] * 12
         bank, _, dcf, dce, dcd, dcc, dcb, dca = (
             int(payload[:2], 16),
@@ -128,7 +128,7 @@ class PwmMessage:
         path = "/pwmController/pwms"
         return [{"path": path, "data": ret}]
 
-    def recusb_9_pwmenable(self, payload):
+    def rec_usb_9_pwmenable(self, payload):
         d = []
         enabled = int(payload[:4], 16)
         data = [

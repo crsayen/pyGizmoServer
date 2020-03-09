@@ -28,7 +28,7 @@ class ActCurMessage:
             f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"
         ]
 
-    def recusb_1d_actfault(self, payload):
+    def rec_usb_1d_actfault(self, payload):
         _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
         data = [
             {"currentMonitor": {"faulty": True}}
@@ -40,7 +40,7 @@ class ActCurMessage:
         path = "/pwmController/pwms"
         return [{"path": path, "data": data}]
 
-    def recusb_00d_actcurrent(self, payload):
+    def rec_usb_00d_actcurrent(self, payload):
         ret = [{}] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
@@ -62,7 +62,7 @@ class ActCurMessage:
         path = "/pwmController/pwms"
         return [{"path": path, "data": ret}]
 
-    def recusb_10d_actcurrent(self, payload):
+    def rec_usb_10d_actcurrent(self, payload):
         ret = [{}] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
@@ -80,7 +80,7 @@ class ActCurMessage:
         path = "/pwmController/pwms"
         return [{"path": path, "data": ret}]
 
-    def recusb_20d_actcurrent(self, payload):
+    def rec_usb_20d_actcurrent(self, payload):
         ret = [{}] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
@@ -98,7 +98,7 @@ class ActCurMessage:
         path = "/pwmController/pwms"
         return [{"path": path, "data": ret}]
 
-    def recusb_30d_actcurrent(self, payload):
+    def rec_usb_30d_actcurrent(self, payload):
         ret = [{}] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd = (int(payload[:4], 16),)

@@ -3,7 +3,7 @@ import logging
 from pyGizmoServer.utility import debug
 
 
-class VersionMessage:
+class VersionMessage():
     def __init__(self):
         self.ask = None
         pass
@@ -23,7 +23,7 @@ class VersionMessage:
             return []
         return [f"{0x50:08x}"]
 
-    def recusb_51_version(self, payload):
+    def rec_usb_51_version(self, payload):
         debug(f"{payload}")
         if len(payload) < 12:
             self.version = "0.0.0"

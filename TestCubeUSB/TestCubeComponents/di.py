@@ -10,7 +10,7 @@ class DiMessage:
             return []
         return [f"{0xa:08x}{self.dimonitorrate:02x}"]
 
-    def recusb_b_digitalinputs(self, payload):
+    def rec_usb_b_digitalinputs(self, payload):
         d = []
         high = int(payload[:4], 16)
         data = [

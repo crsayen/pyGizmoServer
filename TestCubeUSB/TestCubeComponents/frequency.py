@@ -20,7 +20,7 @@ class FrequencyMessage:
         channels = int(channels[::-1], 2)
         return [f"{0xe:08x}{channels:02x}{self.freqmonitorRate:02x}"]
 
-    def recusb_00f_speed(self, payload):
+    def rec_usb_00f_speed(self, payload):
         ret = [{}] * 4
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
@@ -40,7 +40,7 @@ class FrequencyMessage:
         path = "/frequencyInputController/frequencyInputs"
         return [{"path": path, "data": ret}]
 
-    def recusb_10f_speed(self, payload):
+    def rec_usb_10f_speed(self, payload):
         ret = [{}] * 4
         payload = payload + "0" * 16  # pad to avoid errors
         cd = int(payload[:4], 16)

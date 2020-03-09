@@ -23,7 +23,7 @@ class AdcMessage:
             return []
         return [f"{0x10:08x}{self.AdcChannels:02x}{self.AdcRate:02x}"]
 
-    def recusb_011_adc(self, payload):
+    def rec_usb_011_adc(self, payload):
         ret = [None] * 8
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
@@ -48,7 +48,7 @@ class AdcMessage:
         else:
             self.ret = ret
 
-    def recusb_111_adc(self, payload):
+    def rec_usb_111_adc(self, payload):
         ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
@@ -70,7 +70,7 @@ class AdcMessage:
         else:
             self.ret = ret
 
-    def recusb_211_adc(self, payload):
+    def rec_usb_211_adc(self, payload):
         ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
