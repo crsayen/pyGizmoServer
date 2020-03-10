@@ -1,0 +1,14 @@
+tcp:
+  ip: '0.0.0.0'
+  port: 36364
+ws:
+  ip: '0.0.0.0'
+  port: 11111
+  url: 'ws://localhost'
+controller: 'BeagleGizmoController'
+logging:
+  file:
+    loglevel: 'DEBUG'
+    filename: 'gizmo.beagle.log'
+  console:
+    loglevel: 'DEBUG'
