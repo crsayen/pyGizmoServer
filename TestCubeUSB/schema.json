@@ -13,6 +13,7 @@
         },
         "pwmCurrentMonitorUpdateRate" : { "w" : "setPwmCurrentMonitorUpdateRate", "args": [], "$type": "integer" },
         "faultThreshold" : { "w" : "setPwmFaultThreshold", "args": [], "$type": "integer" },
+        "measuredCurrents" : { "$count": 12, "args": [], "$type": "integer" },
         "pwms" : {
             "$count": 12,
             "activeConfiguration" : {"w": "sethiconf", "args": [], "$type": "string"},
@@ -22,7 +23,6 @@
             "currentMonitor" : {
                 "faultDelay" : { "w" : "setPwmFaultDelay", "args": [], "$type": "integer" },
                 "faulty" : { "args": [], "$type": "boolean" },
-                "measuredCurrent" : { "args": [], "$type": "integer" },
                 "enabled" : { "w" : "setPwmCurrentMonitorEnabled", "args": [], "$type": "boolean" }
             }
         }
@@ -38,13 +38,13 @@
     "digitalInputController" : {
         "digitalInputMonitorRate" : { "w" : "setDiMonitorUpdateRate", "args": [], "$type": "integer" },
         "digitalInputs" :{ "$count": 12, "args": [], "$type": "boolean" }
-        
+
     },
     "frequencyInputController" : {
         "frequencyMonitorRate" : { "w": "setFrequencyMonitorRate","$type" : "integer", "args": [] },
+        "measuredFrequencies" : { "$count": 4, "args": [], "$type": "integer" },
         "frequencyInputs" :{
             "$count": 4,
-            "measuredFrequency" : {  "args": [], "$type": "integer" },
             "enabled" : { "w" : "setFrequencyInputEnabled", "args": [], "$type": "boolean" }
         }
     },
@@ -56,5 +56,5 @@
         "usbinfo":{"$type": "string"}
     },
     "version": { "r" : "getFirmwareVersion", "args": [], "$type": "string" }
-    
+
 }

@@ -2,6 +2,7 @@ import yaml
 import copy
 import logging
 import sys
+import aiohttp
 
 logger = logging.getLogger('gizmoLogger')
 
@@ -86,3 +87,9 @@ def debug(msg):
     if not logger.isEnabledFor(logging.DEBUG):
         return
     logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
+
+
+class Error():
+    def __init__(self, message=None):
+        self.message = message
+        self.response = aiohttp.web.json_response({"Error": self.message})

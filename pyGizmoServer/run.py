@@ -3,7 +3,7 @@ import time
 import importlib
 import json
 from pyGizmoServer.utility import loadconfig, \
-    makeresolver, debug, setuplog, ensurelist
+    makeresolver, debug, setuplog, ensurelist, Error
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
@@ -23,8 +23,11 @@ async def handlepatch(request: web.Request) -> web.Response:
             props and value is not None and hasattr(controller, props.get("w"))
         ):
             return web.json_response([{"error": f"bad request: {patch}"}])
-        getattr(controller, props["w"])(*(props["args"] + [value]))
-        response.append({"path": path, "data": value})
+        result = getattr(controller, props["w"])(*(props["args"] + [value]))
+        if result is None:
+            response.append({"path": path, "data": value})
+        elif isinstance(result, Error):
+            return Error.response
     controller.finished_processing_request()
     return web.json_response(response)
 
@@ -43,7 +46,7 @@ async def handleget(request: web.Request) -> web.Response:
     return web.json_response(response)
 
 
-def handleupdates(updates: Union[Dict[str, any], List[Dict[str, any]]]) -> None:
+def handleupdates(updates: Union[Dict[str, any], List[Dict[str, any]], Error]) -> None:
     debug(updates)
     updates = ensurelist(updates)
     for update in updates:

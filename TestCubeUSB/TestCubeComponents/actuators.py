@@ -41,7 +41,7 @@ class ActCurMessage:
         return [{"path": path, "data": data}]
 
     def rec_usb_00d_actcurrent(self, payload):
-        ret = [{}] * 12
+        ret = [-1] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
             int(payload[:4], 16),
@@ -58,12 +58,12 @@ class ActCurMessage:
             return None
         for ch, v in zip(thismsg, [cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"currentMonitor": {"measuredCurrent": v}}
-        path = "/pwmController/pwms"
+                ret[ch] = v
+        path = "/pwmController/measuredCurrents"
         return [{"path": path, "data": ret}]
 
     def rec_usb_10d_actcurrent(self, payload):
-        ret = [{}] * 12
+        ret = [-1] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -76,12 +76,12 @@ class ActCurMessage:
             return None
         for ch, v in zip(thismsg, [cd, cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"currentMonitor": {"measuredCurrent": v}}
-        path = "/pwmController/pwms"
+                ret[ch] = v
+        path = "/pwmController/measuredCurrents"
         return [{"path": path, "data": ret}]
 
     def rec_usb_20d_actcurrent(self, payload):
-        ret = [{}] * 12
+        ret = [-1] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -94,12 +94,12 @@ class ActCurMessage:
             return None
         for ch, v in zip(thismsg, [cd, cc, cb, ca]):
             if isinstance(ch, int):
-                ret[ch] = {"currentMonitor": {"measuredCurrent": v}}
-        path = "/pwmController/pwms"
+                ret[ch] = v
+        path = "/pwmController/measuredCurrents"
         return [{"path": path, "data": ret}]
 
     def rec_usb_30d_actcurrent(self, payload):
-        ret = [{}] * 12
+        ret = [-1] * 12
         payload = payload + "0" * 16  # pad to avoid errors
         cd = (int(payload[:4], 16),)
         thismsg = self.actcurrent_listinfirstmsg[12:]
@@ -108,6 +108,6 @@ class ActCurMessage:
             return None
         for ch, v in zip(thismsg, [cd]):
             if isinstance(ch, int):
-                ret[ch] = {"currentMonitor": {"measuredCurrent": v}}
-        path = "/pwmController/pwms"
+                ret[ch] = v
+        path = "/pwmController/measuredCurrents"
         return [{"path": path, "data": ret}]

@@ -24,7 +24,7 @@
                 <button
                     class="watchBtn"
                     type="button"
-                    @click="watch_unwatch" 
+                    @click="watch_unwatch"
                     v-text="watching ? 'watching' : 'watch'"
                     :class="{on: watching, off: !watching}"
                 ></button>
@@ -39,13 +39,13 @@ const ws = require('isomorphic-ws')
 
 export default {
     props: [ 'label', 'type', "writable", "readable", "path", "wsurl"],
-    data() { 
+    data() {
         return {
             outValue: null,
             value: "unknown",
             ws: null,
             watching: false
-        } 
+        }
     },
     name: 'leafnode',
     methods: {
@@ -65,8 +65,8 @@ export default {
             })
         },
         patch(body) {
-            fetch(this.path, { headers: { 
-                    "Content-Type": "application/json; charset=utf-8" 
+            fetch(this.path, { headers: {
+                    "Content-Type": "application/json; charset=utf-8"
                 },
                 method: 'PATCH',
                 body: body
@@ -103,7 +103,7 @@ export default {
                 body = JSON.stringify({
                     op: 'replace',
                     path: this.path,
-                    value: (["string", "hex", "integer"].includes(this.type)) ? 
+                    value: (["string", "hex", "integer"].includes(this.type)) ?
                         ((this.type == "integer") ? Number(newVal) : String(newVal)) : newVal
                 })
                 this.patch(body)
