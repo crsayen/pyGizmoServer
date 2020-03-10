@@ -20,7 +20,7 @@
                     :class="{enabled: !watching, disabled: watching}"
                 >get</button>
             </div>
-            <div v-if="watchable">
+            <div v-if="streamable">
                 <button
                     class="watchBtn"
                     type="button"
@@ -38,7 +38,15 @@
 const ws = require('isomorphic-ws')
 
 export default {
-    props: [ 'label', 'type', "writable", "readable", "watchable", "path", "wsurl"],
+    props: [
+        'label',
+        'type',
+        "writable",
+        "readable",
+        "streamable",
+        "path",
+        "wsurl"
+    ],
     data() {
         return {
             outValue: null,
@@ -84,7 +92,7 @@ export default {
         watch_unwatch() {
             if (!this.watching) {
                 this.get()
-                this.ws = new ws(this.wsurl + ':11111' + this.path)
+                this.ws = new ws(`${this.wsurl}:11111${this.path}`)
                 this.ws.onmessage = (data) => {
                     this.value = JSON.parse(data.data).value
                 }

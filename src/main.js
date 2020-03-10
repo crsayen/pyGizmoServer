@@ -10,23 +10,23 @@ Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
 function makenode(key, val, path){
-    let obj = new Object();
-    obj.path = path + '/' + key;
-    obj.label = key;
-    obj.isleaf = false
-    obj.nodes = parseschema(val, obj.path);
-    return obj
+    return {
+        path: `${path}/${key}`,
+        label: key,
+        isleaf: false,
+        nodes: parseschema(val, `${path}/${key}`)
+    }
 }
 function makeleaf(key, val, path){
-    let obj = new Object();
-    obj.path = path + '/' + key;
-    obj.label = key;
-    obj.type = val.$type
-    obj.isleaf = true
-    obj.readable = !!val.$r
-    obj.writable = !!val.$w
-    obj.watchable = !!val.$o
-    return obj
+    return {
+        path: `${path}/${key}`,
+        label: key,
+        type: val.$type,
+        isleaf: true,
+        readable: !!val.$r,
+        writable: !!val.$w,
+        streamable: !!val.$s
+    }
 }
 
 function parseschema(item, path) {

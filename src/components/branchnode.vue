@@ -29,7 +29,7 @@
                 :type="node.type"
                 :writable="node.writable"
                 :readable="node.readable"
-                :watchable="node.watchable"
+                :streamable="node.streamable"
                 :path="node.path"
                 :key="node.id"
                 :wsurl="wsurl"
