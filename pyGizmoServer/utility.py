@@ -36,15 +36,15 @@ def makeresolver(schema) -> callable:
             return
         if d.get("$type"):
             res = copy.deepcopy(d)
-            if res.get("args") is not None:
-                res["args"].extend([int(i) for i in p.split("/") if i.isdigit()])
+            if res.get("$args") is not None:
+                res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
             r[p] = res
             return
         for k, v in d.items():
             if v.get("$type"):
                 res = copy.deepcopy(v)
-                if res.get("args") is not None:
-                    res["args"].extend([int(i) for i in p.split("/") if i.isdigit()])
+                if res.get("$args") is not None:
+                    res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
                 if not v.get("$count"):
                     r[p] = res
             f(v, f"{p}/{k}", r)

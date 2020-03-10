@@ -1,0 +1,9 @@
+aiohttp==3.6.2
+aiojobs==0.2.2
+dpath==2.0.1
+jsonpatch==1.25
+pyusb==1.0.2
+PyYAML==5.3
+websockets==8.1
+
+

@@ -7,7 +7,7 @@
             class="expander"
             :pressed.sync="expanded"
             v-if="!this.isroot && this.nodes.length > 1"
-            v-b-toggle="'collapse-' + this.label" 
+            v-b-toggle="'collapse-' + this.label"
             v-text="(expanded) ? '-' : '+'"
         ></b-button>
         <b-collapse
@@ -15,9 +15,9 @@
             :id="'collapse-' + this.label"
             class="mt-2"
         >
-            <branchnode 
-                v-for="node in branchnodes" 
-                :nodes="node.nodes" 
+            <branchnode
+                v-for="node in branchnodes"
+                :nodes="node.nodes"
                 :label="node.label"
                 :key="node.id"
                 :wsurl="wsurl"
@@ -29,6 +29,7 @@
                 :type="node.type"
                 :writable="node.writable"
                 :readable="node.readable"
+                :watchable="node.watchable"
                 :path="node.path"
                 :key="node.id"
                 :wsurl="wsurl"
@@ -41,7 +42,7 @@
 <script>
 import leafnode from './leafnode.vue'
 
-export default { 
+export default {
     props: [ 'label', 'nodes', 'isroot', 'wsurl'],
     name: 'branchnode',
     data() {return {expanded: false}},

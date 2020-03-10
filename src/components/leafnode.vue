@@ -20,7 +20,7 @@
                     :class="{enabled: !watching, disabled: watching}"
                 >get</button>
             </div>
-            <div v-if="true">
+            <div v-if="watchable">
                 <button
                     class="watchBtn"
                     type="button"
@@ -38,7 +38,7 @@
 const ws = require('isomorphic-ws')
 
 export default {
-    props: [ 'label', 'type', "writable", "readable", "path", "wsurl"],
+    props: [ 'label', 'type', "writable", "readable", "watchable", "path", "wsurl"],
     data() {
         return {
             outValue: null,

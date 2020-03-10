@@ -35,7 +35,7 @@ class Controller():
         raise NotImplementedError
 
     def finished_processing_request(self):
-        raise NotImplementedError  
+        raise NotImplementedError
 
     def send(self, path: str = None, data: Any = None, updates: List = None):
         if updates is not None:

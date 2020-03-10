@@ -23,8 +23,9 @@ function makeleaf(key, val, path){
     obj.label = key;
     obj.type = val.$type
     obj.isleaf = true
-    obj.readable = (val.r) ? true : false
-    obj.writable = (val.w) ? true : false
+    obj.readable = !!val.$r
+    obj.writable = !!val.$w
+    obj.watchable = !!val.$o
     return obj
 }
 
