@@ -94,4 +94,4 @@ class Error():
         self.message = message
 
     def get_response(self):
-        return [aiohttp.web.json_response({"Error": self.message})]
+        return [aiohttp.web.json_response({"error": self.message})]
