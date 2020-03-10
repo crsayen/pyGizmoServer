@@ -92,4 +92,6 @@ def debug(msg):
 class Error():
     def __init__(self, message=None):
         self.message = message
-        self.response = aiohttp.web.json_response({"Error": self.message})
+
+    def get_response(self):
+        return aiohttp.web.json_response({"Error": self.message})
