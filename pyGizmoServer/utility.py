@@ -4,11 +4,21 @@ import logging
 import sys
 import aiohttp
 import json
+from typing import Dict, List
 
 logger = logging.getLogger('gizmoLogger')
 
 
-def setuplog(cfg):
+def setuplog(cfg: DotDict) -> None:
+    """Configures logging for the application.
+
+    once set up, modules can import utility.log and utility.debug to
+    log informational and debug messages respectively.
+
+    Arguments:
+        cfg {DotDict} -- The application cfg Dict, which has information
+            on loglevels for both file and console logging.
+    """
     logger = logging.getLogger("gizmoLogger")
     logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
     formatter = logging.Formatter(
@@ -26,29 +36,42 @@ def setuplog(cfg):
     logger.propagate = False
 
 
-def makeresolver(schema) -> callable:
-    def f(d, p, r):
-        count = d.get("$count")
+def makeresolver(schema: Dict) -> callable:
+    """Takes a schema dict, and returns a lookup function.
+
+        Recursively walks the passed schema and generates a
+        lookup table of <path> -> <properties> for the schema.
+        returns a getter for the lookup table.
+
+    Arguments:
+        schema {Dict} -- A controller schema
+
+    Returns:
+        callable -- A getter function that, given a path, returns
+            schema properties at that path.
+    """
+    def f(dictionary, path, result):
+        count = dictionary.get("$count")
         if count:
-            d = copy.deepcopy(d)
-            del d["$count"]
+            dictionary = copy.deepcopy(dictionary)
+            del dictionary["$count"]
             for i in range(count):
-                f(d, f"{p}/{i}", r)
+                f(dictionary, f"{path}/{i}", result)
             return
-        if d.get("$type"):
-            res = copy.deepcopy(d)
+        if dictionary.get("$type"):
+            res = copy.deepcopy(dictionary)
             res["$args"] = res["$args"] if res.get("$args") else []
-            res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
-            r[p] = res
+            res["$args"].extend([int(i) for i in path.split("/") if i.isdigit()])
+            r[path] = res
             return
-        for k, v in d.items():
+        for k, v in dictionary.items():
             if v.get("$type"):
                 res = copy.deepcopy(v)
                 if res.get("$args") is not None:
-                    res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
+                    res["$args"].extend([int(i) for i in path.split("/") if i.isdigit()])
                 if not v.get("$count"):
-                    r[p] = res
-            f(v, f"{p}/{k}", r)
+                    r[path] = res
+            f(v, f"{path}/{k}", result)
 
     propsdict = {}
     f(schema, "", propsdict)
@@ -56,6 +79,14 @@ def makeresolver(schema) -> callable:
 
 
 class DotDict(dict):
+    """A dict that can be accessed with dot-notation.
+
+    Arguments:
+        dict {Dict} -- The Dict to convert
+
+    Returns:
+        Dict -- A dot-notation-accessible Dict
+    """
     def __getattr__(self, item):
         val = self[item]
         if isinstance(val, dict):
@@ -64,7 +95,20 @@ class DotDict(dict):
             return val
 
 
-def loadconfig(options):
+def loadconfig(options: List[str]) -> DotDict:
+    """Creates a configuration data Dict based on a YAML
+        file, and other parameters.
+
+    options[0] is always a config file name. otherwise, the
+        default configuration is loaded.
+
+    Arguments:
+        options {List} -- A list of string parameters
+
+    Returns:
+        DotDict -- A dict which provides a means to lookup configuration
+            information.
+    """
     if not options: return None
     try:
         with open(f"./config/{options[0]}.yml") as f:
@@ -84,15 +128,15 @@ def loadconfig(options):
     return cfg
 
 
-def ensurelist(item):
+def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
     return item if isinstance(item, list) else [item]
 
 
-def log(msg):
+def log(msg: str) -> None:
     logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
 
-def debug(msg):
+def debug(msg: str) -> None:
     if not logger.isEnabledFor(logging.DEBUG):
         return
     logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")

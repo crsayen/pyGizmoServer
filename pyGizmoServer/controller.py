@@ -26,7 +26,7 @@ class Controller(object):
         with open(f"{self.__class__.__name__}/schema.json") as f:
             self.schema = json.load(f)
 
-    async def handlerloop(self):
+    async def handlerloop(self) -> None:
         """Runs for the lifetime of the application, calling Controller.handler.
 
         This loop will continuously call the handler function that you define.
@@ -36,7 +36,7 @@ class Controller(object):
             await self.handler()
             await asyncio.sleep(0)
 
-    def start(self):
+    def start(self) -> None:
         """Checks for a user-defined setup function, and calls it if it exists.
 
         start is called automatically by the application.
@@ -49,7 +49,7 @@ class Controller(object):
         if hasattr(self, 'setup'):
             self.setup()
 
-    async def tend(self, func, args):
+    async def tend(self, func: callable, args) -> None:
         """Checks Controller.running, spawns Controller.handlerloop if not.
 
         tend is called automatically by the application.
@@ -58,7 +58,7 @@ class Controller(object):
             await func(args, self.handlerloop())
         self.running = True
 
-    def setcallback(self, callback):
+    def setcallback(self, callback: callable):
         """Sets the Controller.callback.
 
         setcallback is called automatically by the application.
@@ -96,7 +96,7 @@ class Controller(object):
         """
         raise NotImplementedError
 
-    def send(self, path: str = None, data: Any = None, updates: List = None):
+    def send(self, path: str = None, data: Any = None, updates: List = None) -> None:
         """Sends a websocket message to the client, with the specified path and data.
 
         Args:

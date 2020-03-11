@@ -7,10 +7,20 @@
             <div class="value">{{ value }}</div>
         </div>
         <div v-if="writable" class="input">
-            <b-form-checkbox switch size="lg" v-if="type == 'boolean'" v-model="outValue">
-            </b-form-checkbox>
-            <input v-else-if="type == 'integer'" type="number" v-model.lazy="outValue"/>
-            <input v-else type="Text" v-model.lazy="outValue"/>
+            <b-form-checkbox
+                switch size="lg"
+                v-if="type == 'boolean'"
+                v-model="outValue"
+            ></b-form-checkbox>
+            <input
+                v-else-if="type == 'integer'"
+                type="number"
+                v-model.lazy="outValue"
+            />
+            <input
+                v-else type="Text"
+                v-model.lazy="outValue"
+            />
         </div>
         <div class="btnBox">
             <div v-if="readable">

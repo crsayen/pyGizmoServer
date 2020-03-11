@@ -3,7 +3,6 @@
         "relays": {
             "$count": 6,
             "$w": "setRelay",
-            "$args": [],
             "$type": "boolean"
         }
     },
@@ -11,64 +10,53 @@
         "bankA": {
             "frequency": {
                 "$w": "setPwmFrequencyA",
-                "$args": [],
                 "$type": "integer"
             }
         },
         "bankB": {
             "frequency": {
                 "$w": "setPwmFrequencyB",
-                "$args": [],
                 "$type": "integer"
             }
         },
         "pwmCurrentMonitorUpdateRate": {
             "$w": "setPwmCurrentMonitorUpdateRate",
-            "$args": [],
             "$type": "integer"
         },
         "faultThreshold": {
             "$w": "setPwmFaultThreshold",
-            "$args": [],
             "$type": "integer"
         },
         "measuredCurrents": {
             "$count": 12,
             "$s": true,
-            "$args": [],
             "$type": "integer"
         },
         "pwms": {
             "$count": 12,
             "activeConfiguration": {
                 "$w": "sethiconf",
-                "$args": [],
                 "$type": "string"
             },
             "dutyCycle": {
                 "$w": "setPwmDutyCycle",
-                "$args": [],
                 "$type": "integer"
             },
             "enabled": {
                 "$w": "setPwmEnabled",
-                "$args": [],
                 "$type": "boolean"
             },
             "profile": {},
             "currentMonitor": {
                 "faultDelay": {
                     "$w": "setPwmFaultDelay",
-                    "$args": [],
                     "$type": "integer"
                 },
                 "faulty": {
-                    "$args": [],
                     "$type": "boolean"
                 },
                 "enabled": {
                     "$w": "setPwmCurrentMonitorEnabled",
-                    "$args": [],
                     "$type": "boolean"
                 }
             }
@@ -77,54 +65,46 @@
     "adcInputController": {
         "adcInputMonitorRate": {
             "$w": "setAdcMonitorUpdateRate",
-            "$args": [],
             "$type": "integer"
         },
         "adcInputs": {
             "$count": 8,
             "enabled": {
                 "$w": "setAdcEnabled",
-                "$args": [],
                 "$type": "boolean"
             }
         },
         "adcInputVoltages": {
             "$count": 8,
             "$s": true,
-            "$args": [],
             "$type": "integer"
         }
     },
     "digitalInputController": {
         "digitalInputMonitorRate": {
             "$w": "setDiMonitorUpdateRate",
-            "$args": [],
             "$type": "integer"
         },
         "digitalInputs": {
             "$count": 12,
             "$s": true,
-            "$args": [],
             "$type": "boolean"
         }
     },
     "frequencyInputController": {
         "frequencyMonitorRate": {
             "$w": "setFrequencyMonitorRate",
-            "$type": "integer",
-            "$args": []
+            "$type": "integer"
         },
         "measuredFrequencies": {
             "$count": 4,
             "$s": true,
-            "$args": [],
             "$type": "integer"
         },
         "frequencyInputs": {
             "$count": 4,
             "enabled": {
                 "$w": "setFrequencyInputEnabled",
-                "$args": [],
                 "$type": "boolean"
             }
         }
@@ -135,7 +115,6 @@
     "usb": {
         "txMessage": {
             "$w": "sendrawusb",
-            "$args": [],
             "$type": "hex"
         },
         "rxMessage": {
@@ -150,7 +129,6 @@
     },
     "version": {
         "$r": "getFirmwareVersion",
-        "$args": [],
         "$type": "string"
     }
 }

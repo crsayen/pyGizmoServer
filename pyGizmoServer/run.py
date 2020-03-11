@@ -12,13 +12,13 @@ from typing import List, Dict, Tuple, Optional, Union
 
 
 async def handlepatch(request: web.Request) -> web.Response:
-    """Handles incoming PATCH requests from the client.
-    
+    """Handles incoming PATCH/POST requests from the client.
+
     Arguments:
-        request {web.Request} -- [description]
-    
+        request {web.Request} -- Passed in by aiohttp, the client's request
+
     Returns:
-        web.Response -- [description]
+        web.Response -- Either some path/data, or an error.
     """
     await controller.tend(spawn, request)
     patchlist: List[Dict[str, any]] = ensurelist(json.loads(await request.text()))
@@ -41,6 +41,19 @@ async def handlepatch(request: web.Request) -> web.Response:
 
 
 async def handleget(request: web.Request) -> web.Response:
+    """Handles GET requests from the client.
+
+        If the controller names a GET function for this particular
+        path, this will call that function and respond with it's return
+        value.
+
+    Arguments:
+        request {web.Request} -- Passed in by aiohttp. The client's request
+
+    Returns:
+        web.Response -- path/data if the controller provides a GET function,
+                        else an error.
+    """
     debug(request.path)
     await controller.tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
@@ -55,6 +68,13 @@ async def handleget(request: web.Request) -> web.Response:
 
 
 def handleupdates(updates: Union[Dict[str, any], List[Dict[str, any]], Error]) -> None:
+    """Receives updates from the controller, and sends them to subscription
+        server to be sent to subscribers.
+
+    Arguments:
+        updates {Union[Dict[str, any], List[Dict[str, any]], Error]} -- path/data
+                updates from the controller
+    """
     debug(updates)
     updates = ensurelist(updates)
     for update in updates:
