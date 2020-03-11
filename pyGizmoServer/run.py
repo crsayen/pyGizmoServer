@@ -28,10 +28,10 @@ async def handlepatch(request: web.Request) -> web.Response:
         path, value = patch.get("path"), patch.get("value")
         props: Dict[str, str] = resolver(path)
         if not (
-            props and value is not None and hasattr(controller, props.get("$w"))
+            props and value is not None and hasattr(controller, props.get("$write"))
         ):
             return web.json_response([{"error": f"bad request: {patch}"}])
-        result = getattr(controller, props["$w"])(*(props["$args"] + [value]))
+        result = getattr(controller, props["$write"])(*(props["$args"] + [value]))
         if result is None:
             response.append({"path": path, "data": value})
         elif isinstance(result, Error):
@@ -57,10 +57,10 @@ async def handleget(request: web.Request) -> web.Response:
     debug(request.path)
     await controller.tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
-    if props and props.get("$r"):
+    if props and props.get("$read"):
         response = [{
             "path": request.path,
-            "data": await getattr(controller, props["$r"])(*props.get("$args"))
+            "data": await getattr(controller, props["$read"])(*props.get("$args"))
         }]
     else:
         return web.json_response([{"error": f"bad request: {request}"}])

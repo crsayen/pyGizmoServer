@@ -2,61 +2,61 @@
     "relayController": {
         "relays": {
             "$count": 6,
-            "$w": "setRelay",
+            "$write": "setRelay",
             "$type": "boolean"
         }
     },
     "pwmController": {
         "bankA": {
             "frequency": {
-                "$w": "setPwmFrequencyA",
+                "$write": "setPwmFrequencyA",
                 "$type": "integer"
             }
         },
         "bankB": {
             "frequency": {
-                "$w": "setPwmFrequencyB",
+                "$write": "setPwmFrequencyB",
                 "$type": "integer"
             }
         },
         "pwmCurrentMonitorUpdateRate": {
-            "$w": "setPwmCurrentMonitorUpdateRate",
+            "$write": "setPwmCurrentMonitorUpdateRate",
             "$type": "integer"
         },
         "faultThreshold": {
-            "$w": "setPwmFaultThreshold",
+            "$write": "setPwmFaultThreshold",
             "$type": "integer"
         },
         "measuredCurrents": {
             "$count": 12,
-            "$s": true,
+            "$watchable": true,
             "$type": "integer"
         },
         "pwms": {
             "$count": 12,
             "activeConfiguration": {
-                "$w": "sethiconf",
+                "$write": "sethiconf",
                 "$type": "string"
             },
             "dutyCycle": {
-                "$w": "setPwmDutyCycle",
+                "$write": "setPwmDutyCycle",
                 "$type": "integer"
             },
             "enabled": {
-                "$w": "setPwmEnabled",
+                "$write": "setPwmEnabled",
                 "$type": "boolean"
             },
             "profile": {},
             "currentMonitor": {
                 "faultDelay": {
-                    "$w": "setPwmFaultDelay",
+                    "$write": "setPwmFaultDelay",
                     "$type": "integer"
                 },
                 "faulty": {
                     "$type": "boolean"
                 },
                 "enabled": {
-                    "$w": "setPwmCurrentMonitorEnabled",
+                    "$write": "setPwmCurrentMonitorEnabled",
                     "$type": "boolean"
                 }
             }
@@ -64,47 +64,47 @@
     },
     "adcInputController": {
         "adcInputMonitorRate": {
-            "$w": "setAdcMonitorUpdateRate",
+            "$write": "setAdcMonitorUpdateRate",
             "$type": "integer"
         },
         "adcInputs": {
             "$count": 8,
             "enabled": {
-                "$w": "setAdcEnabled",
+                "$write": "setAdcEnabled",
                 "$type": "boolean"
             }
         },
         "adcInputVoltages": {
             "$count": 8,
-            "$s": true,
+            "$watchable": true,
             "$type": "integer"
         }
     },
     "digitalInputController": {
         "digitalInputMonitorRate": {
-            "$w": "setDiMonitorUpdateRate",
+            "$write": "setDiMonitorUpdateRate",
             "$type": "integer"
         },
         "digitalInputs": {
             "$count": 12,
-            "$s": true,
+            "$watchable": true,
             "$type": "boolean"
         }
     },
     "frequencyInputController": {
         "frequencyMonitorRate": {
-            "$w": "setFrequencyMonitorRate",
+            "$write": "setFrequencyMonitorRate",
             "$type": "integer"
         },
         "measuredFrequencies": {
             "$count": 4,
-            "$s": true,
+            "$watchable": true,
             "$type": "integer"
         },
         "frequencyInputs": {
             "$count": 4,
             "enabled": {
-                "$w": "setFrequencyInputEnabled",
+                "$write": "setFrequencyInputEnabled",
                 "$type": "boolean"
             }
         }
@@ -114,7 +114,7 @@
     },
     "usb": {
         "txMessage": {
-            "$w": "sendrawusb",
+            "$write": "sendrawusb",
             "$type": "hex"
         },
         "rxMessage": {
@@ -128,11 +128,7 @@
         }
     },
     "version": {
-        "$r": "getFirmwareVersion",
+        "$read": "getFirmwareVersion",
         "$type": "string"
-    },
-    "flood": {
-        "$w": "flood",
-        "$type": "integer"
     }
 }

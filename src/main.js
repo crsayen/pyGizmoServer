@@ -23,9 +23,9 @@ function makeleaf(key, val, path){
         label: key,
         type: val.$type,
         isleaf: true,
-        readable: !!val.$r,
-        writable: !!val.$w,
-        streamable: !!val.$s
+        readable: !!val.$read,
+        writable: !!val.$write,
+        streamable: !!val.$watchable
     }
 }
 
