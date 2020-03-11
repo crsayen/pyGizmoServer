@@ -12,6 +12,14 @@ from typing import List, Dict, Tuple, Optional, Union
 
 
 async def handlepatch(request: web.Request) -> web.Response:
+    """Handles incoming PATCH requests from the client.
+    
+    Arguments:
+        request {web.Request} -- [description]
+    
+    Returns:
+        web.Response -- [description]
+    """
     await controller.tend(spawn, request)
     patchlist: List[Dict[str, any]] = ensurelist(json.loads(await request.text()))
     debug(patchlist)
@@ -94,11 +102,10 @@ def main():
         sys.exit()
 
 
-configfile: str = sys.argv[1] if len(sys.argv) > 1 else "production"
-cfg: Dict[str, any] = loadconfig(configfile)
+cfg: Dict[str, any] = loadconfig(sys.argv[1:])
 setuplog(cfg)
 if cfg is None:
-    print(f"\n'{configfile}' not found\nexiting...\n")
+    print(f"\nconfiguration not found\nexiting...\n")
     sys.exit()
 subscription_server: SubscriptionServer = SubscriptionServer(cfg.ws.ip, cfg.ws.port)
 controller = getattr(

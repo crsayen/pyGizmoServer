@@ -3,6 +3,7 @@ import copy
 import logging
 import sys
 import aiohttp
+import json
 
 logger = logging.getLogger('gizmoLogger')
 
@@ -36,8 +37,8 @@ def makeresolver(schema) -> callable:
             return
         if d.get("$type"):
             res = copy.deepcopy(d)
-            if res.get("$args") is not None:
-                res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
+            res["$args"] = res["$args"] if res.get("$args") else []
+            res["$args"].extend([int(i) for i in p.split("/") if i.isdigit()])
             r[p] = res
             return
         for k, v in d.items():
@@ -63,16 +64,24 @@ class DotDict(dict):
             return val
 
 
-def loadconfig(filename):
+def loadconfig(options):
+    if not options: return None
     try:
-        with open(f"./config/{filename}.yml") as f:
-            return DotDict(yaml.load(f, Loader=yaml.CLoader))
+        with open(f"./config/{options[0]}.yml") as f:
+            cfg = DotDict(yaml.load(f, Loader=yaml.CLoader))
     except Exception:
-        with open(f"./config/{filename}.yml") as f:
-            return DotDict(yaml.load(f, Loader=yaml.FullLoader))
+        with open(f"./config/{options[0]}.yml") as f:
+            cfg = DotDict(yaml.load(f, Loader=yaml.FullLoader))
     except Exception as e:
         print(f"{e}")
         return None
+    if "-n" in options:
+        print("nnn")
+        cfg["logging"]["file"]["loglevel"] = "INFO"
+        cfg["logging"]["console"]["loglevel"] = "INFO"
+    if "-u" in options:
+        cfg["ws"]["url"] = options[options.index("-u")]
+    return cfg
 
 
 def ensurelist(item):
