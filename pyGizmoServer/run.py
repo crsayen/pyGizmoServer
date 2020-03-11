@@ -30,7 +30,7 @@ async def handlepatch(request: web.Request) -> web.Response:
         if not (
             props and value is not None and hasattr(controller, props.get("$write"))
         ):
-            return web.json_response([{"error": f"bad request: {patch}"}])
+            return Error(f"bad request - {patch}").get_response()
         result = getattr(controller, props["$write"])(*(props["$args"] + [value]))
         if result is None:
             response.append({"path": path, "data": value})
@@ -63,7 +63,7 @@ async def handleget(request: web.Request) -> web.Response:
             "data": await getattr(controller, props["$read"])(*props.get("$args"))
         }]
     else:
-        return web.json_response([{"error": f"bad request: {request}"}])
+        return Error(f"bad request - {request.path}").get_response()
     return web.json_response(response)
 
 
