@@ -4,12 +4,12 @@ import logging
 import sys
 import aiohttp
 import json
-from typing import Dict, List
+from typing import Dict, List, Union, Any
 
 logger = logging.getLogger('gizmoLogger')
 
 
-def setuplog(cfg: DotDict) -> None:
+def setuplog(cfg) -> None:
     """Configures logging for the application.
 
     once set up, modules can import utility.log and utility.debug to
@@ -62,7 +62,7 @@ def makeresolver(schema: Dict) -> callable:
             res = copy.deepcopy(dictionary)
             res["$args"] = res["$args"] if res.get("$args") else []
             res["$args"].extend([int(i) for i in path.split("/") if i.isdigit()])
-            r[path] = res
+            result[path] = res
             return
         for k, v in dictionary.items():
             if v.get("$type"):
@@ -70,7 +70,7 @@ def makeresolver(schema: Dict) -> callable:
                 if res.get("$args") is not None:
                     res["$args"].extend([int(i) for i in path.split("/") if i.isdigit()])
                 if not v.get("$count"):
-                    r[path] = res
+                    result[path] = res
             f(v, f"{path}/{k}", result)
 
     propsdict = {}
@@ -95,7 +95,7 @@ class DotDict(dict):
             return val
 
 
-def loadconfig(options: List[str]) -> DotDict:
+def loadconfig(options: List[str]):
     """Creates a configuration data Dict based on a YAML
         file, and other parameters.
 
