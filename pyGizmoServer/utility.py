@@ -95,37 +95,30 @@ class DotDict(dict):
             return val
 
 
-def loadconfig(options: List[str]):
+def loadconfig(filename: str):
     """Creates a configuration data Dict based on a YAML
-        file, and other parameters.
+        file
 
     options[0] is always a config file name. otherwise, the
         default configuration is loaded.
 
     Arguments:
-        options {List} -- A list of string parameters
+        filename {str} -- The name of a YAML file in pyGizmoServer.config
 
     Returns:
         DotDict -- A dict which provides a means to lookup configuration
             information.
     """
-    if not options: return None
     try:
-        with open(f"./config/{options[0]}.yml") as f:
-            cfg = DotDict(yaml.load(f, Loader=yaml.CLoader))
+        with open(f"./config/{filename}.yml") as f:
+            return DotDict(yaml.load(f, Loader=yaml.CLoader))
     except Exception:
-        with open(f"./config/{options[0]}.yml") as f:
-            cfg = DotDict(yaml.load(f, Loader=yaml.FullLoader))
+        with open(f"./config/{filename}.yml") as f:
+            return DotDict(yaml.load(f, Loader=yaml.FullLoader))
     except Exception as e:
         print(f"{e}")
         return None
-    if "-n" in options:
-        print("nnn")
-        cfg["logging"]["file"]["loglevel"] = "INFO"
-        cfg["logging"]["console"]["loglevel"] = "INFO"
-    if "-u" in options:
-        cfg["ws"]["url"] = options[options.index("-u")]
-    return cfg
+
 
 
 def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:

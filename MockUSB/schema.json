@@ -6,125 +6,14 @@
             "$type": "boolean"
         }
     },
-    "pwmController": {
-        "bankA": {
-            "frequency": {
-                "$write": "setPwmFrequencyA",
-                "$type": "integer"
-            }
-        },
-        "bankB": {
-            "frequency": {
-                "$write": "setPwmFrequencyB",
-                "$type": "integer"
-            }
-        },
-        "pwmCurrentMonitorUpdateRate": {
-            "$write": "setPwmCurrentMonitorUpdateRate",
+    "flood": {
+        "rate": {
+            "$write": "setfloodrate",
             "$type": "integer"
         },
-        "faultThreshold": {
-            "$write": "setPwmFaultThreshold",
-            "$type": "integer"
-        },
-        "measuredCurrents": {
-            "$count": 12,
+        "monitor": {
             "$watchable": true,
             "$type": "integer"
-        },
-        "pwms": {
-            "$count": 12,
-            "activeConfiguration": {
-                "$write": "sethiconf",
-                "$type": "string"
-            },
-            "dutyCycle": {
-                "$write": "setPwmDutyCycle",
-                "$type": "integer"
-            },
-            "enabled": {
-                "$write": "setPwmEnabled",
-                "$type": "boolean"
-            },
-            "profile": {},
-            "currentMonitor": {
-                "faultDelay": {
-                    "$write": "setPwmFaultDelay",
-                    "$type": "integer"
-                },
-                "faulty": {
-                    "$type": "boolean"
-                },
-                "enabled": {
-                    "$write": "setPwmCurrentMonitorEnabled",
-                    "$type": "boolean"
-                }
-            }
-        }
-    },
-    "adcInputController": {
-        "adcInputMonitorRate": {
-            "$write": "setAdcMonitorUpdateRate",
-            "$type": "integer"
-        },
-        "adcInputs": {
-            "$count": 8,
-            "enabled": {
-                "$write": "setAdcEnabled",
-                "$type": "boolean"
-            }
-        },
-        "adcInputVoltages": {
-            "$count": 8,
-            "$watchable": true,
-            "$type": "integer"
-        }
-    },
-    "digitalInputController": {
-        "digitalInputMonitorRate": {
-            "$write": "setDiMonitorUpdateRate",
-            "$type": "integer"
-        },
-        "digitalInputs": {
-            "$count": 12,
-            "$watchable": true,
-            "$type": "boolean"
-        }
-    },
-    "frequencyInputController": {
-        "frequencyMonitorRate": {
-            "$write": "setFrequencyMonitorRate",
-            "$type": "integer"
-        },
-        "measuredFrequencies": {
-            "$count": 4,
-            "$watchable": true,
-            "$type": "integer"
-        },
-        "frequencyInputs": {
-            "$count": 4,
-            "enabled": {
-                "$write": "setFrequencyInputEnabled",
-                "$type": "boolean"
-            }
-        }
-    },
-    "canDatabase": {
-        "$type": "string"
-    },
-    "usb": {
-        "txMessage": {
-            "$write": "sendrawusb",
-            "$type": "hex"
-        },
-        "rxMessage": {
-            "$type": "hex"
-        },
-        "rxCount": {
-            "$type": "integer"
-        },
-        "usbinfo": {
-            "$type": "string"
         }
     },
     "version": {

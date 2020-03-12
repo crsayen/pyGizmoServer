@@ -8,7 +8,7 @@ ws:
 controller: 'MockUSB'
 logging:
   file:
-    loglevel: 'DEBUG'
+    loglevel: 'INFO'
     filename: 'gizmo.mock.log'
   console:
-    loglevel: 'DEBUG'
+    loglevel: 'INFO'

@@ -121,8 +121,8 @@ def main():
     except KeyboardInterrupt:
         sys.exit()
 
-
-cfg: Dict[str, any] = loadconfig(sys.argv[1:])
+cfg_filename = sys.argv[1] if sys.argv[1:] else "production"
+cfg: Dict[str, any] = loadconfig(cfg_filename)
 setuplog(cfg)
 if cfg is None:
     print(f"\nconfiguration not found\nexiting...\n")
