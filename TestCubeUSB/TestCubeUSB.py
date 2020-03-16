@@ -110,7 +110,7 @@ class TestCubeUSB(
             return
         msg = "".join([chr(x) for x in msg])
         self.usbrxcount += 1
-        self.send( updates = 
+        self.send( updates =
             [
                 {"path": "/usb/rxMessage", "data": msg},
                 {"path": "/usb/rxCount", "data": self.usbrxcount},
@@ -122,6 +122,11 @@ class TestCubeUSB(
             return
         if len(d) > 0:
             self.send(updates = d)
+
+    async def heartbeat(self):
+        if await self.getFirmwareVersion():
+            return True
+        return False
 
     def rec_usb(self, msg):
         _id, payload = msg[:8], msg[8:]

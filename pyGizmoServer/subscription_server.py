@@ -42,7 +42,10 @@ class SubscriptionServer:
             loop=self.subloop,
             max_size=1024
         )
-        self.subloop.run_until_complete(self.server)
+        try:
+            self.subloop.run_until_complete(self.server)
+        except:
+            print("\n\nRUN_SERVER\n\nCAUGHT EXCEPTION\n\n")
 
     def publish(self, update: Dict[str, Any]) -> None:
         """Sends updates to any connected 'subscribers'

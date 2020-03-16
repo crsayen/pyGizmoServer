@@ -2,6 +2,7 @@ import sys
 import time
 import importlib
 import json
+import asyncio
 from pyGizmoServer.utility import loadconfig, \
     makeresolver, debug, setuplog, ensurelist, Error
 from pyGizmoServer.subscription_server import SubscriptionServer
@@ -98,6 +99,21 @@ async def get_favicon(request: web.Request) -> web.Response:
     return web.FileResponse("./dist/favicon.ico")
 
 
+async def start_heartbeat(request: web.Request) -> web.Response:
+    await controller.tend(spawn, request)
+    await spawn(request, watch_pulse())
+    return web.json_response({"path": "/heartbeat", "data": True})
+
+
+async def watch_pulse():
+    req = {"path": "/heartbeat", "data": 0}
+    while True:
+        await asyncio.sleep(1)
+        if await controller.heartbeat():
+            req["data"] += 1
+            handleupdates(req)
+
+
 def make_app() -> web.Application:
     controller.start()
     app = web.Application()
@@ -107,6 +123,7 @@ def make_app() -> web.Application:
     app.router.add_static("/js", path="./dist/js")
     app.router.add_static("/css", path="./dist/css")
     app.router.add_route("GET", "/schema", get_schema)
+    app.router.add_route("GET", "/heartbeat", start_heartbeat)
     app.router.add_route("GET", r"/{tail:.*}", handleget)
     app.router.add_route("PATCH", r"/{tail:.*}", handlepatch)
     app.router.add_route("POST", r"/{tail:.*}", handlepatch)

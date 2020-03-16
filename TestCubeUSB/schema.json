@@ -118,10 +118,12 @@
             "$type": "hex"
         },
         "rxMessage": {
-            "$type": "hex"
+            "$type": "hex",
+            "$watchable": true
         },
         "rxCount": {
-            "$type": "integer"
+            "$type": "integer",
+            "$watchable": true
         },
         "usbinfo": {
             "$type": "string"
@@ -130,5 +132,9 @@
     "version": {
         "$read": "getFirmwareVersion",
         "$type": "string"
+    },
+    "heartbeat": {
+        "$type": "integer",
+        "$watchable": true
     }
 }
