@@ -3,6 +3,7 @@ class FrequencyMessage:
         self.freqmonitorRate = None
         self.speed_listinfirstmsg = [3, 2, 1, 0]
         self.freqmonitorChannels = [1, 1, 1, 1]
+        self.ret = [None] * 4
 
     def setFrequencyInputEnabled(self, channel: int, enabled: int):
         self.freqmonitorChannels[channel] = enabled
@@ -21,7 +22,7 @@ class FrequencyMessage:
         return [f"{0xe:08x}{channels:02x}{self.freqmonitorRate:02x}"]
 
     def rec_usb_00f_speed(self, payload):
-        ret = [-1] * 4
+        ret = [None] * 4
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
             int(payload[:4], 16),
@@ -38,10 +39,15 @@ class FrequencyMessage:
             if isinstance(ch, int):
                 ret[ch] = v
         path = "/frequencyInputController/measuredFrequencies"
-        return [{"path": path, "data": ret}]
+        if self.speed_listinfirstmsg[3:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
 
     def rec_usb_10f_speed(self, payload):
-        ret = [-1] * 4
+        ret = self.ret
+        if len(ret) < 4:
+            ret = [None] * (4 - len(ret)) + ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd = int(payload[:4], 16)
 

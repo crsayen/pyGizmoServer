@@ -3,6 +3,7 @@ class ActCurMessage:
         self.actmonitorRate = None
         self.actmonitorChannels = 0x0FFF
         self.actmonitorThreshold = 60
+        self.ret = [None] * 12
 
     def setPwmCurrentMonitorUpdateRate(self, rate: int):
         rate = int(rate / 50)
@@ -41,7 +42,8 @@ class ActCurMessage:
         return [{"path": path, "data": data}]
 
     def rec_usb_00d_actcurrent(self, payload):
-        ret = [-1] * 12
+        ret = [None] * 12
+        self.ret = ret
         payload = payload + "0" * 16  # pad to avoid errors
         channels, cc, cb, ca = (
             int(payload[:4], 16),
@@ -60,10 +62,15 @@ class ActCurMessage:
             if isinstance(ch, int):
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
-        return [{"path": path, "data": ret}]
+        if self.actcurrent_listinfirstmsg[3:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
 
     def rec_usb_10d_actcurrent(self, payload):
-        ret = [-1] * 12
+        ret = self.ret
+        if len(ret) < 12:
+            ret = [None] * (12 - len(ret)) + ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -78,10 +85,15 @@ class ActCurMessage:
             if isinstance(ch, int):
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
-        return [{"path": path, "data": ret}]
+        if self.actcurrent_listinfirstmsg[7:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
 
     def rec_usb_20d_actcurrent(self, payload):
-        ret = [-1] * 12
+        ret = self.ret
+        if len(ret) < 12:
+            ret = [None] * (12 - len(ret)) + ret
         payload = payload + "0" * 16  # pad to avoid errors
         cd, cc, cb, ca = (
             int(payload[:4], 16),
@@ -96,14 +108,19 @@ class ActCurMessage:
             if isinstance(ch, int):
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
-        return [{"path": path, "data": ret}]
+        if self.actcurrent_listinfirstmsg[11:] is None:
+            return [{"path": path, "data": ret}]
+        else:
+            self.ret = ret
 
     def rec_usb_30d_actcurrent(self, payload):
-        ret = [-1] * 12
+        ret = self.ret
+        if len(ret) < 12:
+            ret = [None] * (12 - len(ret)) + ret
+        ret = self.ret
         payload = payload + "0" * 16  # pad to avoid errors
-        cd = (int(payload[:4], 16),)
-        thismsg = self.actcurrent_listinfirstmsg[12:]
-
+        cd = int(payload[:4], 16)
+        thismsg = self.actcurrent_listinfirstmsg[11:]
         if thismsg is None:
             return None
         for ch, v in zip(thismsg, [cd]):
