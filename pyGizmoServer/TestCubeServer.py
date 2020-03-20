@@ -142,7 +142,7 @@ def main():
 bdir = sys._MEIPASS
 webDir = os.path.join(bdir, "webDist")
 js = os.path.join(webDir, "js")
-css = os.path.join(webDir, "js")
+css = os.path.join(webDir, "css")
 index = os.path.join(webDir, "index.html")
 favicon = os.path.join(webDir, "favicon.ico")
 
