@@ -1,10 +1,11 @@
 import sys
+import os
 import time
-import importlib
 import json
 import asyncio
+from TestCubeUSB.TestCubeUSB import TestCubeUSB
 from pyGizmoServer.utility import loadconfig, \
-    makeresolver, debug, setuplog, ensurelist, Error
+    makeresolver, debug, setuplog, ensurelist, Error, DotDict
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
@@ -92,11 +93,11 @@ async def get_schema(request: web.Request) -> web.Response:
 
 
 async def get_index(request: web.Request) -> web.Response:
-    return web.FileResponse("./dist/index.html")
+    return web.FileResponse(index)
 
 
 async def get_favicon(request: web.Request) -> web.Response:
-    return web.FileResponse("./dist/favicon.ico")
+    return web.FileResponse(favicon)
 
 
 async def start_heartbeat(request: web.Request) -> web.Response:
@@ -117,11 +118,11 @@ async def watch_pulse():
 def make_app() -> web.Application:
     controller.start()
     app = web.Application()
-    app["static_root_url"] = "/src"
+    #app["static_root_url"] = "/src"
     app.router.add_get("/", get_index)
     app.router.add_get("/FAVICON", get_favicon)
-    app.router.add_static("/js", path="./dist/js")
-    app.router.add_static("/css", path="./dist/css")
+    app.router.add_static("/js", path=js)
+    app.router.add_static("/css", path=css)
     app.router.add_route("GET", "/schema", get_schema)
     app.router.add_route("GET", "/heartbeat", start_heartbeat)
     app.router.add_route("GET", r"/{tail:.*}", handleget)
@@ -133,21 +134,46 @@ def make_app() -> web.Application:
 
 def main():
     try:
-        print(time.asctime(), f"Server super started - {cfg.tcp.ip}:{cfg.tcp.port}")
+        print(time.asctime(), f"Server started - {cfg.tcp.ip}:{cfg.tcp.port}")
         web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port, access_log=None)
     except KeyboardInterrupt:
         sys.exit()
 
-cfg_filename = sys.argv[1] if sys.argv[1:] else "production"
-cfg: Dict[str, any] = loadconfig(cfg_filename)
+bdir = sys._MEIPASS
+webDir = os.path.join(bdir, "webDist")
+js = os.path.join(webDir, "js")
+css = os.path.join(webDir, "js")
+index = os.path.join(webDir, "index.html")
+favicon = os.path.join(webDir, "favicon.ico")
+
+cfgd = {
+    "tcp": {
+        "ip": '0.0.0.0',
+        "port": 36364
+    },
+    "ws": {
+        "ip": "0.0.0.0",
+        "port": 11111,
+        "url": "http://localhost"
+    },
+    "controller": "TestCubeUSB",
+    "logging": {
+        "file": {
+            "loglevel": "INFO",
+            "filename": "server.log"
+        },
+        "console": {
+            "loglevel": "INFO"
+        }
+    }
+}
+cfg = DotDict(cfgd)
 setuplog(cfg)
 if cfg is None:
     print(f"\nconfiguration not found\nexiting...\n")
     sys.exit()
 subscription_server: SubscriptionServer = SubscriptionServer(cfg.ws.ip, cfg.ws.port)
-controller = getattr(
-    importlib.import_module(f"{cfg.controller}.{cfg.controller}"), cfg.controller
-)()
+controller = TestCubeUSB()
 resolver: callable = makeresolver(controller.schema)
 controller.setcallback(handleupdates)
 

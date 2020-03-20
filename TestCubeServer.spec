@@ -5,12 +5,9 @@ block_cipher = None
 
 a = Analysis(['pyGizmoServer\\TestCubeServer.py'],
              pathex=['C:\\dev\\pyGizmoServer'],
-             binaries=[('C:\\Windows\\System32\\libusb0.dll', '.')],
-             datas=[
-                 ("TestCubeUSB/schema.json","schema"),
-                 ("webDist", "webDist")
-             ],
-             hiddenimports=['usb'],
+             binaries=[],
+             datas=[],
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -33,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True, icon='cubes.ico' )
+          console=True , icon='cube.ico')

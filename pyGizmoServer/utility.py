@@ -19,21 +19,22 @@ def setuplog(cfg) -> None:
         cfg {DotDict} -- The application cfg Dict, which has information
             on loglevels for both file and console logging.
     """
-    logger = logging.getLogger("gizmoLogger")
-    logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
-    formatter = logging.Formatter(
-        fmt="%(asctime)s.%(msecs)03d %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-    filehandler = logging.FileHandler(filename=cfg.logging.file.filename, mode="w")
-    filehandler.setLevel(getattr(logging, cfg.logging.file.loglevel))
-    filehandler.setFormatter(formatter)
-    consolehandler = logging.StreamHandler(sys.stdout)
-    consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
-    consolehandler.setFormatter(formatter)
-    logger.addHandler(filehandler)
-    logger.addHandler(consolehandler)
-    logger.propagate = False
+    pass
+    # logger = logging.getLogger("gizmoLogger")
+    # logger.setLevel(getattr(logging, cfg.logging.file.loglevel))
+    # formatter = logging.Formatter(
+    #     fmt="%(asctime)s.%(msecs)03d %(levelname)s %(message)s",
+    #     datefmt="%Y-%m-%d %H:%M:%S",
+    # )
+    # filehandler = logging.FileHandler(filename=cfg.logging.file.filename, mode="w")
+    # filehandler.setLevel(getattr(logging, cfg.logging.file.loglevel))
+    # filehandler.setFormatter(formatter)
+    # consolehandler = logging.StreamHandler(sys.stdout)
+    # consolehandler.setLevel(getattr(logging, cfg.logging.console.loglevel))
+    # consolehandler.setFormatter(formatter)
+    # logger.addHandler(filehandler)
+    # logger.addHandler(consolehandler)
+    # logger.propagate = False
 
 
 def makeresolver(schema: Dict) -> callable:
@@ -126,13 +127,15 @@ def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
 
 
 def log(msg: str) -> None:
-    logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
+    print(msg)
+    #logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
 
 def debug(msg: str) -> None:
-    if not logger.isEnabledFor(logging.DEBUG):
-        return
-    logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
+    pass
+    #if not logger.isEnabledFor(logging.DEBUG):
+    #    return
+    #logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
 
 class Error():

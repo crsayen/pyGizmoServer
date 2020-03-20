@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['pyGizmoServer\\TestCubeServer.py'],
+a = Analysis(['pyGizmoServer\\run.py'],
              pathex=['C:\\dev\\pyGizmoServer'],
              binaries=[('C:\\Windows\\System32\\libusb0.dll', '.')],
              datas=[
@@ -26,11 +26,11 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='TestCubeServer',
+          name='TestCube-Server',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True, icon='cubes.ico' )
+          console=True )

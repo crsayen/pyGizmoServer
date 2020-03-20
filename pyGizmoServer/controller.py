@@ -23,8 +23,146 @@ class Controller(object):
     def __init__(self):
         self.running = False
         self.callback = None
-        with open(f"{self.__class__.__name__}/schema.json") as f:
-            self.schema = json.load(f)
+        self.schema = {
+    "relayController": {
+        "relays": {
+            "$count": 6,
+            "$write": "setRelay",
+            "$type": "boolean"
+        }
+    },
+    "pwmController": {
+        "bankA": {
+            "frequency": {
+                "$write": "setPwmFrequencyA",
+                "$type": "integer"
+            }
+        },
+        "bankB": {
+            "frequency": {
+                "$write": "setPwmFrequencyB",
+                "$type": "integer"
+            }
+        },
+        "pwmCurrentMonitorUpdateRate": {
+            "$write": "setPwmCurrentMonitorUpdateRate",
+            "$type": "integer"
+        },
+        "faultThreshold": {
+            "$write": "setPwmFaultThreshold",
+            "$type": "integer"
+        },
+        "measuredCurrents": {
+            "$count": 12,
+            "$watchable": True,
+            "$type": "integer"
+        },
+        "pwms": {
+            "$count": 12,
+            "activeConfiguration": {
+                "$write": "sethiconf",
+                "$type": "string"
+            },
+            "dutyCycle": {
+                "$write": "setPwmDutyCycle",
+                "$type": "integer"
+            },
+            "enabled": {
+                "$write": "setPwmEnabled",
+                "$type": "boolean"
+            },
+            "profile": {},
+            "currentMonitor": {
+                "faultDelay": {
+                    "$write": "setPwmFaultDelay",
+                    "$type": "integer"
+                },
+                "faulty": {
+                    "$type": "boolean"
+                },
+                "enabled": {
+                    "$write": "setPwmCurrentMonitorEnabled",
+                    "$type": "boolean"
+                }
+            }
+        }
+    },
+    "adcInputController": {
+        "adcInputMonitorRate": {
+            "$write": "setAdcMonitorUpdateRate",
+            "$type": "integer"
+        },
+        "adcInputs": {
+            "$count": 8,
+            "enabled": {
+                "$write": "setAdcEnabled",
+                "$type": "boolean"
+            }
+        },
+        "adcInputVoltages": {
+            "$count": 8,
+            "$watchable": True,
+            "$type": "integer"
+        }
+    },
+    "digitalInputController": {
+        "digitalInputMonitorRate": {
+            "$write": "setDiMonitorUpdateRate",
+            "$type": "integer"
+        },
+        "digitalInputs": {
+            "$count": 12,
+            "$watchable": True,
+            "$type": "boolean"
+        }
+    },
+    "frequencyInputController": {
+        "frequencyMonitorRate": {
+            "$write": "setFrequencyMonitorRate",
+            "$type": "integer"
+        },
+        "measuredFrequencies": {
+            "$count": 4,
+            "$watchable": True,
+            "$type": "integer"
+        },
+        "frequencyInputs": {
+            "$count": 4,
+            "enabled": {
+                "$write": "setFrequencyInputEnabled",
+                "$type": "boolean"
+            }
+        }
+    },
+    "canDatabase": {
+        "$type": "string"
+    },
+    "usb": {
+        "txMessage": {
+            "$write": "sendrawusb",
+            "$type": "hex"
+        },
+        "rxMessage": {
+            "$type": "hex",
+            "$watchable": True
+        },
+        "rxCount": {
+            "$type": "integer",
+            "$watchable": True
+        },
+        "usbinfo": {
+            "$type": "string"
+        }
+    },
+    "version": {
+        "$read": "getFirmwareVersion",
+        "$type": "string"
+    },
+    "heartbeat": {
+        "$type": "integer",
+        "$watchable": True
+    }
+}
 
     async def handlerloop(self) -> None:
         """Runs for the lifetime of the application, calling Controller.handler.
