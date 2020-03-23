@@ -1,0 +1,117 @@
+([('run.exe', 'C:\\dev\\pyGizmoServer\\build\\run\\run.exe', 'EXECUTABLE'),
+  ('run.exe.manifest',
+   'C:\\dev\\pyGizmoServer\\build\\run\\run.exe.manifest',
+   'BINARY'),
+  ('VCRUNTIME140.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\VCRUNTIME140.dll',
+   'BINARY'),
+  ('python38.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\python38.dll',
+   'BINARY'),
+  ('select',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\select.pyd',
+   'EXTENSION'),
+  ('_hashlib',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_hashlib.pyd',
+   'EXTENSION'),
+  ('_lzma',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_lzma.pyd',
+   'EXTENSION'),
+  ('_bz2',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_bz2.pyd',
+   'EXTENSION'),
+  ('pyexpat',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\pyexpat.pyd',
+   'EXTENSION'),
+  ('_ssl',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_ssl.pyd',
+   'EXTENSION'),
+  ('unicodedata',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\unicodedata.pyd',
+   'EXTENSION'),
+  ('_decimal',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_decimal.pyd',
+   'EXTENSION'),
+  ('_ctypes',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_ctypes.pyd',
+   'EXTENSION'),
+  ('_queue',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_queue.pyd',
+   'EXTENSION'),
+  ('_multiprocessing',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_multiprocessing.pyd',
+   'EXTENSION'),
+  ('_socket',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_socket.pyd',
+   'EXTENSION'),
+  ('yarl._quoting',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\yarl\\_quoting.cp38-win_amd64.pyd',
+   'EXTENSION'),
+  ('multidict._multidict',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\multidict\\_multidict.cp38-win_amd64.pyd',
+   'EXTENSION'),
+  ('_asyncio',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_asyncio.pyd',
+   'EXTENSION'),
+  ('websockets.speedups',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\websockets\\speedups.cp38-win_amd64.pyd',
+   'EXTENSION'),
+  ('_yaml',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\_yaml.cp38-win_amd64.pyd',
+   'EXTENSION'),
+  ('_overlapped',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\_overlapped.pyd',
+   'EXTENSION'),
+  ('libcrypto-1_1.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\libcrypto-1_1.dll',
+   'BINARY'),
+  ('libssl-1_1.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\libssl-1_1.dll',
+   'BINARY'),
+  ('libffi-7.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\DLLs\\libffi-7.dll',
+   'BINARY'),
+  ('libusb0.dll', 'C:\\Windows\\System32\\libusb0.dll', 'BINARY'),
+  ('base_library.zip',
+   'C:\\dev\\pyGizmoServer\\build\\run\\base_library.zip',
+   'DATA'),
+  ('webDist\\index.html', 'webDist\\index.html', 'DATA'),
+  ('webDist\\css\\chunk-vendors.992a103e.css',
+   'webDist\\css\\chunk-vendors.992a103e.css',
+   'DATA'),
+  ('webDist\\js\\app.2c9481e2.js.map',
+   'webDist\\js\\app.2c9481e2.js.map',
+   'DATA'),
+  ('webDist\\favicon.ico', 'webDist\\favicon.ico', 'DATA'),
+  ('webDist\\js\\chunk-vendors.1921cb28.js.map',
+   'webDist\\js\\chunk-vendors.1921cb28.js.map',
+   'DATA'),
+  ('schema\\schema.json', 'TestCubeUSB\\schema.json', 'DATA'),
+  ('webDist\\js\\app.2c9481e2.js', 'webDist\\js\\app.2c9481e2.js', 'DATA'),
+  ('webDist\\css\\app.84c6aef2.css', 'webDist\\css\\app.84c6aef2.css', 'DATA'),
+  ('webDist\\js\\chunk-vendors.1921cb28.js',
+   'webDist\\js\\chunk-vendors.1921cb28.js',
+   'DATA')],)
