@@ -8,14 +8,19 @@ class VersionMessage():
         self.ask = None
         pass
 
-    async def getFirmwareVersion(self):
+    async def getFirmwareVersion(self, retry=0):
         self.ask = True
         self.finished_processing_request()
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
         else:
             self.getVersionEvent.clear()
-        await self.getVersionEvent.wait()
+        try:
+            await asyncio.wait_for(self.getVersionEvent.wait(), timeout=0.1)
+        except:
+            if retry < 5:
+                return await self.getFirmwareVersion(retry = retry + 1)
+            raise RuntimeError("getFirmwareVersion not responding")
         return self.version
 
     def get_version_messages(self):
