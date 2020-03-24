@@ -19,5 +19,11 @@
     "version": {
         "$read": "getFirmwareVersion",
         "$type": "string"
+    },
+    "usb": {
+        "txMessage": {
+            "$write": "sendrawusb",
+            "$type": "message"
+        }
     }
 }

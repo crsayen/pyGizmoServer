@@ -28,6 +28,9 @@ class MockUSB(Controller):
         debug("someone called me")
         pass
 
+    def sendrawusb(self, msg):
+        print(msg)
+
     def setfloodrate(self, rate):
         self.floodrate = 1.0 / rate if rate else False
 
