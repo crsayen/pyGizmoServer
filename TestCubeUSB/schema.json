@@ -115,7 +115,7 @@
     "usb": {
         "txMessage": {
             "$write": "sendrawusb",
-            "$type": "hex"
+            "$type": "message"
         },
         "rxMessage": {
             "$type": "hex",
