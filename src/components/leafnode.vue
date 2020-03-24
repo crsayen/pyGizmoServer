@@ -17,6 +17,19 @@
                 type="number"
                 v-model.lazy="outValue"
             />
+            <div v-else-if="type == 'message'">
+                ID:
+                <input
+                    type="Text"
+                    v-model="msgID"
+                />
+                Data:
+                <input
+                    type="Text"
+                    v-model="msgData"
+                />
+                <button @click="setMessage">send</button>
+            </div>
             <input
                 v-else type="Text"
                 v-model.lazy="outValue"
@@ -62,7 +75,9 @@ export default {
             outValue: null,
             value: "unknown",
             ws: null,
-            watching: false
+            watching: false,
+            msgID: null,
+            msgData: null
         }
     },
     name: 'leafnode',
@@ -81,6 +96,11 @@ export default {
                     this.value = (json[0]) ? json[0].data : json.data
                 }
             })
+        },
+        setMessage(){
+            console.log(this.msgID, this.msgData)
+            let prefix = Array(8 - this.msgID.length).fill('0').join('') + this.msgID
+            this.outValue = prefix + this.msgData
         },
         patch(body) {
             fetch(this.path, { headers: {
@@ -121,7 +141,7 @@ export default {
                 body = JSON.stringify({
                     op: 'replace',
                     path: this.path,
-                    value: (["string", "hex", "integer"].includes(this.type)) ?
+                    value: (["string", "hex", "integer", "message"].includes(this.type)) ?
                         ((this.type == "integer") ? Number(newVal) : String(newVal)) : newVal
                 })
                 this.patch(body)
