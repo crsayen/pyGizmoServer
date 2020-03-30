@@ -1,3 +1,5 @@
+import asyncio
+
 class ActCurMessage:
     def __init__(self):
         self.actmonitorRate = None
@@ -5,18 +7,48 @@ class ActCurMessage:
         self.actmonitorThreshold = 60
         self.ret = [None] * 12
 
+    def resetActCurMessage(self):
+        self.ret = [None] * 12
+
     def setPwmCurrentMonitorUpdateRate(self, rate: int):
         rate = int(rate / 50)
         self.actmonitorRate = rate
 
     def setPwmFaultThreshold(self, threshold: int):
-        threshold = int(threshold / 50)
-        self.actmonitorThreshold = threshold
-
-    #    def setPwmFaultDelay(self):
+        self.actmonitorThreshold = int(threshold / 50)
 
     def setPwmCurrentMonitorChannels(self, channelMask: int):
         self.actmonitorChannels = channelMask
+
+    async def getFaultMonitors(self, retry=0):
+        self.getFaults = True
+        self.finished_processing_request()
+        if self.getFaultsEvent is None:
+            self.getFaultsEvent = asyncio.Event()
+        else:
+            self.getFaultsEvent.clear()
+        try:
+            await asyncio.wait_for(self.getFaultMonitors.wait(), timeout=0.1)
+        except:
+            if retry < 5:
+                return await self.getFaultsEvent(retry = retry + 1)
+            raise RuntimeError("getFaultMonitors not responding")
+        return self.actFaults
+
+    async def getFaultMonitor(self, index, retry=0):
+        self.getFaults = True
+        self.finished_processing_request()
+        if self.getFaultsEvent is None:
+            self.getFaultsEvent = asyncio.Event()
+        else:
+            self.getFaultsEvent.clear()
+        try:
+            await asyncio.wait_for(self.getFaultsEvent.wait(), timeout=0.1)
+        except:
+            if retry < 5:
+                return await self.getFaultMonitor(index, retry = retry + 1)
+            raise RuntimeError("getFaultMonitor not responding")
+        return self.actFaults[index]
 
     def get_actcur_messages(self):
         if self.actmonitorChannels == None:
@@ -29,17 +61,19 @@ class ActCurMessage:
             f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"
         ]
 
-    def rec_usb_1d_actfault(self, payload):
-        _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
-        data = [
-            {"currentMonitor": {"faulty": True}}
-            if (faults & (1 << x))
-            else {"currentMonitor": {"faulty": False}}
-            for x in range(12)
-        ]
+    def get_actuator_faults(self):
+        if self.getFaults is True:
+            self.getFaults = False
+        return ["0000001c0000"]
 
-        path = "/pwmController/pwms"
-        return [{"path": path, "data": data}]
+    def rec_usb_1d_actfault(self, payload):
+        print(payload)
+        _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
+        self.actFaults = [True if (faults & (1 << x)) else False for x in range(12)]
+        print(self.actFaults)
+        if self.getFaultsEvent is not None and not self.getFaultsEvent.is_set():
+            self.getFaultsEvent.set()
+        return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
     def rec_usb_00d_actcurrent(self, payload):
         ret = [None] * 12

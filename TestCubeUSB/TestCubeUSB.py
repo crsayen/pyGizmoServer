@@ -27,11 +27,11 @@ class TestCubeUSB(
     CanDatabaseMessage,
     VersionMessage,
 ):
-    def call_parent_inits(self):
+    def reset_parents(self):
         RelayMessage.__init__(self)
         PwmMessage.__init__(self)
         DiMessage.__init__(self)
-        ActCurMessage.__init__(self)
+        self.resetActCurMessage()
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
         AdcMessage.__init__(self)
@@ -40,10 +40,19 @@ class TestCubeUSB(
     def __init__(self):
         debug("init")
         Controller.__init__(self)
-        self.call_parent_inits()
+        RelayMessage.__init__(self)
+        PwmMessage.__init__(self)
+        DiMessage.__init__(self)
+        ActCurMessage.__init__(self)
+        UsbMessage.__init__(self)
+        FrequencyMessage.__init__(self)
+        AdcMessage.__init__(self)
+        VersionMessage.__init__(self)
         self.version = None
         self.ask = None
         self.getVersionEvent = None
+        self.getFaultsEvent = None
+        self.getFaults = False
         self.usbrxcount = 0
         self.usbidparsers = {
             "00000005": self.rec_usb_5_pwmfreq,
@@ -93,17 +102,20 @@ class TestCubeUSB(
         msgs += self.get_pwm_messages()
         msgs += self.get_di_messages()
         msgs += self.get_actcur_messages()
+        msgs += self.get_actuator_faults()
         msgs += self.get_sendusb_messages()
         msgs += self.get_freq_messages()
         msgs += self.get_adc_messages()
         msgs += self.get_version_messages()
         for msg in msgs:
             self.dev.write(2, msg)
-        self.call_parent_inits()
+        self.reset_parents()
 
     async def handler(self):
         if self.getVersionEvent is None:
             self.getVersionEvent = asyncio.Event()
+        if self.getFaultsEvent is None:
+            self.getFaultsEvent = asyncio.Event()
         try:
             msg = self.dev.read(130, 24, 1)
         except usb.core.USBError:

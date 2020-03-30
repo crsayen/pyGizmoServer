@@ -27,6 +27,12 @@
             "$write": "setPwmFaultThreshold",
             "$type": "integer"
         },
+        "faultMonitors": {
+            "$count": 12,
+            "$read": "getFaultMonitor",
+            "$watchable": true,
+            "$type": "boolean"
+        },
         "measuredCurrents": {
             "$count": 12,
             "$watchable": true,
@@ -46,20 +52,7 @@
                 "$write": "setPwmEnabled",
                 "$type": "boolean"
             },
-            "profile": {},
-            "currentMonitor": {
-                "faultDelay": {
-                    "$write": "setPwmFaultDelay",
-                    "$type": "integer"
-                },
-                "faulty": {
-                    "$type": "boolean"
-                },
-                "enabled": {
-                    "$write": "setPwmCurrentMonitorEnabled",
-                    "$type": "boolean"
-                }
-            }
+            "profile": {}
         }
     },
     "adcInputController": {
