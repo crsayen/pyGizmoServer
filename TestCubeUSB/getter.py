@@ -1,7 +1,6 @@
 import asyncio
 
 async def get(init_cb, event, retry=0):
-    print("in get")
     init_cb()
     if event is None:
         event = asyncio.Event()

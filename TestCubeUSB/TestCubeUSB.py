@@ -28,7 +28,7 @@ class TestCubeUSB(
     VersionMessage,
 ):
     def reset_parents(self):
-        RelayMessage.__init__(self)
+        self.resetRelayMessage()
         PwmMessage.__init__(self)
         DiMessage.__init__(self)
         self.resetActCurMessage()

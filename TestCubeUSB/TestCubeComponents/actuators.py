@@ -59,8 +59,6 @@ class ActCurMessage:
         else []
 
     def get_actuator_faults(self):
-        if self.getFaults is True:
-            self.getFaults = False
         return ["0000001c0000"]
 
     def rec_usb_1d_actfault(self, payload):
@@ -90,6 +88,7 @@ class ActCurMessage:
             for ch, v in zip(thismsg, chunks):
                 if isinstance(ch, int):
                     self.actuatorCurrents[ch] = v
+            # if we dont expect any more data, return the message
             if self.actcurrent_listinfirstmsg[end:] is None or lastMessage:
                 self.setEvent(self.getActCurrentEvent)
                 return [{"path": "/pwmController/measuredCurrents", "data": self.actuatorCurrents}]

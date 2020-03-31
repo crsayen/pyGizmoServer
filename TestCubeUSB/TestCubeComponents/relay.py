@@ -1,9 +1,28 @@
+import asyncio
+from pyGizmoServer.utility import Error, repeatOnFailAsync
+from TestCubeUSB.getter import get
+
 class RelayMessage:
     def __init__(self):
+        self.getRelaysEvent = asyncio.Event()
         self.RelayStates = [None] * 6
+
+    def resetRelayMessage(self):
+        pass
 
     def setRelay(self, relay: int, state: bool):
         self.RelayStates[relay] = state
+
+    async def getRelay(self, index):
+        ret = await repeatOnFailAsync(5, self._getRelay, [index])
+        if ret is not None:
+            return ret
+        return Error("Failed to read relay state")
+
+    async def _getRelay(self, index):
+        self.RelayStates = [''] * 6
+        if await get(self.finished_processing_request, self.getRelaysEvent):
+            return self.RelayStates[index]
 
     def get_relay_messages(self):
         if self.RelayStates == [None] * 6:
@@ -11,7 +30,7 @@ class RelayMessage:
         mask = 0
         val = 0
         for i in range(0, len(self.RelayStates)):
-            if self.RelayStates[i] is not None:
+            if self.RelayStates[i] not in (None, ''):
                 mask |= 1 << i
                 if self.RelayStates[i]:
                     val |= 1 << i
@@ -21,4 +40,7 @@ class RelayMessage:
         enabled = int(payload[:2], 16)
         data = [not not (enabled & (1 << x)) for x in range(6)]
         path = "/relayController/relays"
-        return [{"path": path, "data": data}]
+        self.RelayStates = data
+        if not self.getRelaysEvent.is_set():
+            self.getRelaysEvent.set()
+        return [{"path": path, "data": self.RelayStates}]

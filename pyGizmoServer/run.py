@@ -36,7 +36,6 @@ async def handlepatch(request: web.Request) -> web.Response:
         if result is None:
             response.append({"path": path, "data": value})
         elif isinstance(result, Error):
-            print("got to error thing")
             return result.get_response()
     controller.finished_processing_request()
     return web.json_response(response)
@@ -59,7 +58,7 @@ async def handleget(request: web.Request) -> web.Response:
     debug(request.path)
     await controller.tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
-    if props and props.get("$read"):
+    if props and (props.get("$read") or props.get("$watchable")):
         data = await getattr(controller, props["$read"])(*props.get("$args"))
         if isinstance(data, Error):
             return data.get_response()

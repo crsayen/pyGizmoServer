@@ -2,6 +2,7 @@
     "relayController": {
         "relays": {
             "$count": 6,
+            "$read": "getRelay",
             "$write": "setRelay",
             "$type": "boolean"
         }
