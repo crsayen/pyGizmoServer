@@ -1,27 +1,20 @@
 import asyncio
 import logging
 from pyGizmoServer.utility import debug
+from TestCubeUSB.getter import get
 
 
 class VersionMessage():
     def __init__(self):
+        self.getVersionEvent = None
         self.ask = None
         pass
 
     async def getFirmwareVersion(self, retry=0):
         self.ask = True
-        self.finished_processing_request()
-        if self.getVersionEvent is None:
-            self.getVersionEvent = asyncio.Event()
-        else:
-            self.getVersionEvent.clear()
-        try:
-            await asyncio.wait_for(self.getVersionEvent.wait(), timeout=0.1)
-        except:
-            if retry < 5:
-                return await self.getFirmwareVersion(retry = retry + 1)
-            raise RuntimeError("getFirmwareVersion not responding")
-        return self.version
+        if await get(self.finished_processing_request,self.getVersionEvent):
+            return self.version
+        print("version ded")
 
     def get_version_messages(self):
         if self.ask is None:
@@ -39,6 +32,8 @@ class VersionMessage():
                 int(payload[8:12], 16),
             )
             self.version = f"{hi}.{lo}.{patch}"
-        if self.getVersionEvent is not None and not self.getVersionEvent.is_set():
+        if self.getVersionEvent is None:
+            self.getVersionEvent = asyncio.Event()
+        if not self.getVersionEvent.is_set():
             self.getVersionEvent.set()
         return [{"path": "/version", "data": self.version}]

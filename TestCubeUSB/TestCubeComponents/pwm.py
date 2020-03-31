@@ -130,7 +130,6 @@ class PwmMessage:
 
     def rec_usb_9_pwmenable(self, payload):
         d = []
-        print(f"09: {payload}")
         enabled = int(payload[:4], 16)
         data = [
             {"enabled": True} if (enabled & (1 << x)) else {"enabled": False}

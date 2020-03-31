@@ -50,9 +50,6 @@ class TestCubeUSB(
         VersionMessage.__init__(self)
         self.version = None
         self.ask = None
-        self.getVersionEvent = None
-        self.getFaultsEvent = None
-        self.getFaults = False
         self.usbrxcount = 0
         self.usbidparsers = {
             "00000005": self.rec_usb_5_pwmfreq,
@@ -112,10 +109,6 @@ class TestCubeUSB(
         self.reset_parents()
 
     async def handler(self):
-        if self.getVersionEvent is None:
-            self.getVersionEvent = asyncio.Event()
-        if self.getFaultsEvent is None:
-            self.getFaultsEvent = asyncio.Event()
         try:
             msg = self.dev.read(130, 24, 1)
         except usb.core.USBError:

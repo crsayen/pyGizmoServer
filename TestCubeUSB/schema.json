@@ -35,6 +35,7 @@
         },
         "measuredCurrents": {
             "$count": 12,
+            "$read": "getActuatorCurrent",
             "$watchable": true,
             "$type": "integer"
         },

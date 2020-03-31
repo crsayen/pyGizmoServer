@@ -1,10 +1,15 @@
 import asyncio
+from TestCubeUSB.getter import get
+from pyGizmoServer.utility import Error
 
 class ActCurMessage:
     def __init__(self):
         self.actmonitorRate = None
         self.actmonitorChannels = 0x0FFF
         self.actmonitorThreshold = 60
+        self.getFaultsEvent = asyncio.Event()
+        self.getFaults = False
+        self.getActCurrentEvent = asyncio.Event()
         self.ret = [None] * 12
 
     def resetActCurMessage(self):
@@ -37,18 +42,32 @@ class ActCurMessage:
 
     async def getFaultMonitor(self, index, retry=0):
         self.getFaults = True
-        self.finished_processing_request()
-        if self.getFaultsEvent is None:
-            self.getFaultsEvent = asyncio.Event()
-        else:
-            self.getFaultsEvent.clear()
-        try:
-            await asyncio.wait_for(self.getFaultsEvent.wait(), timeout=0.1)
-        except:
-            if retry < 5:
-                return await self.getFaultMonitor(index, retry = retry + 1)
-            raise RuntimeError("getFaultMonitor not responding")
-        return self.actFaults[index]
+        if await get(self.finished_processing_request,self.getFaultsEvent):
+            return self.actFaults[index]
+        print("fault ded")
+        return "doohicky"
+
+    def setEvent(self, event):
+        if not event.is_set():
+            event.set()
+
+    async def getActuatorCurrent(self, index):
+        async def tryGetActuatorCurrent(retry=0):
+            if self.actmonitorRate:
+                ret = self.ret["data"][index]
+            else:
+                self.actmonitorRate = 0
+                if await get(self.finished_processing_request,self.getActCurrentEvent):
+                    print(len(self.ret))
+                    print(index)
+                    print()
+                    ret = self.ret[index]
+            if ret is None:
+                if retry > 4:
+                    return Error("Failed to read actuator current")
+                return await tryGetActuatorCurrent(retry + 1)
+            return ret
+        return await tryGetActuatorCurrent()
 
     def get_actcur_messages(self):
         if self.actmonitorChannels == None:
@@ -67,11 +86,9 @@ class ActCurMessage:
         return ["0000001c0000"]
 
     def rec_usb_1d_actfault(self, payload):
-        print(payload)
         _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
         self.actFaults = [True if (faults & (1 << x)) else False for x in range(12)]
-        print(self.actFaults)
-        if self.getFaultsEvent is not None and not self.getFaultsEvent.is_set():
+        if not self.getFaultsEvent.is_set():
             self.getFaultsEvent.set()
         return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
@@ -97,6 +114,7 @@ class ActCurMessage:
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
         if self.actcurrent_listinfirstmsg[3:] is None:
+            self.setEvent(self.getActCurrentEvent)
             return [{"path": path, "data": ret}]
         else:
             self.ret = ret
@@ -120,6 +138,7 @@ class ActCurMessage:
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
         if self.actcurrent_listinfirstmsg[7:] is None:
+            self.setEvent(self.getActCurrentEvent)
             return [{"path": path, "data": ret}]
         else:
             self.ret = ret
@@ -143,6 +162,7 @@ class ActCurMessage:
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
         if self.actcurrent_listinfirstmsg[11:] is None:
+            self.setEvent(self.getActCurrentEvent)
             return [{"path": path, "data": ret}]
         else:
             self.ret = ret
@@ -161,4 +181,5 @@ class ActCurMessage:
             if isinstance(ch, int):
                 ret[ch] = v
         path = "/pwmController/measuredCurrents"
+        self.setEvent(self.getActCurrentEvent)
         return [{"path": path, "data": ret}]
