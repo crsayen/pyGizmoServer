@@ -134,6 +134,19 @@ def debug(msg: str) -> None:
         return
     logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
+def repeatOnFail(n, func, args):
+    for i in range(n):
+        ret = func(*args)
+        if ret is not None:
+            return ret
+    return None
+
+async def repeatOnFailAsync(n, func, args):
+    for i in range(n):
+        ret = await func(*args)
+        if ret is not None:
+            return ret
+    return None
 
 class Error():
     def __init__(self, message=None):

@@ -36,6 +36,7 @@ async def handlepatch(request: web.Request) -> web.Response:
         if result is None:
             response.append({"path": path, "data": value})
         elif isinstance(result, Error):
+            print("got to error thing")
             return result.get_response()
     controller.finished_processing_request()
     return web.json_response(response)
@@ -60,7 +61,6 @@ async def handleget(request: web.Request) -> web.Response:
     props: Dict[str, str] = resolver(request.path)
     if props and props.get("$read"):
         data = await getattr(controller, props["$read"])(*props.get("$args"))
-        print(f"{request.path=}\n{data=}")
         if isinstance(data, Error):
             return data.get_response()
         response = [{
@@ -137,7 +137,7 @@ def make_app() -> web.Application:
 
 def main():
     try:
-        print(time.asctime(), f"Server super started - {cfg.tcp.ip}:{cfg.tcp.port}")
+        print(time.asctime(), f"Server started - {cfg.tcp.ip}:{cfg.tcp.port}")
         web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port, access_log=None)
     except KeyboardInterrupt:
         sys.exit()

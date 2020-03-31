@@ -35,7 +35,7 @@ class TestCubeUSB(
         UsbMessage.__init__(self)
         FrequencyMessage.__init__(self)
         AdcMessage.__init__(self)
-        VersionMessage.__init__(self)
+        self.resetVersionMessage()
 
     def __init__(self):
         debug("init")

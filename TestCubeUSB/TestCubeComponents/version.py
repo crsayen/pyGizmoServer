@@ -6,9 +6,11 @@ from TestCubeUSB.getter import get
 
 class VersionMessage():
     def __init__(self):
-        self.getVersionEvent = None
+        self.getVersionEvent = asyncio.Event()
         self.ask = None
-        pass
+
+    def resetVersionMessage(self):
+        self.ask = None
 
     async def getFirmwareVersion(self, retry=0):
         self.ask = True

@@ -91,7 +91,9 @@ export default {
                 return response.json()
             })
             .then((json) => {
-                console.log(json)
+                if (json[0].error) {
+                    alert(json[0].error)
+                }
                 if (!this.watching){
                     this.value = (json[0]) ? json[0].data : json.data
                 }
