@@ -1,11 +1,8 @@
 import asyncio
 
 async def get(init_cb, event, retry=0):
+    event.clear()
     init_cb()
-    if event is None:
-        event = asyncio.Event()
-    else:
-        event.clear()
     try:
         await asyncio.wait_for(event.wait(), timeout=0.1)
     except:

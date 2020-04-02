@@ -29,7 +29,7 @@ class TestCubeUSB(
 ):
     def reset_parents(self):
         self.resetRelayMessage()
-        PwmMessage.__init__(self)
+        self.resetPwmMessage()
         self.resetDiMessage()
         self.resetActCurMessage()
         UsbMessage.__init__(self)
@@ -104,6 +104,7 @@ class TestCubeUSB(
         msgs += self.get_freq_messages()
         msgs += self.get_adc_messages()
         msgs += self.get_version_messages()
+        debug(f"\n{msgs=}")
         for msg in msgs:
             self.dev.write(2, msg)
         self.reset_parents()
@@ -114,6 +115,7 @@ class TestCubeUSB(
         except usb.core.USBError:
             return
         msg = "".join([chr(x) for x in msg])
+        debug(f"{msg=}")
         self.usbrxcount += 1
         self.send( updates =
             [
@@ -137,6 +139,7 @@ class TestCubeUSB(
         _id, payload = msg[:8], msg[8:]
         try:
             f = self.usbidparsers.get(_id.lower())
+            debug(f"usbidparsers.get({_id}): {f}")
             if f is None:
                 return []
         except Exception:
@@ -144,4 +147,5 @@ class TestCubeUSB(
         if f is None:
             return []
         result = f(payload)
+        debug(f"{result=}\n")
         return result

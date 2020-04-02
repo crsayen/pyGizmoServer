@@ -19,10 +19,10 @@ class DiMessage:
 
     async def _getDI(self, index):
         if self.dimonitorrate:
-            ret = self.dis["data"][index]
+            return self.dis[index]
         else:
             self.dimonitorrate = 0
-            self.finished_processing_request()
+            #self.finished_processing_request()
             if await get(self.finished_processing_request,self.getDiEvent):
                 return self.dis[index]
 

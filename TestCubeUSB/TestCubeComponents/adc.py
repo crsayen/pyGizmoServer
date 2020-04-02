@@ -10,7 +10,7 @@ class AdcMessage:
         self.adcVoltages = [None, None, None, None, None, None, None, None]
 
     def resetAdcMessage(self):
-        self.adcVoltages = [None, None, None, None, None, None, None, None]
+        pass
 
     def setAdcMonitorUpdateRate(self, rate: int):
         self.AdcRate = int(rate / 50)
@@ -29,10 +29,10 @@ class AdcMessage:
 
     async def _getAdcVoltage(self, index):
         if self.AdcRate:
-            ret = self.adcVoltages["data"][index]
+            return self.adcVoltages[index]
         else:
             self.AdcRate = 0
-            self.finished_processing_request()
+            #self.finished_processing_request()
             if await get(self.finished_processing_request,self.getAdcVoltageEvent):
                 return self.adcVoltages[index]
 
@@ -66,10 +66,10 @@ class AdcMessage:
                 return [{"path": "/adcInputController/adcInputVoltages", "data": self.adcVoltages}]
 
     def rec_usb_011_adc(self, payload):
-        self.parse_adc_message(0,3,payload,[1,2,3], firstMessage=True)
+        return self.parse_adc_message(0,3,payload,[1,2,3], firstMessage=True)
 
     def rec_usb_111_adc(self, payload):
-        self.parse_adc_message(3,7,payload,[0,1,2,3])
+        return self.parse_adc_message(3,7,payload,[0,1,2,3])
 
     def rec_usb_211_adc(self, payload):
-        self.parse_adc_message(7,12,payload,[0,1,2,3], lastMessage=True)
+        return self.parse_adc_message(7,12,payload,[0,1,2,3], lastMessage=True)

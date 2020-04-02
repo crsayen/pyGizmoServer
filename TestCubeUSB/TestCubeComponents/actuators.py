@@ -1,6 +1,6 @@
 import asyncio
 from TestCubeUSB.getter import get
-from pyGizmoServer.utility import Error, repeatOnFailAsync
+from pyGizmoServer.utility import Error, repeatOnFailAsync, debug
 
 class ActCurMessage:
     def __init__(self):
@@ -14,7 +14,7 @@ class ActCurMessage:
         self.actuatorCurrents = [None, None, None, None, None, None, None, None, None, None, None, None]
 
     def resetActCurMessage(self):
-        self.actuatorCurrents = [None, None, None, None, None, None, None, None, None, None, None, None]
+        pass
 
     def setPwmCurrentMonitorUpdateRate(self, rate: int):
         rate = int(rate / 50)
@@ -42,11 +42,12 @@ class ActCurMessage:
         return Error("Failed to read actuator current")
 
     async def _getActuatorCurrent(self, index):
+        debug(index)
         if self.actmonitorRate:
-            ret = self.actuatorCurrents["data"][index]
+            return self.actuatorCurrents[index]
         else:
             self.actmonitorRate = 0
-            self.finished_processing_request()
+            #self.finished_processing_request()
             if await get(self.finished_processing_request,self.getActCurrentEvent):
                 return self.actuatorCurrents[index]
 
@@ -69,6 +70,7 @@ class ActCurMessage:
         return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
     def parsePayload(self, start, end, payload, chunks, firstMessage=False, lastMessage=False):
+        debug(f"\n{start=}\n{end=}\n{payload=}\n{chunks=}\n{firstMessage=}\n{lastMessage=}\n{self.actuatorCurrents=}")
         payload = payload + "0" * 16  # pad to avoid errors
         payloadChunks = [
             int(payload[:4], 16),
@@ -91,16 +93,18 @@ class ActCurMessage:
             # if we dont expect any more data, return the message
             if self.actcurrent_listinfirstmsg[end:] is None or lastMessage:
                 self.setEvent(self.getActCurrentEvent)
-                return [{"path": "/pwmController/measuredCurrents", "data": self.actuatorCurrents}]
+                resp = [{"path": "/pwmController/measuredCurrents", "data": self.actuatorCurrents}]
+                debug(f"returning: {resp}")
+                return resp
 
     def rec_usb_00d_actcurrent(self, payload):
-        self.parsePayload(0, 3, payload, [3,2,1], firstMessage=True)
+        return self.parsePayload(0, 3, payload, [3,2,1], firstMessage=True)
 
     def rec_usb_10d_actcurrent(self, payload):
-        self.parsePayload(3, 7, payload, [0,1,2,3])
+        return self.parsePayload(3, 7, payload, [0,1,2,3])
 
     def rec_usb_20d_actcurrent(self, payload):
-        self.parsePayload(7, 11, payload, [0,1,2,3])
+        return self.parsePayload(7, 11, payload, [0,1,2,3])
 
     def rec_usb_30d_actcurrent(self, payload):
-        self.parsePayload(11, 12, payload, [0], lastMessage=True)
+        return self.parsePayload(11, 12, payload, [0], lastMessage=True)

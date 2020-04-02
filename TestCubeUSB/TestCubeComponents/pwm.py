@@ -2,9 +2,11 @@ class PwmMessage:
     def __init__(self):
         self.Freq = [None] * 2
         self.Hiconf = [None] * 12
-
         self.PwmEnabled = [None] * 12
         self.Duty = [None] * 12
+
+    def resetPwmMessage(self):
+        pass
 
     def setPwmFrequencyA(self, hz: int):
         self.Freq[0] = hz
@@ -108,8 +110,7 @@ class PwmMessage:
         return d
 
     def rec_usb_7_pwmdutycycle(self, payload):
-        ret = [{}] * 12
-        bank, _, dcf, dce, dcd, dcc, dcb, dca = (
+        chunks = (
             int(payload[:2], 16),
             int(payload[2:4], 16),
             int(payload[4:6], 16),
@@ -119,14 +120,11 @@ class PwmMessage:
             int(payload[12:14], 16),
             int(payload[14:16], 16),
         )
-        ret[6 * bank + 0] = {"dutyCycle": dca}
-        ret[6 * bank + 1] = {"dutyCycle": dcb}
-        ret[6 * bank + 2] = {"dutyCycle": dcc}
-        ret[6 * bank + 3] = {"dutyCycle": dcd}
-        ret[6 * bank + 4] = {"dutyCycle": dce}
-        ret[6 * bank + 5] = {"dutyCycle": dcf}
+        offset = 6 * chunks[0]
+        self.Duty[offset:offset + 5] = chunks[:1:-1]
         path = "/pwmController/pwms"
-        return [{"path": path, "data": ret}]
+        if offset == 6:
+            return [{"path": path, "data": [{"dutyCycle": dc} for dc in self.Duty]}]
 
     def rec_usb_9_pwmenable(self, payload):
         d = []

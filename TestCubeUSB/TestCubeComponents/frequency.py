@@ -11,6 +11,8 @@ class FrequencyMessage:
         self.frequencies = [None, None, None, None]
 
     def resetFrequencyMessage(self):
+        self.speed_listinfirstmsg = [3, 2, 1, 0]
+        self.freqmonitorChannels = [1, 1, 1, 1]
         self.frequencies = [None, None, None, None]
 
     def setFrequencyInputEnabled(self, channel: int, enabled: int):
@@ -27,12 +29,12 @@ class FrequencyMessage:
 
     async def _getFrequency(self, index):
         if self.freqmonitorRate:
-            ret = self.frequencies["data"][index]
+            return self.frequencies[index]
         else:
             self.freqmonitorRate = 0
-            self.finished_processing_request()
-            if await get(self.finished_processing_request,self.self.getFrequencyEvent):
-                return self.actuatorCurrents[index]
+            #self.finished_processing_request()
+            if await get(self.finished_processing_request,self.getFrequencyEvent):
+                return self.frequencies[index]
 
     def get_freq_messages(self):
         if self.freqmonitorRate is None or self.freqmonitorChannels is None:
@@ -55,11 +57,11 @@ class FrequencyMessage:
         if self.speed_listinfirstmsg[0:3] is not None:
             for ch, v in zip(self.speed_listinfirstmsg[0:3], [cc, cb, ca]):
                 if isinstance(ch, int):
-                    self.ret[ch] = v
+                    self.frequencies[ch] = v
             if self.speed_listinfirstmsg[3:] is None:
                 if not self.getFrequencyEvent.is_set():
                     self.getFrequencyEvent.set()
-                return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.ret}]
+                return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.frequencies}]
 
 
     def rec_usb_10f_speed(self, payload):
@@ -68,7 +70,7 @@ class FrequencyMessage:
         if self.speed_listinfirstmsg[3:] is not None:
             for ch, v in zip(self.speed_listinfirstmsg[3:], [cd]):
                 if isinstance(ch, int):
-                    self.ret[ch] = v
+                    self.frequencies[ch] = v
             if not self.getFrequencyEvent.is_set():
                 self.getFrequencyEvent.set()
-            return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.ret}]
+            return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.frequencies}]
