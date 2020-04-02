@@ -83,6 +83,7 @@
         "digitalInputs": {
             "$count": 12,
             "$watchable": true,
+            "$read": "getDI",
             "$type": "boolean"
         }
     },
@@ -94,6 +95,7 @@
         "measuredFrequencies": {
             "$count": 4,
             "$watchable": true,
+            "$read": "$getFrequency",
             "$type": "integer"
         },
         "frequencyInputs": {

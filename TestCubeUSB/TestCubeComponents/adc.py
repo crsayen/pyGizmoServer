@@ -1,11 +1,16 @@
-import logging
-
+import asyncio
+from TestCubeUSB.getter import get
+from pyGizmoServer.utility import Error, repeatOnFailAsync
 
 class AdcMessage:
     def __init__(self):
         self.AdcChannels = 0xFF
         self.AdcRate = None
-        self.ret = [None] * 8
+        self.getAdcVoltageEvent = asyncio.Event()
+        self.adcVoltages = [None, None, None, None, None, None, None, None]
+
+    def resetAdcMessage(self):
+        self.adcVoltages = [None, None, None, None, None, None, None, None]
 
     def setAdcMonitorUpdateRate(self, rate: int):
         self.AdcRate = int(rate / 50)
@@ -16,81 +21,55 @@ class AdcMessage:
         else:
             self.AdcChannels &= (1 << channel) ^ 0xFF
 
+    async def getAdcVoltage(self, index):
+        ret = await repeatOnFailAsync(5, self._getAdcVoltage, [index])
+        if ret is not None:
+            return ret
+        return Error("Failed to read actuator current")
+
+    async def _getAdcVoltage(self, index):
+        if self.AdcRate:
+            ret = self.adcVoltages["data"][index]
+        else:
+            self.AdcRate = 0
+            self.finished_processing_request()
+            if await get(self.finished_processing_request,self.getAdcVoltageEvent):
+                return self.adcVoltages[index]
+
     def get_adc_messages(self):
-        if self.AdcChannels == None:
-            return []
-        if self.AdcRate == None:
+        if self.AdcChannels is None or self.AdcRate is None:
             return []
         return [f"{0x10:08x}{self.AdcChannels:02x}{self.AdcRate:02x}"]
 
-    def rec_usb_011_adc(self, payload):
-        ret = self.ret
-        if len(ret) < 8:
-            ret = [None] * (8 - len(ret)) + ret
+    def parse_adc_message(self, start, end, payload, chunks, firstMessage=False, lastMessage=False):
         payload = payload + "0" * 16  # pad to avoid errors
-        channels, cc, cb, ca = (
+        payloadChunks = (
             int(payload[:4], 16),
             int(payload[4:8], 16),
             int(payload[8:12], 16),
             int(payload[12:16], 16),
         )
+        chunks = [payloadChunks[i] for i in chunks]
         # this first msg defines which channels are in subsequent msgs
-        self.adc_listinfirstmsg = [
-            i for i in [7, 6, 5, 4, 3, 2, 1, 0] if (channels & (1 << (i)))
-        ]
-        thismsg = self.adc_listinfirstmsg[0:3]
-        if thismsg is None:
-            return None
-        for ch, v in zip(thismsg, [cc, cb, ca]):
-            if isinstance(ch, int):
-                ret[ch] = v
-        path = "/adcInputController/adcInputVoltages"
-        if self.adc_listinfirstmsg[3:] is None:
-            return [{"path": path, "data": ret}]
-        else:
-            self.ret = ret
+        if firstMessage:
+            self.adc_listinfirstmsg = [
+                i for i in [7, 6, 5, 4, 3, 2, 1, 0] if (payloadChunks[0] & (1 << (i)))
+            ]
+        thismsg = self.adc_listinfirstmsg[start:end]
+        if thismsg is not None:
+            for ch, v in zip(thismsg, chunks):
+                if isinstance(ch, int):
+                    self.adcVoltages[ch] = v
+            if self.adc_listinfirstmsg[end:] is None or lastMessage:
+                if not self.getAdcVoltageEvent.is_set():
+                    self.getAdcVoltageEvent.set()
+                return [{"path": "/adcInputController/adcInputVoltages", "data": self.adcVoltages}]
+
+    def rec_usb_011_adc(self, payload):
+        self.parse_adc_message(0,3,payload,[1,2,3], firstMessage=True)
 
     def rec_usb_111_adc(self, payload):
-        ret = self.ret
-        if len(ret) < 8:
-            ret = [None] * (8 - len(ret)) + ret
-        payload = payload + "0" * 16  # pad to avoid errors
-        cd, cc, cb, ca = (
-            int(payload[:4], 16),
-            int(payload[4:8], 16),
-            int(payload[8:12], 16),
-            int(payload[12:16], 16),
-        )
-        # this first msg defines which channels are in subsequent msgs
-        thismsg = self.adc_listinfirstmsg[3:7]
-        if thismsg is None:
-            return None
-        for ch, v in zip(thismsg, [cd, cc, cb, ca]):
-            if isinstance(ch, int):
-                ret[ch] = v
-        path = "/adcInputController/adcInputVoltages"
-        if self.adc_listinfirstmsg[7:] is None:
-            return [{"path": path, "data": ret}]
-        else:
-            self.ret = ret
+        self.parse_adc_message(3,7,payload,[0,1,2,3])
 
     def rec_usb_211_adc(self, payload):
-        ret = self.ret
-        if len(ret) < 8:
-            ret = [None] * (8 - len(ret)) + ret
-        payload = payload + "0" * 16  # pad to avoid errors
-        cd, cc, cb, ca = (
-            int(payload[:4], 16),
-            int(payload[4:8], 16),
-            int(payload[8:12], 16),
-            int(payload[12:16], 16),
-        )
-        # this first msg defines which channels are in subsequent msgs
-        thismsg = self.adc_listinfirstmsg[7:]
-        if thismsg is None:
-            return None
-        for ch, v in zip(thismsg, [cd, cc, cb, ca]):
-            if isinstance(ch, int):
-                ret[ch] = v
-        path = "/adcInputController/adcInputVoltages"
-        return [{"path": path, "data": ret}]
+        self.parse_adc_message(7,12,payload,[0,1,2,3], lastMessage=True)

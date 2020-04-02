@@ -30,11 +30,11 @@ class TestCubeUSB(
     def reset_parents(self):
         self.resetRelayMessage()
         PwmMessage.__init__(self)
-        DiMessage.__init__(self)
+        self.resetDiMessage()
         self.resetActCurMessage()
         UsbMessage.__init__(self)
-        FrequencyMessage.__init__(self)
-        AdcMessage.__init__(self)
+        self.resetFrequencyMessage()
+        self.resetAdcMessage()
         self.resetVersionMessage()
 
     def __init__(self):
