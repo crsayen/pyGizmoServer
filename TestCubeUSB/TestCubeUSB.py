@@ -13,6 +13,7 @@ from TestCubeUSB.TestCubeComponents.usb import UsbMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeUSB.TestCubeComponents.version import VersionMessage
 from pyGizmoServer.utility import debug
+import time
 
 
 class TestCubeUSB(
@@ -105,8 +106,10 @@ class TestCubeUSB(
         msgs += self.get_adc_messages()
         msgs += self.get_version_messages()
         debug(f"\n{msgs=}")
-        for msg in msgs:
-            self.dev.write(2, msg)
+        for i,msg in enumerate(msgs):
+            if i > 10:
+                time.sleep(0.001)
+            self.dev.write(2, msg, 5000)
         self.reset_parents()
 
     async def handler(self):
