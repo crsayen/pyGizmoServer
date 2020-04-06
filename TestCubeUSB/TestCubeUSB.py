@@ -108,7 +108,7 @@ class TestCubeUSB(
         debug(f"\n{msgs=}")
         for i,msg in enumerate(msgs):
             self.dev.write(2, msg, 5000)
-            if not i % 10: time.sleep(0.001)
+            if i % 10 == 9: time.sleep(0.001)
         self.reset_parents()
 
     async def handler(self):
