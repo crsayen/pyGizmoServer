@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from pyGizmoServer.utility import debug
+from pyGizmoServer.utility import debug, repeatOnFailAsync, Error
 from TestCubeUSB.getter import get
 
 
@@ -12,11 +12,16 @@ class VersionMessage():
     def resetVersionMessage(self):
         self.ask = None
 
-    async def getFirmwareVersion(self, retry=0):
+    async def getFirmwareVersion(self):
+        ret = await repeatOnFailAsync(5, self._getFirmwareVersion, [])
+        if ret is not None:
+            return ret
+        return Error("Failed to read version")
+
+    async def _getFirmwareVersion(self, retry=0):
         self.ask = True
         if await get(self.finished_processing_request,self.getVersionEvent):
             return self.version
-        print("version ded")
 
     def get_version_messages(self):
         if self.ask is None:

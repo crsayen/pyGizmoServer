@@ -11,6 +11,7 @@ from aiojobs.aiohttp import setup
 from aiojobs.aiohttp import spawn
 from typing import List, Dict, Tuple, Optional, Union
 
+WATCHING_PULSE = False
 
 async def handlepatch(request: web.Request) -> web.Response:
     """Handles incoming PATCH/POST requests from the client.
@@ -103,8 +104,11 @@ async def get_favicon(request: web.Request) -> web.Response:
 
 
 async def start_heartbeat(request: web.Request) -> web.Response:
-    await controller.tend(spawn, request)
-    await spawn(request, watch_pulse())
+    global WATCHING_PULSE
+    if not WATCHING_PULSE:
+        WATCHING_PULSE = True
+        await controller.tend(spawn, request)
+        await spawn(request, watch_pulse())
     return web.json_response({"path": "/heartbeat", "data": True})
 
 

@@ -1,12 +1,23 @@
+from pyGizmoServer.utility import debug, Error
+import re
+import os
+
 class PwmMessage:
     def __init__(self):
         self.Freq = [None] * 2
         self.Hiconf = [None] * 12
         self.PwmEnabled = [None] * 12
         self.Duty = [None] * 12
+        self.pwmStartMessage = []
+        self.pwmPauseMessage = []
+        self.pwmStopMessage = []
+        self.profileEntries = []
 
     def resetPwmMessage(self):
-        pass
+        self.pwmStartMessage = []
+        self.pwmPauseMessage = []
+        self.pwmStopMessage = []
+        self.profileEntries = []
 
     def setPwmFrequencyA(self, hz: int):
         self.Freq[0] = hz
@@ -83,12 +94,18 @@ class PwmMessage:
         return [r]
 
     def get_pwm_messages(self):
-        return (
+        msgs = (
             self.getUsbMsg4()
             + self.getUsbMsg6(0)
             + self.getUsbMsg6(1)
             + self.getUsbMsg8()
+            + self.pwmStartMessage
+            + self.pwmStopMessage
+            + self.pwmPauseMessage
+            + self.profileEntries
         )
+        debug(msgs)
+        return msgs
 
     def rec_usb_5_pwmfreq(self, payload):
         acthi, freqa, freqb = payload[:4], payload[4:8], payload[8:12]
@@ -136,3 +153,41 @@ class PwmMessage:
         path = "/pwmController/pwms"
         d.append({"path": path, "data": data})
         return d
+
+    def uploadPwmProfile(self, path):
+        print(os.getcwd())
+        try:
+            with open(path, "r") as f:
+                profileEntries = [line for line in f if line.startswith('00000014')]
+        except Exception as e:
+            return Error(f"failed to upload profile at: {path}\n{e}")
+        self.profileEntries = profileEntries
+
+    def startPwmProfile(self, index):
+        self.pwmStartMessage = ["00000016{:03x}".format(1 << index)]
+
+    def pausePwmProfile(self, index):
+        self.pwmPauseMessage = ["00000017{:03x}".format(1 << index)]
+
+    def stopPwmProfile(self, index):
+        self.pwmStopMessage = ["00000018{:03x}".format(1 << index)]
+
+    def createProfileMessageFromMask(self, _id, mask):
+        if len(mask) != 3:
+            return Error(f"invalid mask: {mask}")
+        try:
+            int(mask, 16)
+        except ValueError:
+            return Error(f"invalid mask: {mask}")
+        msg = ["000000{}{}".format(_id, mask)]
+        debug(msg)
+        return msg
+
+    def startPwmProfiles(self, mask):
+        self.pwmStartMessage = self.createProfileMessageFromMask("16", mask)
+
+    def pausePwmProfiles(self, mask):
+        self.pwmPauseMessage = self.createProfileMessageFromMask("17", mask)
+
+    def stopPwmProfiles(self, mask):
+        self.pwmStopMessage = self.createProfileMessageFromMask("18", mask)

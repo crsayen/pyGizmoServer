@@ -54,7 +54,36 @@
                 "$write": "setPwmEnabled",
                 "$type": "boolean"
             },
-            "profile": {}
+            "profile": {
+                "start": {
+                    "$write": "startPwmProfile",
+                    "$type": "boolean"
+                },
+                "pause": {
+                    "$write": "pausePwmProfile",
+                    "$type": "boolean"
+                },
+                "stop": {
+                    "$write": "stopPwmProfile",
+                    "$type": "boolean"
+                }
+            }
+        },
+        "upLoadProfile": {
+            "$write": "uploadPwmProfile",
+            "$type": "string"
+        },
+        "startProfiles": {
+            "$write": "startPwmProfiles",
+            "$type": "hex"
+        },
+        "stopProfiles": {
+            "$write": "stopPwmProfiles",
+            "$type": "hex"
+        },
+        "pauseProfiles": {
+            "$write": "pausePwmProfiles",
+            "$type": "hex"
         }
     },
     "adcInputController": {
@@ -72,6 +101,7 @@
         "adcInputVoltages": {
             "$count": 8,
             "$watchable": true,
+            "$read": "getAdcVoltage",
             "$type": "integer"
         }
     },
@@ -95,6 +125,7 @@
         "measuredFrequencies": {
             "$count": 4,
             "$watchable": true,
+            "$read": "getFrequency",
             "$type": "integer"
         },
         "frequencyInputs": {

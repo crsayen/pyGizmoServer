@@ -128,6 +128,8 @@ def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
 def log(msg: str) -> None:
     logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
+def logError(msg: str) -> None:
+    logger.error(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
 def debug(msg: str) -> None:
     if not logger.isEnabledFor(logging.DEBUG):
@@ -150,6 +152,7 @@ async def repeatOnFailAsync(n, func, args):
 
 class Error():
     def __init__(self, message=None):
+        logError(message)
         self.message = message
 
     def get_response(self):
