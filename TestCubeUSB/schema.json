@@ -69,21 +69,38 @@
                 }
             }
         },
-        "upLoadProfile": {
-            "$write": "uploadPwmProfile",
-            "$type": "string"
-        },
-        "startProfiles": {
-            "$write": "startPwmProfiles",
-            "$type": "hex"
-        },
-        "stopProfiles": {
-            "$write": "stopPwmProfiles",
-            "$type": "hex"
-        },
-        "pauseProfiles": {
-            "$write": "pausePwmProfiles",
-            "$type": "hex"
+        "profiles": {
+            "upLoadProfile": {
+                "$write": "uploadPwmProfile",
+                "$type": "string"
+            },
+            "startProfiles": {
+                "$write": "startPwmProfiles",
+                "$type": "hex"
+            },
+            "stopProfiles": {
+                "$write": "stopPwmProfiles",
+                "$type": "hex"
+            },
+            "pauseProfiles": {
+                "$write": "pausePwmProfiles",
+                "$type": "hex"
+            },
+            "dutyCycles": {
+                "$count": 12,
+                "$watchable": true,
+                "$type": "integer"
+            },
+            "indecies": {
+                "$count": 12,
+                "$watchable": true,
+                "$type": "integer"
+            },
+            "frequencies": {
+                "$count": 2,
+                "$watchable": true,
+                "$type": "integer"
+            }
         }
     },
     "adcInputController": {

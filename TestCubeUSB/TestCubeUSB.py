@@ -69,6 +69,12 @@ class TestCubeUSB(
             "00000013": self.rec_usb_13_relay,
             "0000001d": self.rec_usb_1d_actfault,
             "00000051": self.rec_usb_51_version,
+            "0000001b": self.rec_1b_pwmProfileDuty,
+            "0000011b": self.rec_11b_pwmProfileDuty,
+            "0000021b": self.rec_21b_pwmProfileIndex,
+            "0000031b": self.rec_31b_pwmProfileIndex,
+            "0000041b": self.rec_41b_pwmProfileIndex,
+            "0000051b": self.rec_51b_pwmProfileFrequency,
         }
         self.actcurrent_listinfirstmsg = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         self.adc_listinfirstmsg = []
@@ -107,7 +113,7 @@ class TestCubeUSB(
         msgs += self.get_version_messages()
         debug(f"\n{msgs=}")
         for i,msg in enumerate(msgs):
-            self.dev.write(2, msg, 5000)
+            self.dev.write(2, msg)
             if i % 10 == 9: time.sleep(0.001)
         self.reset_parents()
 
