@@ -52,12 +52,14 @@ class ActCurMessage:
                 return self.actuatorCurrents[index]
 
     def get_actcur_messages(self):
-        return [
-            f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"
-        ] if self.actmonitorChannels is not None \
+        if self.actmonitorChannels is not None \
         and self.actmonitorRate is not None \
-        and self.actmonitorThreshold is not None \
-        else []
+        and self.actmonitorThreshold is not None:
+            return [
+                f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"
+            ]
+        else:
+            return []
 
     def get_actuator_faults(self):
         return ["0000001c0000"]
