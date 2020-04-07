@@ -59,7 +59,7 @@ async def handleget(request: web.Request) -> web.Response:
     debug(request.path)
     await controller.tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
-    if props and (props.get("$read") or props.get("$watchable")):
+    if props and props.get("$read"):
         data = await getattr(controller, props["$read"])(*props.get("$args"))
         if isinstance(data, Error):
             return data.get_response()
@@ -67,6 +67,8 @@ async def handleget(request: web.Request) -> web.Response:
             "path": request.path,
             "data": data
         }]
+    elif props and props.get("$watchable"):
+        response = [{"path": request.path, "data": None}]
     else:
         return Error(f"bad request - {request.path}").get_response()
     return web.json_response(response)

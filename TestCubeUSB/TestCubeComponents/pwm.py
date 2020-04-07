@@ -1,4 +1,4 @@
-from pyGizmoServer.utility import debug, Error
+from pyGizmoServer.utility import debug, Error, logError
 import re
 import os
 
@@ -131,10 +131,11 @@ class PwmMessage:
         return d
 
     def rec_usb_7_pwmdutycycle(self, payload):
-        dutyFromPayload(payload)
-        if payload[:2] == '01':
-            path = "/pwmController/pwms"
-            return [{"path": path, "data": [{"dutyCycle": dc} for dc in self.Duty]}]
+        pass
+        # self.dutyFromPayload(payload)
+        # if payload[:2] == '01':
+        #     path = "/pwmController/pwms"
+        #     return [{"path": path, "data": [{"dutyCycle": dc} for dc in self.Duty]}]
 
     def rec_usb_9_pwmenable(self, payload):
         d = []
@@ -167,11 +168,13 @@ class PwmMessage:
 
     def createProfileMessageFromMask(self, _id, mask):
         if len(mask) != 3:
-            return Error(f"invalid mask: {mask}")
+            logError(f"invalid mask: {mask}")
+            return []
         try:
             int(mask, 16)
         except ValueError:
-            return Error(f"invalid mask: {mask}")
+            logError(f"invalid mask: {mask}")
+            return []
         msg = ["000000{}{}".format(_id, mask)]
         debug(msg)
         return msg
@@ -187,13 +190,13 @@ class PwmMessage:
 
     def enablePwmProfileUpdates(self, enabled):
         payload = '01' if enabled else '00'
-        self.pwmProfileUpdatesMessage = f'0000001A{payload}'
+        self.pwmProfileUpdatesMessage = [f'0000001A{payload}']
 
     ##############################################################################
     ''' Duty Cycle - PWM profile '''
     ##############################################################################
 
-    def dutyFromPayload(self, payload):
+    def dutyFromPayload(self, payload, start, stop):
         chunks = (
             int(payload[:2], 16),
             int(payload[2:4], 16),
@@ -204,10 +207,10 @@ class PwmMessage:
             int(payload[12:14], 16),
             int(payload[14:16], 16),
         )
-        offset = 6 * chunks[0]
-        self.Duty[offset:offset + 5] = chunks[:1:-1]
+        self.Duty[start:stop] = chunks[:1:-1]
 
     def sendIfAllDutyMsgsRcvd(self):
+        debug(self.Duty)
         if all([1 if dc is not None  else 0 for dc in self.Duty]):
             out = self.Duty.copy()
             self.Duty = [None] * 12
@@ -216,15 +219,15 @@ class PwmMessage:
         return []
 
     def rec_1b_pwmProfileDuty(self, payload):
-        dutyFromPayload(payload)
+        self.dutyFromPayload(payload, 0, 6)
         return self.sendIfAllDutyMsgsRcvd()
 
     def rec_11b_pwmProfileDuty(self, payload):
-        dutyFromPayload(payload)
+        self.dutyFromPayload(payload, 6, 12)
         return self.sendIfAllDutyMsgsRcvd()
 
     ##############################################################################
-    ''' Indecies - PWM profile '''
+    ''' Index - PWM profile '''
     ##############################################################################
 
     def indexFromPayload(self, payload, start, end):
@@ -234,9 +237,10 @@ class PwmMessage:
             int(payload[4:6], 16),
             int(payload[6:8], 16)
         )
-        self.profileIndex[start:end] = chunks
+        self.profileIndecies[start:end] = chunks
 
     def sendIfAllIndexMsgsRcvd(self):
+        debug(self.profileIndecies)
         if all([1 if i is not None  else 0 for i in self.profileIndecies]):
             out = self.profileIndecies.copy()
             self.profileIndecies = [None] * 12
@@ -245,15 +249,15 @@ class PwmMessage:
         return []
 
     def rec_21b_pwmProfileIndex(self, payload):
-        indexFromPayload(payload, 0, 4)
+        self.indexFromPayload(payload, 0, 4)
         return self.sendIfAllIndexMsgsRcvd()
 
     def rec_31b_pwmProfileIndex(self, payload):
-        indexFromPayload(payload, 4, 8)
+        self.indexFromPayload(payload, 4, 8)
         return self.sendIfAllIndexMsgsRcvd()
 
     def rec_41b_pwmProfileIndex(self, payload):
-        indexFromPayload(payload, 8, 12)
+        self.indexFromPayload(payload, 8, 12)
         return self.sendIfAllIndexMsgsRcvd()
 
     ##############################################################################

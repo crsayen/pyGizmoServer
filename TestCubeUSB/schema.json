@@ -100,6 +100,10 @@
                 "$count": 2,
                 "$watchable": true,
                 "$type": "integer"
+            },
+            "enableUpdates": {
+                "$type": "boolean",
+                "$write": "enablePwmProfileUpdates"
             }
         }
     },
