@@ -69,12 +69,13 @@ class ActCurMessage:
     def get_actuator_faults(self):
         return ["0000001c0000"]
 
-    def rec_usb_1d_actfault(self, payload):
-        _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
-        self.actFaults = [True if (faults & (1 << x)) else False for x in range(12)]
-        if not self.getFaultsEvent.is_set():
-            self.getFaultsEvent.set()
-        return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
+    # def rec_usb_1d_actfault(self, payload):
+    #     _, faults = (int(payload[:1], 16), int(payload[1:4], 16))
+    #     self.actFaults = [True if (faults & (1 << x)) else False for x in range(12)]
+    #     print(self.actFaults)
+    #     if not self.getFaultsEvent.is_set():
+    #         self.getFaultsEvent.set()
+    #     return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
     def parsePayload(self, start, end, payload, chunks, firstMessage=False, lastMessage=False):
         debug(f"\n{start=}\n{end=}\n{payload=}\n{chunks=}\n{firstMessage=}\n{lastMessage=}\n{self.actuatorCurrents=}")

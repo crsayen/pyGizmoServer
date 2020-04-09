@@ -28,12 +28,6 @@
             "$write": "setPwmFaultThreshold",
             "$type": "integer"
         },
-        "faultMonitors": {
-            "$count": 12,
-            "$read": "getFaultMonitor",
-            "$watchable": true,
-            "$type": "boolean"
-        },
         "measuredCurrents": {
             "$count": 12,
             "$read": "getActuatorCurrent",
@@ -67,6 +61,10 @@
                     "$write": "stopPwmProfile",
                     "$type": "boolean"
                 }
+            },
+            "faulty": {
+                "$watchable": true,
+                "$type": "boolean"
             }
         },
         "profiles": {

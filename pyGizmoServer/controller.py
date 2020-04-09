@@ -23,6 +23,7 @@ class Controller(object):
     def __init__(self):
         self.running = False
         self.callback = None
+        self.coros = []
         with open(f"{self.__class__.__name__}/schema.json") as f:
             self.schema = json.load(f)
 
@@ -49,6 +50,9 @@ class Controller(object):
         if hasattr(self, 'setup'):
             self.setup()
 
+    def spawnPeriodicTask(self, func, args=[], period=1):
+        self.coros.append({"running": False, "func": func, "args": args, "period": period})
+
     async def tend(self, func: callable, args) -> None:
         """Checks Controller.running, spawns Controller.handlerloop if not.
 
@@ -56,7 +60,16 @@ class Controller(object):
         """
         if not self.running:
             await func(args, self.handlerloop())
+        for coro in self.coros:
+            if not coro["running"]:
+                await func(args, self.callPeriodically(coro["func"], coro["args"], coro["period"]))
+                coro["running"] = True
         self.running = True
+
+    async def callPeriodically(self, func, args=[], period=1):
+        while 1:
+            await func(*args)
+            await asyncio.sleep(period)
 
     def setcallback(self, callback: callable):
         """Sets the Controller.callback.

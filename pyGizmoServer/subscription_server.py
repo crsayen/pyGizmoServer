@@ -63,13 +63,19 @@ class SubscriptionServer:
             connection for connection in self.connected
             if path in connection[1] or path == connection[1]
         ]:
-            data = {
-                "path": sub,
-                "value": get(
-                    update["value"],
-                    sub[len(path):]
-                )
-            } if path != sub else update
+            if path != sub:
+                # this checks if we are trying to look up an array index which breaks get
+                if sub[len(path):][1].isnumeric():
+                    continue
+                data = {
+                    "path": sub,
+                    "value": get(
+                        update["value"],
+                        sub[len(path):]
+                    )
+                }
+            else:
+                data = update
             debug(f"sending ws on: {data}")
             asyncio.run_coroutine_threadsafe(
                 con.send(json.dumps(data)),

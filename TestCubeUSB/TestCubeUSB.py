@@ -67,7 +67,7 @@ class TestCubeUSB(
             "00000111": self.rec_usb_111_adc,
             "00000211": self.rec_usb_211_adc,
             "00000013": self.rec_usb_13_relay,
-            "0000001d": self.rec_usb_1d_actfault,
+            #"0000001d": self.rec_usb_1d_actfault,
             "00000051": self.rec_usb_51_version,
             "0000001b": self.rec_1b_pwmProfileDuty,
             "0000011b": self.rec_11b_pwmProfileDuty,
@@ -97,6 +97,7 @@ class TestCubeUSB(
                         k, v = line.split(":")[0].strip(), line.split(":")[1].strip()
                         devdict[k] = v
                 self.send("/usb/usbinfo", devdict)
+                self.spawnPeriodicTask(self.readActFaults, args=[], period=1)
                 return
         raise ValueError("Device not found")
 
@@ -106,7 +107,6 @@ class TestCubeUSB(
         msgs += self.get_pwm_messages()
         msgs += self.get_di_messages()
         msgs += self.get_actcur_messages()
-        msgs += self.get_actuator_faults()
         msgs += self.get_sendusb_messages()
         msgs += self.get_freq_messages()
         msgs += self.get_adc_messages()
@@ -157,3 +157,6 @@ class TestCubeUSB(
         result = f(payload)
         debug(f"{result=}\n")
         return result
+
+    async def readActFaults(self):
+        self.dev.write(2,'0000000800007fff')

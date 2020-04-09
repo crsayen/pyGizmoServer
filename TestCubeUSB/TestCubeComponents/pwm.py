@@ -13,6 +13,7 @@ class PwmMessage:
         self.pwmPauseMessage = []
         self.pwmStopMessage = []
         self.profileEntries = []
+        self.suppToBeEnPwms = [None] * 12
         self.pwmProfileUpdatesMessage = []
 
     def resetPwmMessage(self):
@@ -41,6 +42,7 @@ class PwmMessage:
         self.Duty[idx] = duty
 
     def setPwmEnabled(self, idx: int, enabled: bool):
+        self.suppToBeEnPwms[idx] = enabled
         self.PwmEnabled[idx] = enabled
 
     def getUsbMsg8(self):
@@ -144,6 +146,10 @@ class PwmMessage:
             {"enabled": True} if (enabled & (1 << x)) else {"enabled": False}
             for x in range(12)
         ]
+        for i, en in enumerate(data):
+            if self.suppToBeEnPwms[i] is None:
+                continue
+            self.send(f"/pwmController/pwms/{i}/faulty", self.suppToBeEnPwms[i] and not en["enabled"])
         path = "/pwmController/pwms"
         d.append({"path": path, "data": data})
         return d
