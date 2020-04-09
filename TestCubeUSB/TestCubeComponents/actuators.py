@@ -12,18 +12,23 @@ class ActCurMessage:
         self.getFaults = False
         self.getActCurrentEvent = asyncio.Event()
         self.actuatorCurrents = [None, None, None, None, None, None, None, None, None, None, None, None]
+        self.expectActuatorMsg = False
 
     def resetActCurMessage(self):
+        self.expectActuatorMsg = False
         pass
 
     def setPwmCurrentMonitorUpdateRate(self, rate: int):
+        self.expectActuatorMsg = True
         rate = int(rate / 50)
         self.actmonitorRate = rate
 
     def setPwmFaultThreshold(self, threshold: int):
+        self.expectActuatorMsg = True
         self.actmonitorThreshold = int(threshold / 50)
 
     def setPwmCurrentMonitorChannels(self, channelMask: int):
+        self.expectActuatorMsg = True
         self.actmonitorChannels = channelMask
 
     async def getFaultMonitor(self, index, retry=0):

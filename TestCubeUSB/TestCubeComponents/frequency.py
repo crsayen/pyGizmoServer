@@ -9,16 +9,20 @@ class FrequencyMessage:
         self.freqmonitorChannels = [1, 1, 1, 1]
         self.getFrequencyEvent = asyncio.Event()
         self.frequencies = [None, None, None, None]
+        self.expectFreqMsg = False
 
     def resetFrequencyMessage(self):
         self.speed_listinfirstmsg = [3, 2, 1, 0]
         self.freqmonitorChannels = [1, 1, 1, 1]
+        self.expectFreqMsg = False
         self.frequencies = [None, None, None, None]
 
     def setFrequencyInputEnabled(self, channel: int, enabled: int):
+        self.expectFreqMsg = True
         self.freqmonitorChannels[channel] = enabled
 
     def setFrequencyMonitorRate(self, rate):
+        self.expectFreqMsg = True
         self.freqmonitorRate = int(rate / 50)
 
     async def getFrequency(self, index):

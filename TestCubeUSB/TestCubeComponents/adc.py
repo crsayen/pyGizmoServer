@@ -8,14 +8,18 @@ class AdcMessage:
         self.AdcRate = None
         self.getAdcVoltageEvent = asyncio.Event()
         self.adcVoltages = [None, None, None, None, None, None, None, None]
+        self.expectAdcMsg = False
 
     def resetAdcMessage(self):
+        self.expectAdcMsg = False
         pass
 
     def setAdcMonitorUpdateRate(self, rate: int):
+        self.expectAdcMsg = True
         self.AdcRate = int(rate / 50)
 
     def setAdcEnabled(self, enabled: bool, channel: int):
+        self.expectAdcMsg = True
         if enabled:
             self.AdcChannels |= 1 << channel
         else:

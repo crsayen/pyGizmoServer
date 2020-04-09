@@ -6,14 +6,18 @@ class RelayMessage:
     def __init__(self):
         self.getRelaysEvent = asyncio.Event()
         self.RelayStates = [None] * 6
+        self.expectRelayMsg = False
 
     def resetRelayMessage(self):
+        self.expectRelayMsg = None
         pass
 
     def setRelay(self, relay: int, state: bool):
+        self.expectRelayMsg = True
         self.RelayStates[relay] = state
 
     async def getRelay(self, index):
+        self.expectRelayMsg = True
         ret = await repeatOnFailAsync(5, self._getRelay, [index])
         if ret is not None:
             return ret
@@ -25,7 +29,7 @@ class RelayMessage:
             return self.RelayStates[index]
 
     def get_relay_messages(self):
-        if self.RelayStates == [None] * 6:
+        if not self.expectRelayMsg:
             return []
         mask = 0
         val = 0
