@@ -166,7 +166,6 @@ class PwmMessage:
         return d
 
     def uploadPwmProfile(self, path):
-        print(os.getcwd())
         try:
             with open(path, "r") as f:
                 profileEntries = [line for line in f if line.startswith('00000014')]
