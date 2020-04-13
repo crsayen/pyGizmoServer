@@ -1,5 +1,6 @@
 module.exports = {
   runtimeCompiler: true,
+
   devServer: {
     proxy: {
       '^/': {
@@ -9,5 +10,7 @@ module.exports = {
         target: 'http://localhost:11111/'
       }
     }
-  }
+  },
+
+  outputDir: 'webdist'
 }

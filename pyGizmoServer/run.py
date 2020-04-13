@@ -10,8 +10,44 @@ from aiohttp import web
 from aiojobs.aiohttp import setup
 from aiojobs.aiohttp import spawn
 from typing import List, Dict, Tuple, Optional, Union
+import os
+from os import path
 
 WATCHING_PULSE = False
+
+bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+
+def realname(path, root=None):
+    if root is not None:
+        path=os.path.join(root, path)
+    result=os.path.basename(path)
+    if os.path.islink(path):
+        realpath=os.readlink(path)
+        result= '%s -> %s' % (os.path.basename(path), realpath)
+    return result
+
+def ptree(startpath, depth=-1):
+    prefix=0
+    if startpath != '/':
+        if startpath.endswith('/'): startpath=startpath[:-1]
+        prefix=len(startpath)
+    for root, dirs, files in os.walk(startpath):
+        level = root[prefix:].count(os.sep)
+        if depth >-1 and level > depth: continue
+        indent=subindent =''
+        if level > 0:
+            indent = '|   ' * (level-1) + '|-- '
+        subindent = '|   ' * (level) + '|-- '
+        print('{}{}/'.format(indent, realname(root)))
+        # print dir only if symbolic link; otherwise, will be printed as root
+        for d in dirs:
+            if os.path.islink(os.path.join(root, d)):
+                print('{}{}'.format(subindent, realname(d, root=root)))
+        for f in files:
+            print('{}{}'.format(subindent, realname(f, root=root)))
+
+
+ptree(bundle_dir)
 
 async def handlepatch(request: web.Request) -> web.Response:
     """Handles incoming PATCH/POST requests from the client.
@@ -98,11 +134,11 @@ async def get_schema(request: web.Request) -> web.Response:
 
 
 async def get_index(request: web.Request) -> web.Response:
-    return web.FileResponse("./dist/index.html")
+    return web.FileResponse("./webdist/index.html")
 
 
 async def get_favicon(request: web.Request) -> web.Response:
-    return web.FileResponse("./dist/favicon.ico")
+    return web.FileResponse("./webdist/favicon.ico")
 
 
 async def start_heartbeat(request: web.Request) -> web.Response:
@@ -129,8 +165,8 @@ def make_app() -> web.Application:
     app["static_root_url"] = "/src"
     app.router.add_get("/", get_index)
     app.router.add_get("/FAVICON", get_favicon)
-    app.router.add_static("/js", path="./dist/js")
-    app.router.add_static("/css", path="./dist/css")
+    app.router.add_static("/js", path="./webdist/js")
+    app.router.add_static("/css", path="./webdist/css")
     app.router.add_route("GET", "/schema", get_schema)
     app.router.add_route("GET", "/heartbeat", start_heartbeat)
     app.router.add_route("GET", r"/{tail:.*}", handleget)

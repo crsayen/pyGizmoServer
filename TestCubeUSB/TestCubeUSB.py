@@ -1,7 +1,6 @@
 import usb.core
 import usb.util
 import asyncio
-from aioify import aioify
 from pyGizmoServer.controller import Controller
 from TestCubeUSB.TestCubeComponents.adc import AdcMessage
 from TestCubeUSB.TestCubeComponents.pwm import PwmMessage

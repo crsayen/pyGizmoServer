@@ -3,7 +3,11 @@
 """
 import json
 import asyncio
+from pathlib import Path, PureWindowsPath
 from typing import overload, List, Any
+import os
+import sys
+from os import path
 
 
 class Controller(object):
@@ -24,7 +28,8 @@ class Controller(object):
         self.i_running = False
         self.i_callback = None
         self.i_coros = []
-        with open(f"{self.__class__.__name__}/schema.json") as f:
+        bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+        with open(f"{self.__class__.__name__}\\schema.json") as f:
             self.i_schema = json.load(f)
 
     async def i_handlerloop(self) -> None:

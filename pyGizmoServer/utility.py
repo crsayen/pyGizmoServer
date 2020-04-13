@@ -5,6 +5,8 @@ import sys
 import aiohttp
 import json
 from typing import Dict, List, Union, Any
+import os
+from os import path
 
 logger = logging.getLogger('gizmoLogger')
 
@@ -109,11 +111,34 @@ def loadconfig(filename: str):
         DotDict -- A dict which provides a means to lookup configuration
             information.
     """
+    bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+    if filename == "production":
+        return DotDict({
+            "tcp": {
+                "ip": '0.0.0.0',
+                "port": 36364
+            },
+            "ws": {
+                "ip": "0.0.0.0",
+                "port": 11111,
+                "url": "ws://localhost"
+            },
+            "controller": "TestCubeUSB",
+            "logging": {
+                "file": {
+                    "loglevel": "INFO",
+                    "filename": "gizmo.production.log"
+                },
+                "console": {
+                    "loglevel": "INFO"
+                }
+            }
+        })
     try:
-        with open(f"./config/{filename}.yml") as f:
+        with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
             return DotDict(yaml.load(f, Loader=yaml.CLoader))
     except Exception:
-        with open(f"./config/{filename}.yml") as f:
+        with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
             return DotDict(yaml.load(f, Loader=yaml.FullLoader))
     except Exception as e:
         print(f"{e}")
