@@ -42,7 +42,7 @@ function parseschema(item, path) {
             return nodes
         }
         for (let [key, val] of Object.entries(item)){
-            if (["$count", "controller", "wsurl"].includes(key)){
+            if (["$count", "$hidden", "controller", "wsurl"].includes(key)){
                 continue
             }
             let make = (val.$type && !val.$count) ? makeleaf : makenode

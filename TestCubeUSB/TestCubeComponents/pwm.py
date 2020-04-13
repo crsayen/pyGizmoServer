@@ -15,21 +15,27 @@ class PwmMessage:
         self.profileEntries = []
         self.suppToBeEnPwms = [None] * 12
         self.pwmProfileUpdatesMessage = []
+        self.pwmFaults = [False] * 12
+        self.expectPwmMsg = False
 
     def resetPwmMessage(self):
         self.pwmStartMessage = []
+        self.expectPwmMsg = False
         self.pwmPauseMessage = []
         self.pwmStopMessage = []
         self.profileEntries = []
         self.pwmProfileUpdatesMessage = []
 
     def setPwmFrequencyA(self, hz: int):
+        self.expectPwmMsg = True
         self.Freq[0] = hz
 
     def setPwmFrequencyB(self, hz: int):
+        self.expectPwmMsg = True
         self.Freq[1] = hz
 
     def sethiconf(self, idx: int, activehi: str):
+        self.expectPwmMsg = True
         if activehi.upper() == "HIGH":
             activehi = True
         elif activehi.upper() == "LOW":
@@ -39,14 +45,16 @@ class PwmMessage:
         self.Hiconf[idx] = activehi
 
     def setPwmDutyCycle(self, idx: int, duty: int):
+        self.expectPwmMsg = True
         self.Duty[idx] = duty
 
     def setPwmEnabled(self, idx: int, enabled: bool):
+        self.expectPwmMsg = True
         self.suppToBeEnPwms[idx] = enabled
         self.PwmEnabled[idx] = enabled
 
     def getUsbMsg8(self):
-        if self.PwmEnabled == [None] * 12:
+        if self.PwmEnabled == [None] * 12 or not self.expectPwmMsg:
             return []
         mask = 0
         val = 0
@@ -58,7 +66,7 @@ class PwmMessage:
         return [f"{8:08x}{mask:04x}{val:04x}"]
 
     def getUsbMsg6(self, bank: int):
-        if self.Duty[bank * 6 : bank * 6 + 6] == ([None] * 6):
+        if self.Duty[bank * 6 : bank * 6 + 6] == ([None] * 6) or not self.expectPwmMsg:
             return []
 
         dutymask = 0
@@ -71,7 +79,7 @@ class PwmMessage:
         return [r]
 
     def getUsbMsg4(self):
-        if (self.Freq == [None] * 2) and (self.Hiconf == [None] * 12):
+        if (self.Freq == [None] * 2) and (self.Hiconf == [None] * 12) or not self.expectPwmMsg:
             return []
         freqmask = 0x0
         hilomask = 0x000
@@ -110,6 +118,7 @@ class PwmMessage:
             + self.profileEntries
             + self.pwmProfileUpdatesMessage
         )
+        self.expectPwmMsg = False
         debug(msgs)
         return msgs
 
@@ -147,9 +156,11 @@ class PwmMessage:
             for x in range(12)
         ]
         for i, en in enumerate(data):
+            self.PwmEnabled[i] = en["enabled"]
             if self.suppToBeEnPwms[i] is None:
                 continue
-            self.send(f"/pwmController/pwms/{i}/faulty", self.suppToBeEnPwms[i] and not en["enabled"])
+            self.pwmFaults[i] = self.suppToBeEnPwms[i] and not en["enabled"]
+        self.send(f"/pwmController/faults", self.pwmFaults)
         path = "/pwmController/pwms"
         d.append({"path": path, "data": data})
         return d

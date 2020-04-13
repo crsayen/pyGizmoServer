@@ -34,6 +34,11 @@
             "$watchable": true,
             "$type": "integer"
         },
+        "faults": {
+            "$count": 12,
+            "$watchable": true,
+            "$type": "boolean"
+        },
         "pwms": {
             "$count": 12,
             "activeConfiguration": {
@@ -61,10 +66,6 @@
                     "$write": "stopPwmProfile",
                     "$type": "boolean"
                 }
-            },
-            "faulty": {
-                "$watchable": true,
-                "$type": "boolean"
             }
         },
         "profiles": {

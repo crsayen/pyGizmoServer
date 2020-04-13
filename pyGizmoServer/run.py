@@ -22,7 +22,7 @@ async def handlepatch(request: web.Request) -> web.Response:
     Returns:
         web.Response -- Either some path/data, or an error.
     """
-    await controller.tend(spawn, request)
+    await controller.i_tend(spawn, request)
     patchlist: List[Dict[str, any]] = ensurelist(json.loads(await request.text()))
     debug(patchlist)
     response: List = []
@@ -57,7 +57,7 @@ async def handleget(request: web.Request) -> web.Response:
                         else an error.
     """
     debug(request.path)
-    await controller.tend(spawn, request)
+    await controller.i_tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
     if props and props.get("$read"):
         data = await getattr(controller, props["$read"])(*props.get("$args"))
@@ -91,7 +91,7 @@ def handleupdates(updates: Union[Dict[str, any], List[Dict[str, any]], Error]) -
 
 async def get_schema(request: web.Request) -> web.Response:
     debug(request.path)
-    response: Dict[str, Dict] = controller.schema.copy()
+    response: Dict[str, Dict] = controller.i_schema.copy()
     response["wsurl"] = cfg.ws.url
     response["controller"] = controller.__class__.__name__
     return web.json_response(response)
@@ -109,7 +109,7 @@ async def start_heartbeat(request: web.Request) -> web.Response:
     global WATCHING_PULSE
     if not WATCHING_PULSE:
         WATCHING_PULSE = True
-        await controller.tend(spawn, request)
+        await controller.i_tend(spawn, request)
         await spawn(request, watch_pulse())
     return web.json_response({"path": "/heartbeat", "data": True})
 
@@ -157,8 +157,8 @@ subscription_server: SubscriptionServer = SubscriptionServer(cfg.ws.ip, cfg.ws.p
 controller = getattr(
     importlib.import_module(f"{cfg.controller}.{cfg.controller}"), cfg.controller
 )()
-resolver: callable = makeresolver(controller.schema)
-controller.setcallback(handleupdates)
+resolver: callable = makeresolver(controller.i_schema)
+controller.i_setcallback(handleupdates)
 
 
 if __name__ == "__main__":

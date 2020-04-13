@@ -97,7 +97,7 @@ class TestCubeUSB(
                         k, v = line.split(":")[0].strip(), line.split(":")[1].strip()
                         devdict[k] = v
                 self.send("/usb/usbinfo", devdict)
-                self.spawnPeriodicTask(self.readActFaults, args=[], period=1)
+                self.spawnPeriodicTask(self.readActFaults, args=[], period=0.2)
                 return
         raise ValueError("Device not found")
 
@@ -113,11 +113,12 @@ class TestCubeUSB(
         msgs += self.get_version_messages()
         debug(f"\n{msgs=}")
         for i,msg in enumerate(msgs):
+            print(msg)
             self.dev.write(2, msg)
             if i % 10 == 9: time.sleep(0.001)
         self.reset_parents()
 
-    async def handler(self):
+    async def do(self):
         try:
             msg = self.dev.read(130, 24, 1)
         except usb.core.USBError:

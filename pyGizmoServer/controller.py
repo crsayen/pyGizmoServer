@@ -21,20 +21,20 @@ class Controller(object):
         schema: A Dict representation of the controller's schema file.
     """
     def __init__(self):
-        self.running = False
-        self.callback = None
-        self.coros = []
+        self.i_running = False
+        self.i_callback = None
+        self.i_coros = []
         with open(f"{self.__class__.__name__}/schema.json") as f:
-            self.schema = json.load(f)
+            self.i_schema = json.load(f)
 
-    async def handlerloop(self) -> None:
+    async def i_handlerloop(self) -> None:
         """Runs for the lifetime of the application, calling Controller.handler.
 
         This loop will continuously call the handler function that you define.
         handlerloop is called automatically by the application.
         """
         while 1:
-            await self.handler()
+            await self.do()
             await asyncio.sleep(0)
 
     def start(self) -> None:
@@ -45,33 +45,34 @@ class Controller(object):
         Raises:
             RuntimeError: controller callback not set
         """
-        if self.callback is None:
+        if self.i_callback is None:
             raise RuntimeError("controller callback not set")
         if hasattr(self, 'setup'):
             self.setup()
 
     def spawnPeriodicTask(self, func, args=[], period=1):
-        self.coros.append({"running": False, "func": func, "args": args, "period": period})
+        self.i_coros.append({"running": False, "func": func, "args": args, "period": period})
 
-    async def tend(self, func: callable, args) -> None:
+    async def i_tend(self, func: callable, args) -> None:
         """Checks Controller.running, spawns Controller.handlerloop if not.
+            also starts any coroutines added with spawnPeriodicTask
 
-        tend is called automatically by the application.
+        tend is called automatically by the application after every requests.
         """
-        if not self.running:
-            await func(args, self.handlerloop())
-        for coro in self.coros:
+        if not self.i_running:
+            await func(args, self.i_handlerloop())
+        for coro in self.i_coros:
             if not coro["running"]:
-                await func(args, self.callPeriodically(coro["func"], coro["args"], coro["period"]))
+                await func(args, self.i_callPeriodically(coro["func"], coro["args"], coro["period"]))
                 coro["running"] = True
-        self.running = True
+        self.i_running = True
 
-    async def callPeriodically(self, func, args=[], period=1):
+    async def i_callPeriodically(self, func, args=[], period=1):
         while 1:
             await func(*args)
             await asyncio.sleep(period)
 
-    def setcallback(self, callback: callable):
+    def i_setcallback(self, callback: callable):
         """Sets the Controller.callback.
 
         setcallback is called automatically by the application.
@@ -84,16 +85,16 @@ class Controller(object):
         """
         if not callable(callback):
             raise ValueError("callback must be a function")
-        self.callback = callback
+        self.i_callback = callback
 
-    async def handler(self):
+    async def do(self):
         """Called continuously during the lifetime of the application.
 
-        handler is intended to be used as a coroutine, running concurrently
+        do is intended to be used as a coroutine, running concurrently
         with the rest of your code. Use it to poll inputs, provide realtime
-        feedback, or anything else that would otherwise require concurrency.
+        feedback, or any background tasks.
 
-        Children of Controller must implement handler. If no handling is
+        Children of Controller must implement do. If no do is
         required, use 'pass' for the method's body.
         """
         raise NotImplementedError
@@ -121,9 +122,9 @@ class Controller(object):
                 A list of {"path":path, "data":data} dicts to send.
         """
         if updates is not None:
-            self.callback(updates)
+            self.i_callback(updates)
             return
-        self.callback({
+        self.i_callback({
             "path": path,
             "data": data
         })
