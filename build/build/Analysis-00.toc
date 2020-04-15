@@ -125,10 +125,6 @@
    'c:\\users\\stephen '
    'lin\\appdata\\local\\programs\\python\\python38\\lib\\configparser.py',
    'PYMODULE'),
-  ('pathlib',
-   'c:\\users\\stephen '
-   'lin\\appdata\\local\\programs\\python\\python38\\lib\\pathlib.py',
-   'PYMODULE'),
   ('email',
    'c:\\users\\stephen '
    'lin\\appdata\\local\\programs\\python\\python38\\lib\\email\\__init__.py',
@@ -784,6 +780,10 @@
   ('os',
    'c:\\users\\stephen '
    'lin\\appdata\\local\\programs\\python\\python38\\lib\\os.py',
+   'PYMODULE'),
+  ('pathlib',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\lib\\pathlib.py',
    'PYMODULE'),
   ('typing',
    'c:\\users\\stephen '
@@ -1562,13 +1562,13 @@
    'c:\\users\\stephen '
    'lin\\appdata\\local\\programs\\python\\python38\\lib\\importlib\\__init__.py',
    'PYMODULE')],
- [('VCRUNTIME140.dll',
-   'c:\\users\\stephen '
-   'lin\\appdata\\local\\programs\\python\\python38\\VCRUNTIME140.dll',
-   'BINARY'),
-  ('python38.dll',
+ [('python38.dll',
    'c:\\users\\stephen '
    'lin\\appdata\\local\\programs\\python\\python38\\python38.dll',
+   'BINARY'),
+  ('VCRUNTIME140.dll',
+   'c:\\users\\stephen '
+   'lin\\appdata\\local\\programs\\python\\python38\\VCRUNTIME140.dll',
    'BINARY'),
   ('select',
    'c:\\users\\stephen '

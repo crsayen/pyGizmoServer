@@ -29,7 +29,10 @@ class Controller(object):
         self.i_callback = None
         self.i_coros = []
         bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
-        with open(f"{self.__class__.__name__}\\schema.json") as f:
+        # when bundled, the controller runs in it's own directory as opposed to the app's root
+        if bundle_dir.split('/')[-1] != "pyGizmoServer":
+            bundle_dir = PureWindowsPath(bundle_dir).parent
+        with open(f"{bundle_dir}\\{self.__class__.__name__}\\schema.json") as f:
             self.i_schema = json.load(f)
 
     async def i_handlerloop(self) -> None:
