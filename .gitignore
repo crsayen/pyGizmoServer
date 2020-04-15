@@ -2,6 +2,8 @@
 bin
 develop-eggs
 dist
+webdist
+build
 downloads
 eggs
 parts
