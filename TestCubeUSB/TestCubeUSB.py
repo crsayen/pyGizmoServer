@@ -110,7 +110,7 @@ class TestCubeUSB(
         msgs += self.get_freq_messages()
         msgs += self.get_adc_messages()
         msgs += self.get_version_messages()
-        debug(f"\n{msgs=}")
+        debug(f"\n{msgs}")
         for i,msg in enumerate(msgs):
             self.dev.write(2, msg)
             if i % 10 == 9: time.sleep(0.001)
@@ -122,7 +122,7 @@ class TestCubeUSB(
         except usb.core.USBError:
             return
         msg = "".join([chr(x) for x in msg])
-        debug(f"{msg=}")
+        debug(f"{msg}")
         self.usbrxcount += 1
         self.send( updates =
             [
@@ -154,7 +154,7 @@ class TestCubeUSB(
         if f is None:
             return []
         result = f(payload)
-        debug(f"{result=}\n")
+        debug(f"{result}\n")
         return result
 
     async def readActFaults(self):

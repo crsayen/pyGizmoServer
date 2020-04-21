@@ -7,7 +7,7 @@ a = Analysis(['pyGizmoServer\\run.py'],
              pathex=['C:\\dev\\pyGizmoServer'],
              binaries=[('C:\\Windows\\System32\\libusb0.dll', '.')],
              datas=[
-                 ("TestCubeUSB/schema.json","TestCubeUSB"),
+                 ("TestCubeUSB/schema.json","."),
                  ("webdist", "webdist"),
                  ("config/production.yml","config\\production.yml"),
                  ("TestCubeUSB/TestCubeUSB.py","TestCubeUSB"),

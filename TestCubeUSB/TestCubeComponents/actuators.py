@@ -78,7 +78,6 @@ class ActCurMessage:
     #     return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
     def parsePayload(self, start, end, payload, chunks, firstMessage=False, lastMessage=False):
-        debug(f"\n{start=}\n{end=}\n{payload=}\n{chunks=}\n{firstMessage=}\n{lastMessage=}\n{self.actuatorCurrents=}")
         payload = payload + "0" * 16  # pad to avoid errors
         payloadChunks = [
             int(payload[:4], 16),
