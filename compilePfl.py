@@ -39,6 +39,23 @@ def parseGtv(channel, value):
     else:
         return createFreqEntryMessage(channel, int(value[:-2]))
 
+def parseSlp(channel, value):
+    fields = value.split(' ')
+    if fields[0][-1] == '%':
+        return createDcRampEntryMessage(
+            channel, 
+            start, 
+            int(fields[0][:-1]), 
+            int(fields[1][:-2]))
+        )
+    else:
+        return createFreqRampEntryMessage(
+            channel, 
+            start, 
+            int(fields[0][:-2]), 
+            int(fields[1][:-2]))
+        )
+
 ops = {
     'gtv': parseGtv,
     'slp': parseSlp,
