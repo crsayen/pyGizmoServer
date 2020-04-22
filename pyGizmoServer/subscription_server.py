@@ -64,16 +64,23 @@ class SubscriptionServer:
             if path in connection[1] or path == connection[1]
         ]:
             if path != sub:
-                # this checks if we are trying to look up an array index which breaks get
+                # checks if we are looking up array index - breaks dpath.util.get
                 if sub[len(path):][1].isnumeric():
-                    continue
-                data = {
-                    "path": sub,
-                    "value": get(
-                        update["value"],
-                        sub[len(path):]
-                    )
-                }
+                    data = {
+                        'path': sub,
+                        'value': get(
+                            update["value"],
+                            sub[len(path):]
+                        )
+                    }
+                else:                    
+                    data = {
+                        "path": sub,
+                        "value": get(
+                            update["value"],
+                            sub[len(path):]
+                        )
+                    }
             else:
                 data = update
             debug(f"sending ws on: {data}")

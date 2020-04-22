@@ -7,6 +7,7 @@ import json
 from typing import Dict, List, Union, Any
 import os
 from os import path
+from pathlib import Path, PureWindowsPath
 
 logger = logging.getLogger('gizmoLogger')
 
@@ -112,6 +113,9 @@ def loadconfig(filename: str):
             information.
     """
     bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+    if bundle_dir.split('\\')[-1] == "pyGizmoServer":
+        bundle_dir = PureWindowsPath(bundle_dir).parent
+    print(bundle_dir)
     if filename == "production":
         return DotDict({
             "tcp": {
