@@ -1,6 +1,105 @@
 from pyGizmoServer.utility import debug, Error, logError
 import re
 import os
+from io import StringIO
+from pandas import read_excel, read_csv
+
+class Compiler:
+    def __init__(self):
+        self.lastDuty = 0
+        self.lastFreq = 0
+        self.ops = {
+            'gtv': self.parseGtv,
+            'slp': self.parseSlp,
+            'jmp': self.parseJmp
+        }
+
+    def createAddEntryMessage(self, channel, flag, small=0, large=0):
+        return '00000014{:02x}{:02x}{:02x}{:04x}'.format(channel,flag,small,large)
+
+    def createDcEntryMessage(self, channel, duty):
+        self.lastDuty = duty
+        return [self.createAddEntryMessage(channel, 0, small=duty)]
+
+    def createDcRampEntryMessages(self, channel, end, duration):
+        ret = [
+            self.createAddEntryMessage(channel, 1, small=self.lastDuty, large=duration),
+            self.createAddEntryMessage(channel, 0, small=end, large=0)
+        ]
+        self.lastDuty = end
+        return ret
+
+    def createFreqEntryMessage(self, channel, frequency):
+        self.lastFreq = frequency
+        bank = 0 if channel < 7 else 1
+        return [self.createAddEntryMessage(channel, 4, small=bank, large=frequency)]
+
+    def createFreqRampEntryMessage(self, channel, end, duration):
+        bank = 0 if channel < 7 else 1
+        ret = [
+            self.createAddEntryMessage(channel, 4, small=bank, large=self.lastFreq),
+            self.createAddEntryMessage(channel, 5, small=bank, large=duration),
+            self.createAddEntryMessage(channel, 4, small=bank, large=end)
+        ]
+        self.lastFreq = end
+        return ret
+
+    def createJumpEntryMessage(self, channel, index):
+        return [self.createAddEntryMessage(channel, 2, index)]
+
+    def parseGtv(self, channel, value):
+        if value[-1] == '%':
+            return self.createDcEntryMessage(channel, int(value[:-1]))
+        else:
+            return self.createFreqEntryMessage(channel, int(value[:-2]))
+
+    def parseSlp(self, channel, value, duration):
+        if value[-1] == '%':
+            return self.createDcRampEntryMessages(
+                channel, 
+                int(value[:-1]), 
+                int(duration[:-2])
+            )
+        else:
+            return self.createFreqRampEntryMessage(
+                channel, 
+                int(value[:-2]), 
+                int(duration[:-2])
+            )
+
+    def parseJmp(self, channel, value):
+        return self.createJumpEntryMessage(channel, int(value))
+
+    def fromCsvString(self, string):
+        df = read_csv(StringIO(string))
+        return self._compile(df)
+
+    def fromCsvFile(self, file):
+        df = read_csv(file)
+        return self._compile(df)
+
+    def fromExcelFile(self, file):
+        df = read_excel(file)
+        return self._compile(df)
+
+    def _compile(self, df):
+        channels = list(df.columns.values)
+        mask = int(''.join(['1' if i in channels  else '0' for i in range(1,13)][::-1]), 2)
+        msgs = []
+        for channel in channels:
+            self.lastDuty = 0
+            self.lastFreq = 0
+            try:
+                for line in df[channel].tolist():
+                    lineChunks = line.split(' ')
+                    f = self.ops.get(lineChunks[0].lower())
+                    if f is None:
+                        raise RuntimeError(f'invalid operation: {lineChunks[0]}')
+                    msgs += f(channel, *lineChunks[1:])
+            except:
+                return None
+        
+        return (mask, msgs)
 
 class PwmMessage:
     def __init__(self):
@@ -17,6 +116,7 @@ class PwmMessage:
         self.pwmProfileUpdatesMessage = []
         self.pwmFaults = [False] * 12
         self.expectPwmMsg = False
+        self.compiler = Compiler()
 
     def resetPwmMessage(self):
         self.pwmStartMessage = []
@@ -165,13 +265,17 @@ class PwmMessage:
         d.append({"path": path, "data": data})
         return d
 
-    def uploadPwmProfile(self, path):
-        try:
-            with open(path, "r") as f:
-                profileEntries = [line for line in f if line.startswith('00000014')]
-        except Exception as e:
-            return Error(f"failed to upload profile at: {path}\n{e}")
-        self.profileEntries = profileEntries
+    def profileFromExcelFile(self, path):
+        mask, entries = self.compiler.fromExcelFile(path)
+        self.profileEntries = entries
+
+    def profileFromCsvFile(self, path):
+        mask, entries = self.compiler.fromCsvFile(path)
+        self.profileEntries = entries
+
+    def profileFromCsvString(self, path):
+        mask, entries = self.compiler.fromCsvString(path)
+        self.profileEntries = entries
 
     def startPwmProfile(self, index):
         self.pwmStartMessage = ["00000016{:03x}".format(1 << index)]
