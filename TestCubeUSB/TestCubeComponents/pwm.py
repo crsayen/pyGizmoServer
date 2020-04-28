@@ -265,50 +265,44 @@ class PwmMessage:
         d.append({"path": path, "data": data})
         return d
 
+    def profileFromPflString(self, string):
+        lines = string.split('\n')
+        mask = lines[0]
+        clearMsgs = ['00000015{:02x}'.format(i) for i in range(12) if (mask >> i) & 1]
+        self.profileEntries = clearMsgs + [line for line in lines if len(line) > 6]
+        return {"profile mask": mask}
+
     def profileFromExcelFile(self, path):
-        mask, entries = self.compiler.fromExcelFile(path)
+        _mask, entries = self.compiler.fromExcelFile(path)
         self.profileEntries = entries
 
     def profileFromCsvFile(self, path):
-        mask, entries = self.compiler.fromCsvFile(path)
+        _mask, entries = self.compiler.fromCsvFile(path)
         self.profileEntries = entries
 
     def profileFromCsvString(self, path):
-        mask, entries = self.compiler.fromCsvString(path)
+        _mask, entries = self.compiler.fromCsvString(path)
         self.profileEntries = entries
 
-    def startPwmProfile(self, index):
-        self.pwmStartMessage = ["00000016{:03x}".format(1 << index)]
+    def startProfile(self, index):
+        self.pwmStartMessage = ["00000016{:04x}".format(1 << index)]
 
-    def pausePwmProfile(self, index):
-        self.pwmPauseMessage = ["00000017{:03x}".format(1 << index)]
+    def pauseProfile(self, index):
+        self.pwmPauseMessage = ["00000017{:04x}".format(1 << index)]
 
-    def stopPwmProfile(self, index):
-        self.pwmStopMessage = ["00000018{:03x}".format(1 << index)]
+    def stopProfile(self, index):
+        self.pwmStopMessage = ["00000018{:04x}".format(1 << index)]
 
-    def createProfileMessageFromMask(self, _id, mask):
-        if len(mask) != 3:
-            logError(f"invalid mask: {mask}")
-            return []
-        try:
-            int(mask, 16)
-        except ValueError:
-            logError(f"invalid mask: {mask}")
-            return []
-        msg = ["000000{}{}".format(_id, mask)]
-        debug(msg)
-        return msg
+    def startProfiles(self, mask):
+        self.pwmStartMessage = ["00000016{:04x}".format(mask)]
 
-    def startPwmProfiles(self, mask):
-        self.pwmStartMessage = self.createProfileMessageFromMask("16", mask)
+    def pauseProfiles(self, mask):
+        self.pwmPauseMessage = ["00000017{:04x}".format(mask)]
 
-    def pausePwmProfiles(self, mask):
-        self.pwmPauseMessage = self.createProfileMessageFromMask("17", mask)
+    def stopProfiles(self, mask):
+        self.pwmStopMessage = ["00000018{:04x}".format(mask)]
 
-    def stopPwmProfiles(self, mask):
-        self.pwmStopMessage = self.createProfileMessageFromMask("18", mask)
-
-    def enablePwmProfileUpdates(self, enabled):
+    def enableProfileUpdates(self, enabled):
         payload = '01' if enabled else '00'
         self.pwmProfileUpdatesMessage = [f'0000001A{payload}']
 

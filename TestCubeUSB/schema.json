@@ -55,35 +55,35 @@
             },
             "profile": {
                 "start": {
-                    "$write": "startPwmProfile",
+                    "$write": "startProfile",
                     "$type": "boolean"
                 },
                 "pause": {
-                    "$write": "pausePwmProfile",
+                    "$write": "pauseProfile",
                     "$type": "boolean"
                 },
                 "stop": {
-                    "$write": "stopPwmProfile",
+                    "$write": "stopProfile",
                     "$type": "boolean"
                 }
             }
         },
         "profiles": {
-            "upLoadProfile": {
-                "$write": "uploadPwmProfile",
+            "profileFromPflString": {
+                "$write": "profileFromPflString",
                 "$type": "string"
             },
             "startProfiles": {
-                "$write": "startPwmProfiles",
-                "$type": "hex"
+                "$write": "startProfiles",
+                "$type": "integer"
             },
             "stopProfiles": {
-                "$write": "stopPwmProfiles",
-                "$type": "hex"
+                "$write": "stopProfiles",
+                "$type": "integer"
             },
             "pauseProfiles": {
-                "$write": "pausePwmProfiles",
-                "$type": "hex"
+                "$write": "pauseProfiles",
+                "$type": "integer"
             },
             "dutyCycles": {
                 "$count": 12,

@@ -77,7 +77,10 @@ async def handlepatch(request: web.Request) -> web.Response:
             response.append({"path": path, "data": value})
         elif isinstance(result, Error):
             return result.get_response()
+        else:
+            response.append(result)
     controller.finished_processing_request()
+    print(response)
     return web.json_response(response)
 
 
