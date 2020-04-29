@@ -2,6 +2,7 @@ import asyncio
 from pyGizmoServer.utility import Error, repeatOnFailAsync
 from TestCubeUSB.getter import get
 
+
 class RelayMessage:
     def __init__(self):
         self.getRelaysEvent = asyncio.Event()
@@ -24,7 +25,7 @@ class RelayMessage:
         return Error("Failed to read relay state")
 
     async def _getRelay(self, index):
-        self.RelayStates = [''] * 6
+        self.RelayStates = [""] * 6
         if await get(self.finished_processing_request, self.getRelaysEvent):
             return self.RelayStates[index]
 
@@ -34,7 +35,7 @@ class RelayMessage:
         mask = 0
         val = 0
         for i in range(0, len(self.RelayStates)):
-            if self.RelayStates[i] not in (None, ''):
+            if self.RelayStates[i] not in (None, ""):
                 mask |= 1 << i
                 if self.RelayStates[i]:
                     val |= 1 << i

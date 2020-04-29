@@ -10,7 +10,7 @@ class MockUSB(Controller):
         self.callback = None
         self.msg = None
         self.ask = None
-        self.logger = logging.getLogger('gizmoLogger')
+        self.logger = logging.getLogger("gizmoLogger")
         self.version = None
         self.floodrate = 0
         self.floodval = 0

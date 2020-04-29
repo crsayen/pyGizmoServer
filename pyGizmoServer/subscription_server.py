@@ -22,6 +22,7 @@ class SubscriptionServer:
             subloop: asyncio.Loop -- An event loop that runs in
                 a parallel thread, servicing connections.
     """
+
     def __init__(self, ws_ip, ws_port):
         debug(f"{ws_ip},{ws_port}")
         self.connected: Set = set()
@@ -38,9 +39,10 @@ class SubscriptionServer:
         asyncio.set_event_loop(self.subloop)
         self.server = websockets.serve(
             self.connection_handler,
-            self.ip, self.port,
+            self.ip,
+            self.port,
             loop=self.subloop,
-            max_size=1024
+            max_size=1024,
         )
         try:
             self.subloop.run_until_complete(self.server)
@@ -60,39 +62,29 @@ class SubscriptionServer:
         debug(f"{update}")
         path = update.get("path")
         for con, sub in [
-            connection for connection in self.connected
+            connection
+            for connection in self.connected
             if path in connection[1] or path == connection[1]
         ]:
             if path != sub:
                 # checks if we are looking up array index - breaks dpath.util.get
-                if sub[len(path):][1].isnumeric():
-                    data = {
-                        'path': sub,
-                        'value': get(
-                            update["value"],
-                            sub[len(path):]
-                        )
-                    }
-                else:                    
+                if sub[len(path) :][1].isnumeric():
                     data = {
                         "path": sub,
-                        "value": get(
-                            update["value"],
-                            sub[len(path):]
-                        )
+                        "value": get(update["value"], sub[len(path) :]),
+                    }
+                else:
+                    data = {
+                        "path": sub,
+                        "value": get(update["value"], sub[len(path) :]),
                     }
             else:
                 data = update
             debug(f"sending ws on: {data}")
-            asyncio.run_coroutine_threadsafe(
-                con.send(json.dumps(data)),
-                self.subloop
-            )
+            asyncio.run_coroutine_threadsafe(con.send(json.dumps(data)), self.subloop)
 
     async def connection_handler(
-        self,
-        websocket: websockets.WebSocketServerProtocol,
-        path: str
+        self, websocket: websockets.WebSocketServerProtocol, path: str
     ) -> None:
         """Connects to, adds, and awaits connected peers.
 

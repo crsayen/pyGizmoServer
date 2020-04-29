@@ -2,6 +2,7 @@ import asyncio
 from TestCubeUSB.getter import get
 from pyGizmoServer.utility import Error, repeatOnFailAsync
 
+
 class DiMessage:
     def __init__(self):
         self.getDiEvent = asyncio.Event()
@@ -22,8 +23,8 @@ class DiMessage:
             return self.dis[index]
         else:
             self.dimonitorrate = 0
-            #self.finished_processing_request()
-            if await get(self.finished_processing_request,self.getDiEvent):
+            # self.finished_processing_request()
+            if await get(self.finished_processing_request, self.getDiEvent):
                 return self.dis[index]
 
     def setDiMonitorUpdateRate(self, rate: int):

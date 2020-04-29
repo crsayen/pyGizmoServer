@@ -3,8 +3,14 @@ import time
 import importlib
 import json
 import asyncio
-from pyGizmoServer.utility import loadconfig, \
-    makeresolver, debug, setuplog, ensurelist, Error
+from pyGizmoServer.utility import (
+    loadconfig,
+    makeresolver,
+    debug,
+    setuplog,
+    ensurelist,
+    Error,
+)
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
@@ -16,9 +22,9 @@ from os import path
 
 WATCHING_PULSE = False
 
-bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
 # when bundled, run.py runs in it's own directory as opposed to the app's root
-if bundle_dir.split('\\')[-1] == "pyGizmoServer":
+if bundle_dir.split("\\")[-1] == "pyGizmoServer":
     bundle_dir = PureWindowsPath(bundle_dir).parent
 
 # def realname(path, root=None):
@@ -52,6 +58,7 @@ if bundle_dir.split('\\')[-1] == "pyGizmoServer":
 
 # #ptree(bundle_dir)
 
+
 async def handlepatch(request: web.Request) -> web.Response:
     """Handles incoming PATCH/POST requests from the client.
 
@@ -80,7 +87,6 @@ async def handlepatch(request: web.Request) -> web.Response:
         else:
             response.append(result)
     controller.finished_processing_request()
-    print(response)
     return web.json_response(response)
 
 
@@ -105,10 +111,7 @@ async def handleget(request: web.Request) -> web.Response:
         data = await getattr(controller, props["$read"])(*props.get("$args"))
         if isinstance(data, Error):
             return data.get_response()
-        response = [{
-            "path": request.path,
-            "data": data
-        }]
+        response = [{"path": request.path, "data": data}]
     elif props and props.get("$watchable"):
         response = [{"path": request.path, "data": None}]
     else:
@@ -188,6 +191,7 @@ def main():
         web.run_app(make_app(), host=cfg.tcp.ip, port=cfg.tcp.port, access_log=None)
     except KeyboardInterrupt:
         sys.exit()
+
 
 cfg_filename = sys.argv[1] if sys.argv[1:] else "production"
 cfg: Dict[str, any] = loadconfig(cfg_filename)

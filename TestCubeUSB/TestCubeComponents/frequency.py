@@ -2,6 +2,7 @@ import asyncio
 from TestCubeUSB.getter import get
 from pyGizmoServer.utility import Error, repeatOnFailAsync
 
+
 class FrequencyMessage:
     def __init__(self):
         self.freqmonitorRate = None
@@ -36,8 +37,8 @@ class FrequencyMessage:
             return self.frequencies[index]
         else:
             self.freqmonitorRate = 0
-            #self.finished_processing_request()
-            if await get(self.finished_processing_request,self.getFrequencyEvent):
+            # self.finished_processing_request()
+            if await get(self.finished_processing_request, self.getFrequencyEvent):
                 return self.frequencies[index]
 
     def get_freq_messages(self):
@@ -65,8 +66,12 @@ class FrequencyMessage:
             if self.speed_listinfirstmsg[3:] is None:
                 if not self.getFrequencyEvent.is_set():
                     self.getFrequencyEvent.set()
-                return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.frequencies}]
-
+                return [
+                    {
+                        "path": "/frequencyInputController/measuredFrequencies",
+                        "data": self.frequencies,
+                    }
+                ]
 
     def rec_usb_10f_speed(self, payload):
         payload = payload + "0" * 16  # pad to avoid errors
@@ -77,4 +82,9 @@ class FrequencyMessage:
                     self.frequencies[ch] = v
             if not self.getFrequencyEvent.is_set():
                 self.getFrequencyEvent.set()
-            return [{"path": "/frequencyInputController/measuredFrequencies", "data": self.frequencies}]
+            return [
+                {
+                    "path": "/frequencyInputController/measuredFrequencies",
+                    "data": self.frequencies,
+                }
+            ]

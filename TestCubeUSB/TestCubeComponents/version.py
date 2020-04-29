@@ -4,7 +4,7 @@ from pyGizmoServer.utility import debug, repeatOnFailAsync, Error
 from TestCubeUSB.getter import get
 
 
-class VersionMessage():
+class VersionMessage:
     def __init__(self):
         self.getVersionEvent = asyncio.Event()
         self.ask = None
@@ -20,7 +20,7 @@ class VersionMessage():
 
     async def _getFirmwareVersion(self, retry=0):
         self.ask = True
-        if await get(self.finished_processing_request,self.getVersionEvent):
+        if await get(self.finished_processing_request, self.getVersionEvent):
             return self.version
 
     def get_version_messages(self):

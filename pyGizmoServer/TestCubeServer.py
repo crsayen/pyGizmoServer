@@ -4,8 +4,15 @@ import time
 import json
 import asyncio
 from TestCubeUSB.TestCubeUSB import TestCubeUSB
-from pyGizmoServer.utility import loadconfig, \
-    makeresolver, debug, setuplog, ensurelist, Error, DotDict
+from pyGizmoServer.utility import (
+    loadconfig,
+    makeresolver,
+    debug,
+    setuplog,
+    ensurelist,
+    Error,
+    DotDict,
+)
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web
 from aiojobs.aiohttp import setup
@@ -60,10 +67,12 @@ async def handleget(request: web.Request) -> web.Response:
     await controller.tend(spawn, request)
     props: Dict[str, str] = resolver(request.path)
     if props and props.get("$read"):
-        response = [{
-            "path": request.path,
-            "data": await getattr(controller, props["$read"])(*props.get("$args"))
-        }]
+        response = [
+            {
+                "path": request.path,
+                "data": await getattr(controller, props["$read"])(*props.get("$args")),
+            }
+        ]
     else:
         return Error(f"bad request - {request.path}").get_response()
     return web.json_response(response)
@@ -118,7 +127,7 @@ async def watch_pulse():
 def make_app() -> web.Application:
     controller.start()
     app = web.Application()
-    #app["static_root_url"] = "/src"
+    # app["static_root_url"] = "/src"
     app.router.add_get("/", get_index)
     app.router.add_get("/FAVICON", get_favicon)
     app.router.add_static("/js", path=js)
@@ -139,6 +148,7 @@ def main():
     except KeyboardInterrupt:
         sys.exit()
 
+
 bdir = sys._MEIPASS
 webDir = os.path.join(bdir, "webDist")
 js = os.path.join(webDir, "js")
@@ -147,25 +157,13 @@ index = os.path.join(webDir, "index.html")
 favicon = os.path.join(webDir, "favicon.ico")
 
 cfgd = {
-    "tcp": {
-        "ip": '0.0.0.0',
-        "port": 36364
-    },
-    "ws": {
-        "ip": "0.0.0.0",
-        "port": 11111,
-        "url": "http://localhost"
-    },
+    "tcp": {"ip": "0.0.0.0", "port": 36364},
+    "ws": {"ip": "0.0.0.0", "port": 11111, "url": "http://localhost"},
     "controller": "TestCubeUSB",
     "logging": {
-        "file": {
-            "loglevel": "INFO",
-            "filename": "server.log"
-        },
-        "console": {
-            "loglevel": "INFO"
-        }
-    }
+        "file": {"loglevel": "INFO", "filename": "server.log"},
+        "console": {"loglevel": "INFO"},
+    },
 }
 cfg = DotDict(cfgd)
 setuplog(cfg)

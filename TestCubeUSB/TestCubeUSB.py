@@ -66,7 +66,7 @@ class TestCubeUSB(
             "00000111": self.rec_usb_111_adc,
             "00000211": self.rec_usb_211_adc,
             "00000013": self.rec_usb_13_relay,
-            #"0000001d": self.rec_usb_1d_actfault,
+            # "0000001d": self.rec_usb_1d_actfault,
             "00000051": self.rec_usb_51_version,
             "0000001b": self.rec_1b_pwmProfileDuty,
             "0000011b": self.rec_11b_pwmProfileDuty,
@@ -111,9 +111,10 @@ class TestCubeUSB(
         msgs += self.get_adc_messages()
         msgs += self.get_version_messages()
         debug(f"\n{msgs}")
-        for i,msg in enumerate(msgs):
+        for i, msg in enumerate(msgs):
             self.dev.write(2, msg)
-            if i % 10 == 9: time.sleep(0.001)
+            if i % 10 == 9:
+                time.sleep(0.001)
         self.reset_parents()
 
     async def do(self):
@@ -124,8 +125,8 @@ class TestCubeUSB(
         msg = "".join([chr(x) for x in msg])
         debug(f"{msg}")
         self.usbrxcount += 1
-        self.send( updates =
-            [
+        self.send(
+            updates=[
                 {"path": "/usb/rxMessage", "data": msg},
                 {"path": "/usb/rxCount", "data": self.usbrxcount},
             ]
@@ -135,7 +136,7 @@ class TestCubeUSB(
         if d is None:
             return
         if len(d) > 0:
-            self.send(updates = d)
+            self.send(updates=d)
 
     async def heartbeat(self):
         if await self.getFirmwareVersion():
@@ -158,4 +159,4 @@ class TestCubeUSB(
         return result
 
     async def readActFaults(self):
-        self.dev.write(2,'0000000800007fff')
+        self.dev.write(2, "0000000800007fff")

@@ -4,7 +4,7 @@ import websockets
 import aiohttp
 import http.client
 
-CURR_KEY = ''
+CURR_KEY = ""
 
 notes = {
     "a": 220,
@@ -18,12 +18,12 @@ notes = {
     "f": 349,
     "fSharp": 370,
     "g": 392,
-    "gSharp": 415
+    "gSharp": 415,
 }
 
 keys = {
-    "a": notes['a'],
-    "w": notes['aSharp'],
+    "a": notes["a"],
+    "w": notes["aSharp"],
     "s": notes["b"],
     "d": notes["c"],
     "r": notes["cSharp"],
@@ -40,9 +40,8 @@ keys = {
     ";": notes["c"] * 2,
     "[": notes["cSharp"] * 2,
     "'": notes["d"] * 2,
-    "5": 5
+    "5": 5,
 }
-
 
 
 def handlePress(e):
@@ -54,11 +53,13 @@ def handlePress(e):
     if freq is not None:
         setFreq(freq)
 
+
 def handleRelease(e):
     global CURR_KEY
     if e.name == CURR_KEY:
-        CURR_KEY = ''
+        CURR_KEY = ""
         setFreq(0)
+
 
 keyboard.on_press(handlePress)
 
@@ -68,16 +69,15 @@ for key in keys:
 
 client = http.client.HTTPConnection("localhost:36364")
 headers = {"Content-type": "application/json"}
+
+
 def setFreq(freq):
     try:
         client.request(
             "POST",
             "/",
-            json.dumps({
-                "path": "/pwmController/bankB/frequency",
-                "value": freq
-            }),
-            headers
+            json.dumps({"path": "/pwmController/bankB/frequency", "value": freq}),
+            headers,
         )
         print(client.getresponse().read().decode())
     except:

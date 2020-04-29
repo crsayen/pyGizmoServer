@@ -9,7 +9,7 @@ import os
 from os import path
 from pathlib import Path, PureWindowsPath
 
-logger = logging.getLogger('gizmoLogger')
+logger = logging.getLogger("gizmoLogger")
 
 
 def setuplog(cfg) -> None:
@@ -53,6 +53,7 @@ def makeresolver(schema: Dict) -> callable:
         callable -- A getter function that, given a path, returns
             schema properties at that path.
     """
+
     def f(dictionary, path, result):
         count = dictionary.get("$count")
         if count:
@@ -71,7 +72,9 @@ def makeresolver(schema: Dict) -> callable:
             if v.get("$type"):
                 res = copy.deepcopy(v)
                 if res.get("$args") is not None:
-                    res["$args"].extend([int(i) for i in path.split("/") if i.isdigit()])
+                    res["$args"].extend(
+                        [int(i) for i in path.split("/") if i.isdigit()]
+                    )
                 if not v.get("$count"):
                     result[path] = res
             f(v, f"{path}/{k}", result)
@@ -90,6 +93,7 @@ class DotDict(dict):
     Returns:
         Dict -- A dot-notation-accessible Dict
     """
+
     def __getattr__(self, item):
         val = self[item]
         if isinstance(val, dict):
@@ -112,32 +116,21 @@ def loadconfig(filename: str):
         DotDict -- A dict which provides a means to lookup configuration
             information.
     """
-    bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
-    if bundle_dir.split('\\')[-1] == "pyGizmoServer":
+    bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
+    if bundle_dir.split("\\")[-1] == "pyGizmoServer":
         bundle_dir = PureWindowsPath(bundle_dir).parent
-    print(bundle_dir)
     if filename == "production":
-        return DotDict({
-            "tcp": {
-                "ip": '0.0.0.0',
-                "port": 36364
-            },
-            "ws": {
-                "ip": "0.0.0.0",
-                "port": 11111,
-                "url": "ws://localhost"
-            },
-            "controller": "TestCubeUSB",
-            "logging": {
-                "file": {
-                    "loglevel": "INFO",
-                    "filename": "gizmo.production.log"
+        return DotDict(
+            {
+                "tcp": {"ip": "0.0.0.0", "port": 36364},
+                "ws": {"ip": "0.0.0.0", "port": 11111, "url": "ws://localhost"},
+                "controller": "TestCubeUSB",
+                "logging": {
+                    "file": {"loglevel": "INFO", "filename": "gizmo.production.log"},
+                    "console": {"loglevel": "INFO"},
                 },
-                "console": {
-                    "loglevel": "INFO"
-                }
             }
-        })
+        )
     try:
         with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
             return DotDict(yaml.load(f, Loader=yaml.CLoader))
@@ -149,7 +142,6 @@ def loadconfig(filename: str):
         return None
 
 
-
 def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
     return item if isinstance(item, list) else [item]
 
@@ -157,13 +149,16 @@ def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
 def log(msg: str) -> None:
     logger.info(f"{sys._getframe(1).f_code.co_name}: {msg}")
 
+
 def logError(msg: str) -> None:
     logger.error(f"{sys._getframe(1).f_code.co_name}: {msg}")
+
 
 def debug(msg: str) -> None:
     if not logger.isEnabledFor(logging.DEBUG):
         return
     logger.debug(f"{sys._getframe(1).f_code.co_name}: {msg}")
+
 
 def repeatOnFail(n, func, args):
     for i in range(n):
@@ -172,6 +167,7 @@ def repeatOnFail(n, func, args):
             return ret
     return None
 
+
 async def repeatOnFailAsync(n, func, args):
     for i in range(n):
         ret = await func(*args)
@@ -179,7 +175,8 @@ async def repeatOnFailAsync(n, func, args):
             return ret
     return None
 
-class Error():
+
+class Error:
     def __init__(self, message=None):
         logError(message)
         self.message = message

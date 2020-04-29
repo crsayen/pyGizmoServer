@@ -24,15 +24,18 @@ class Controller(object):
                   assign anything to the callback.
         schema: A Dict representation of the controller's schema file.
     """
+
     def __init__(self):
         self.i_running = False
         self.i_callback = None
         self.i_coros = []
-        bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+        bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
         # when bundled, the controller runs in it's own directory as opposed to the app's root
-        if bundle_dir.split('\\')[-1].upper() == "PYGIZMOSERVER":
-            bundle_dir = f"{PureWindowsPath(bundle_dir).parent}\\{self.__class__.__name__}"
-        with open(f'{bundle_dir}\\schema.json') as f:
+        if bundle_dir.split("\\")[-1].upper() == "PYGIZMOSERVER":
+            bundle_dir = (
+                f"{PureWindowsPath(bundle_dir).parent}\\{self.__class__.__name__}"
+            )
+        with open(f"{bundle_dir}\\schema.json") as f:
             self.i_schema = json.load(f)
 
     async def i_handlerloop(self) -> None:
@@ -55,11 +58,13 @@ class Controller(object):
         """
         if self.i_callback is None:
             raise RuntimeError("controller callback not set")
-        if hasattr(self, 'setup'):
+        if hasattr(self, "setup"):
             self.setup()
 
     def spawnPeriodicTask(self, func, args=[], period=1):
-        self.i_coros.append({"running": False, "func": func, "args": args, "period": period})
+        self.i_coros.append(
+            {"running": False, "func": func, "args": args, "period": period}
+        )
 
     async def i_tend(self, func: callable, args) -> None:
         """Checks Controller.running, spawns Controller.handlerloop if not.
@@ -71,7 +76,10 @@ class Controller(object):
             await func(args, self.i_handlerloop())
         for coro in self.i_coros:
             if not coro["running"]:
-                await func(args, self.i_callPeriodically(coro["func"], coro["args"], coro["period"]))
+                await func(
+                    args,
+                    self.i_callPeriodically(coro["func"], coro["args"], coro["period"]),
+                )
                 coro["running"] = True
         self.i_running = True
 
@@ -132,7 +140,4 @@ class Controller(object):
         if updates is not None:
             self.i_callback(updates)
             return
-        self.i_callback({
-            "path": path,
-            "data": data
-        })
+        self.i_callback({"path": path, "data": data})

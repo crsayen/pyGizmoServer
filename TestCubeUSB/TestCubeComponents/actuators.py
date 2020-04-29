@@ -2,6 +2,7 @@ import asyncio
 from TestCubeUSB.getter import get
 from pyGizmoServer.utility import Error, repeatOnFailAsync, debug
 
+
 class ActCurMessage:
     def __init__(self):
         self.lock = asyncio.Lock()
@@ -11,7 +12,20 @@ class ActCurMessage:
         self.getFaultsEvent = asyncio.Event()
         self.getFaults = False
         self.getActCurrentEvent = asyncio.Event()
-        self.actuatorCurrents = [None, None, None, None, None, None, None, None, None, None, None, None]
+        self.actuatorCurrents = [
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        ]
         self.expectActuatorMsg = False
 
     def resetActCurMessage(self):
@@ -33,7 +47,7 @@ class ActCurMessage:
 
     async def getFaultMonitor(self, index, retry=0):
         self.getFaults = True
-        if await get(self.finished_processing_request,self.getFaultsEvent):
+        if await get(self.finished_processing_request, self.getFaultsEvent):
             return self.actFaults[index]
 
     def setEvent(self, event):
@@ -52,14 +66,16 @@ class ActCurMessage:
             return self.actuatorCurrents[index]
         else:
             self.actmonitorRate = 0
-            #self.finished_processing_request()
-            if await get(self.finished_processing_request,self.getActCurrentEvent):
+            # self.finished_processing_request()
+            if await get(self.finished_processing_request, self.getActCurrentEvent):
                 return self.actuatorCurrents[index]
 
     def get_actcur_messages(self):
-        if self.actmonitorChannels is not None \
-        and self.actmonitorRate is not None \
-        and self.actmonitorThreshold is not None:
+        if (
+            self.actmonitorChannels is not None
+            and self.actmonitorRate is not None
+            and self.actmonitorThreshold is not None
+        ):
             return [
                 f"{0xc:08x}{self.actmonitorChannels:04x}{self.actmonitorRate:02x}{self.actmonitorThreshold:02x}"
             ]
@@ -77,7 +93,9 @@ class ActCurMessage:
     #         self.getFaultsEvent.set()
     #     return [{"path": "/pwmController/faultMonitors", "data": self.actFaults}]
 
-    def parsePayload(self, start, end, payload, chunks, firstMessage=False, lastMessage=False):
+    def parsePayload(
+        self, start, end, payload, chunks, firstMessage=False, lastMessage=False
+    ):
         payload = payload + "0" * 16  # pad to avoid errors
         payloadChunks = [
             int(payload[:4], 16),
@@ -89,7 +107,8 @@ class ActCurMessage:
         # this first msg defines which channels are in subsequent msgs
         if firstMessage:
             self.actcurrent_listinfirstmsg = [
-                i for i in [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+                i
+                for i in [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
                 if (payloadChunks[0] & (1 << (i)))
             ]
         thismsg = self.actcurrent_listinfirstmsg[start:end]
@@ -100,18 +119,23 @@ class ActCurMessage:
             # if we dont expect any more data, return the message
             if self.actcurrent_listinfirstmsg[end:] is None or lastMessage:
                 self.setEvent(self.getActCurrentEvent)
-                resp = [{"path": "/pwmController/measuredCurrents", "data": self.actuatorCurrents}]
+                resp = [
+                    {
+                        "path": "/pwmController/measuredCurrents",
+                        "data": self.actuatorCurrents,
+                    }
+                ]
                 debug(f"returning: {resp}")
                 return resp
 
     def rec_usb_00d_actcurrent(self, payload):
-        return self.parsePayload(0, 3, payload, [3,2,1], firstMessage=True)
+        return self.parsePayload(0, 3, payload, [3, 2, 1], firstMessage=True)
 
     def rec_usb_10d_actcurrent(self, payload):
-        return self.parsePayload(3, 7, payload, [0,1,2,3])
+        return self.parsePayload(3, 7, payload, [0, 1, 2, 3])
 
     def rec_usb_20d_actcurrent(self, payload):
-        return self.parsePayload(7, 11, payload, [0,1,2,3])
+        return self.parsePayload(7, 11, payload, [0, 1, 2, 3])
 
     def rec_usb_30d_actcurrent(self, payload):
         return self.parsePayload(11, 12, payload, [0], lastMessage=True)

@@ -1,21 +1,16 @@
 from pyGizmoServer.utility import debug, Error, logError
-import re
-import os
 from io import StringIO
 from pandas import read_excel, read_csv
+
 
 class Compiler:
     def __init__(self):
         self.lastDuty = 0
         self.lastFreq = 0
-        self.ops = {
-            'gtv': self.parseGtv,
-            'slp': self.parseSlp,
-            'jmp': self.parseJmp
-        }
+        self.ops = {"gtv": self.parseGtv, "slp": self.parseSlp, "jmp": self.parseJmp}
 
     def createAddEntryMessage(self, channel, flag, small=0, large=0):
-        return '00000014{:02x}{:02x}{:02x}{:04x}'.format(channel,flag,small,large)
+        return "00000014{:02x}{:02x}{:02x}{:04x}".format(channel, flag, small, large)
 
     def createDcEntryMessage(self, channel, duty):
         self.lastDuty = duty
@@ -24,7 +19,7 @@ class Compiler:
     def createDcRampEntryMessages(self, channel, end, duration):
         ret = [
             self.createAddEntryMessage(channel, 1, small=self.lastDuty, large=duration),
-            self.createAddEntryMessage(channel, 0, small=end, large=0)
+            self.createAddEntryMessage(channel, 0, small=end, large=0),
         ]
         self.lastDuty = end
         return ret
@@ -39,7 +34,7 @@ class Compiler:
         ret = [
             self.createAddEntryMessage(channel, 4, small=bank, large=self.lastFreq),
             self.createAddEntryMessage(channel, 5, small=bank, large=duration),
-            self.createAddEntryMessage(channel, 4, small=bank, large=end)
+            self.createAddEntryMessage(channel, 4, small=bank, large=end),
         ]
         self.lastFreq = end
         return ret
@@ -48,23 +43,19 @@ class Compiler:
         return [self.createAddEntryMessage(channel, 2, index)]
 
     def parseGtv(self, channel, value):
-        if value[-1] == '%':
+        if value[-1] == "%":
             return self.createDcEntryMessage(channel, int(value[:-1]))
         else:
             return self.createFreqEntryMessage(channel, int(value[:-2]))
 
     def parseSlp(self, channel, value, duration):
-        if value[-1] == '%':
+        if value[-1] == "%":
             return self.createDcRampEntryMessages(
-                channel, 
-                int(value[:-1]), 
-                int(duration[:-2])
+                channel, int(value[:-1]), int(duration[:-2])
             )
         else:
             return self.createFreqRampEntryMessage(
-                channel, 
-                int(value[:-2]), 
-                int(duration[:-2])
+                channel, int(value[:-2]), int(duration[:-2])
             )
 
     def parseJmp(self, channel, value):
@@ -84,22 +75,26 @@ class Compiler:
 
     def _compile(self, df):
         channels = list(df.columns.values)
-        mask = int(''.join(['1' if i in channels  else '0' for i in range(1,13)][::-1]), 2)
+        mask = int(
+            "".join(["1" if i in channels else "0" for i in range(1, 13)][::-1]), 2
+        )
         msgs = []
         for channel in channels:
             self.lastDuty = 0
             self.lastFreq = 0
             try:
                 for line in df[channel].tolist():
-                    lineChunks = line.split(' ')
+                    lineChunks = line.split(" ")
                     f = self.ops.get(lineChunks[0].lower())
                     if f is None:
-                        raise RuntimeError(f'invalid operation: {lineChunks[0]}')
+                        raise RuntimeError(f"invalid operation: {lineChunks[0]}")
                     msgs += f(channel, *lineChunks[1:])
-            except:
-                return None
-        
+            except Exception as e:
+                logError(e)
+                return Error("Invalid Syntax - Check your profile code")
+
         return (mask, msgs)
+
 
 class PwmMessage:
     def __init__(self):
@@ -159,19 +154,19 @@ class PwmMessage:
         mask = 0
         val = 0
         for i in range(0, len(self.PwmEnabled)):
-            if self.PwmEnabled[i] != None:
+            if self.PwmEnabled[i] is not None:
                 mask |= 1 << i
                 if self.PwmEnabled[i]:
                     val |= 1 << i
         return [f"{8:08x}{mask:04x}{val:04x}"]
 
     def getUsbMsg6(self, bank: int):
-        if self.Duty[bank * 6 : bank * 6 + 6] == ([None] * 6) or not self.expectPwmMsg:
+        if self.Duty[bank * 6: bank * 6 + 6] == ([None] * 6) or not self.expectPwmMsg:
             return []
 
         dutymask = 0
         for i in range(6):
-            if self.Duty[i + bank * 6] != None:
+            if self.Duty[i + bank * 6] is not None:
                 dutymask |= 1 << i
         r = f"{6:08x}{bank:02x}{dutymask:02x}"
         for i in reversed(range(6)):
@@ -179,17 +174,21 @@ class PwmMessage:
         return [r]
 
     def getUsbMsg4(self):
-        if (self.Freq == [None] * 2) and (self.Hiconf == [None] * 12) or not self.expectPwmMsg:
+        if (
+            (self.Freq == [None] * 2)
+            and (self.Hiconf == [None] * 12)
+            or not self.expectPwmMsg
+        ):
             return []
         freqmask = 0x0
         hilomask = 0x000
         hiloval = 0x000
         for i in range(0, len(self.Freq)):
-            if self.Freq[i] != None:
+            if self.Freq[i] is not None:
                 freqmask |= 8 >> i
 
         for i in range(0, len(self.Hiconf)):
-            if self.Hiconf[i] != None:
+            if self.Hiconf[i] is not None:
                 hilomask |= 1 << i
                 if self.Hiconf[i]:
                     hiloval |= 1 << i
@@ -198,7 +197,7 @@ class PwmMessage:
             assert freqmask <= 0xF
             assert hilomask <= 0xFFF
             assert hiloval <= 0xFFF
-        except:
+        except Exception:
             raise ValueError("PwmMessageFieldOverflow")
 
         r = "{:08x}{:01x}{:03x}0{:03x}{:04x}{:04x}".format(
@@ -266,32 +265,46 @@ class PwmMessage:
         return d
 
     def profileFromPflString(self, string):
-        lines = string.split('\n')
-        mask = lines[0]
-        clearMsgs = ['00000015{:02x}'.format(i) for i in range(12) if (mask >> i) & 1]
+        lines = string.split("\n")
+        mask = int(lines[0])
+        if 0 > mask > 4095:
+            return Error('Invalid Syntax - Check your profile code')
+        clearMsgs = ['00000015{:02x}'.format(i + 1) for i in range(112) if (mask >> i) & 1]
         self.profileEntries = clearMsgs + [line for line in lines if len(line) > 6]
-        return {"profile mask": mask}
+        return {"profile mask": lines[0]}
 
     def profileFromExcelFile(self, path):
-        _mask, entries = self.compiler.fromExcelFile(path)
+        result = self.compiler.fromExcelFile(path)
+        if isinstance(result, Error):
+            return Error('Invalid Syntax - Check your profile code')
+        mask, entries = result
         self.profileEntries = entries
+        return {'profile mask': str(mask)}
 
     def profileFromCsvFile(self, path):
-        _mask, entries = self.compiler.fromCsvFile(path)
+        result = self.compiler.fromCsvFile(path)
+        if isinstance(result, Error):
+            return Error('Invalid Syntax - Check your profile code')
+        mask, entries = result
         self.profileEntries = entries
+        return {'profile mask': str(mask)}
 
     def profileFromCsvString(self, path):
-        _mask, entries = self.compiler.fromCsvString(path)
+        result = self.compiler.fromCsvString(path)
+        if isinstance(result, Error):
+            return Error('Invalid Syntax - Check your profile code')
+        mask, entries = result
         self.profileEntries = entries
+        return {'profile mask': str(mask)}
 
     def startProfile(self, index):
-        self.pwmStartMessage = ["00000016{:04x}".format(1 << index)]
+        self.pwmStartMessage = ["00000016{:04x}".format(1 << (index + 1))]
 
     def pauseProfile(self, index):
-        self.pwmPauseMessage = ["00000017{:04x}".format(1 << index)]
+        self.pwmPauseMessage = ["00000017{:04x}".format(1 << (index + 1))]
 
     def stopProfile(self, index):
-        self.pwmStopMessage = ["00000018{:04x}".format(1 << index)]
+        self.pwmStopMessage = ["00000018{:04x}".format(1 << (index + 1))]
 
     def startProfiles(self, mask):
         self.pwmStartMessage = ["00000016{:04x}".format(mask)]
@@ -303,11 +316,11 @@ class PwmMessage:
         self.pwmStopMessage = ["00000018{:04x}".format(mask)]
 
     def enableProfileUpdates(self, enabled):
-        payload = '01' if enabled else '00'
-        self.pwmProfileUpdatesMessage = [f'0000001A{payload}']
+        payload = "01" if enabled else "00"
+        self.pwmProfileUpdatesMessage = [f"0000001A{payload}"]
 
     ##############################################################################
-    ''' Duty Cycle - PWM profile '''
+    """ Duty Cycle - PWM profile """
     ##############################################################################
 
     def dutyFromPayload(self, payload, start, stop):
@@ -325,7 +338,7 @@ class PwmMessage:
 
     def sendIfAllDutyMsgsRcvd(self):
         debug(self.Duty)
-        if all([1 if dc is not None  else 0 for dc in self.Duty]):
+        if all([1 if dc is not None else 0 for dc in self.Duty]):
             out = self.Duty.copy()
             self.Duty = [None] * 12
             path = "/pwmController/profiles/dutyCycles"
@@ -341,7 +354,7 @@ class PwmMessage:
         return self.sendIfAllDutyMsgsRcvd()
 
     ##############################################################################
-    ''' Index - PWM profile '''
+    """ Index - PWM profile """
     ##############################################################################
 
     def indexFromPayload(self, payload, start, end):
@@ -349,13 +362,13 @@ class PwmMessage:
             int(payload[:2], 16),
             int(payload[2:4], 16),
             int(payload[4:6], 16),
-            int(payload[6:8], 16)
+            int(payload[6:8], 16),
         )
         self.profileIndecies[start:end] = chunks
 
     def sendIfAllIndexMsgsRcvd(self):
         debug(self.profileIndecies)
-        if all([1 if i is not None  else 0 for i in self.profileIndecies]):
+        if all([1 if i is not None else 0 for i in self.profileIndecies]):
             out = self.profileIndecies.copy()
             self.profileIndecies = [None] * 12
             path = "/pwmController/profiles/indecies"
@@ -375,16 +388,13 @@ class PwmMessage:
         return self.sendIfAllIndexMsgsRcvd()
 
     ##############################################################################
-    ''' Frequency - PWM profile '''
+    """ Frequency - PWM profile """
     ##############################################################################
 
     def rec_51b_pwmProfileFrequency(self, payload):
         return [
             {
                 "path": "/pwmController/profiles/frequencies",
-                "data": [
-                    int(payload[:2], 16),
-                    int(payload[2:4], 16)
-                ]
+                "data": [int(payload[:2], 16), int(payload[2:4], 16)],
             }
         ]

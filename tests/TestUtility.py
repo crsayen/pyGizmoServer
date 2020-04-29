@@ -4,7 +4,7 @@ import copy
 class TestUtility:
     @classmethod
     def parse_path_against_schema_and_model(
-        cls, model: dict, schema: dict, path: str, read_write: str = "r",
+        cls, model: dict, schema: dict, path: str, read_write: str = "r"
     ):
         """
         navigate the schema following the request's path. The destination
