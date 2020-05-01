@@ -1,6 +1,6 @@
 from pyGizmoServer.utility import debug, Error, logError
-from io import StringIO
-from pandas import read_excel, read_csv
+#from io import StringIO
+#from pandas import read_excel, read_csv
 
 
 class Compiler:
@@ -62,15 +62,18 @@ class Compiler:
         return self.createJumpEntryMessage(channel, int(value))
 
     def fromCsvString(self, string):
-        df = read_csv(StringIO(string))
+        #df = read_csv(StringIO(string))
+        df = []
         return self._compile(df)
 
     def fromCsvFile(self, file):
-        df = read_csv(file)
+        #df = read_csv(file)
+        df = []
         return self._compile(df)
 
     def fromExcelFile(self, file):
-        df = read_excel(file)
+        #df = read_excel(file)
+        df = []
         return self._compile(df)
 
     def _compile(self, df):
@@ -266,10 +269,15 @@ class PwmMessage:
 
     def profileFromPflString(self, string):
         lines = string.split("\n")
-        mask = int(lines[0])
+        if len(lines) < 2:
+            return Error('Invalid Syntax - Check your profile code')
+        try:
+            mask = int(lines[0])
+        except Exception:
+            return Error('Invalid Syntax - Check your profile code')
         if 0 > mask > 4095:
             return Error('Invalid Syntax - Check your profile code')
-        clearMsgs = ['00000015{:02x}'.format(i + 1) for i in range(112) if (mask >> i) & 1]
+        clearMsgs = ['00000015{:02x}'.format(i + 1) for i in range(12) if (mask >> i) & 1]
         self.profileEntries = clearMsgs + [line for line in lines if len(line) > 6]
         return {"profile mask": lines[0]}
 
