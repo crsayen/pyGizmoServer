@@ -9,7 +9,7 @@ from pyGizmoServer.utility import (
     debug,
     setuplog,
     ensurelist,
-    Error,
+    Error
 )
 from pyGizmoServer.subscription_server import SubscriptionServer
 from aiohttp import web

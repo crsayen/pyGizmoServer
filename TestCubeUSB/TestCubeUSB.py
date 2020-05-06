@@ -11,7 +11,7 @@ from TestCubeUSB.TestCubeComponents.frequency import FrequencyMessage
 from TestCubeUSB.TestCubeComponents.usb import UsbMessage
 from TestCubeUSB.TestCubeComponents.can import CanDatabaseMessage
 from TestCubeUSB.TestCubeComponents.version import VersionMessage
-from pyGizmoServer.utility import debug
+from pyGizmoServer.utility import debug, sleep_ms
 import time
 
 
@@ -113,8 +113,7 @@ class TestCubeUSB(
         debug(f"\n{msgs}")
         for i, msg in enumerate(msgs):
             self.dev.write(2, msg)
-            if i % 10 == 9:
-                time.sleep(0.001)
+            sleep_ms(0.1)
         self.reset_parents()
 
     async def do(self):

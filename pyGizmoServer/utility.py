@@ -3,6 +3,7 @@ import copy
 import logging
 import sys
 import aiohttp
+import time
 import json
 from typing import Dict, List, Union, Any
 import os
@@ -166,6 +167,12 @@ def repeatOnFail(n, func, args):
         if ret is not None:
             return ret
     return None
+
+
+def sleep_ms(ms):
+    now = time.perf_counter()
+    while time.perf_counter() - now < ms / 1000.0:
+        pass
 
 
 async def repeatOnFailAsync(n, func, args):
