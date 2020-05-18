@@ -1,4 +1,5 @@
 import sys
+from sys import platform
 import time
 import importlib
 import json
@@ -16,7 +17,7 @@ from aiohttp import web
 from aiojobs.aiohttp import setup
 from aiojobs.aiohttp import spawn
 from typing import List, Dict, Tuple, Optional, Union
-from pathlib import Path, PureWindowsPath
+from pathlib import Path, PureWindowsPath, PurePosixPath
 import os
 from os import path
 
@@ -24,8 +25,12 @@ WATCHING_PULSE = False
 
 bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
 # when bundled, run.py runs in it's own directory as opposed to the app's root
-if bundle_dir.split("\\")[-1] == "pyGizmoServer":
-    bundle_dir = PureWindowsPath(bundle_dir).parent
+if sys.platform == "win32":
+    if bundle_dir.split("\\")[-1].upper() == "PYGIZMOSERVER":
+        bundle_dir = PureWindowsPath(bundle_dir).parent
+elif sys.platform == "linux":
+    if bundle_dir.split('/')[-1].upper() == "PYGIZMOSERVER":
+        bundle_dir = PurePosixPath(bundle_dir).parent
 
 # def realname(path, root=None):
 #     if root is not None:

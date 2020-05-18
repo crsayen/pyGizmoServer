@@ -3,10 +3,11 @@
 """
 import json
 import asyncio
-from pathlib import Path, PureWindowsPath
+from pathlib import Path, PureWindowsPath, PurePosixPath
 from typing import overload, List, Any
 import os
 import sys
+from sys import platform
 from os import path
 
 
@@ -31,12 +32,20 @@ class Controller(object):
         self.i_coros = []
         bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
         # when bundled, the controller runs in it's own directory as opposed to the app's root
-        if bundle_dir.split("\\")[-1].upper() == "PYGIZMOSERVER":
-            bundle_dir = (
-                f"{PureWindowsPath(bundle_dir).parent}\\{self.__class__.__name__}"
-            )
-        with open(f"{bundle_dir}\\schema.json") as f:
-            self.i_schema = json.load(f)
+        if sys.platform == "win32":
+            if bundle_dir.split("\\")[-1].upper() == "PYGIZMOSERVER":
+                bundle_dir = (
+                    f"{PureWindowsPath(bundle_dir).parent}\\{self.__class__.__name__}"
+                )
+            with open(f"{bundle_dir}\\schema.json") as f:
+                self.i_schema = json.load(f)
+        elif sys.platform = "linux":
+            if bundle_dir.spit('/')[-1].upper() == "PYGIZMOSERVER":
+                bundle_dir = (
+                    f"{PurePosixPath(bundle_dir).parent}/{self.__class__.__name__}"
+                )
+            with open(f"{bundle_dir}/schema.json") as f:
+                self.i_schema = json.load(f)
 
     async def i_handlerloop(self) -> None:
         """Runs for the lifetime of the application, calling Controller.handler.
