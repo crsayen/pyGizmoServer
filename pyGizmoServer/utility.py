@@ -10,6 +10,20 @@ from typing import Dict, List, Union, Any
 import os
 from os import path
 from pathlib import Path, PureWindowsPath, PurePosixPath
+from collections import deque
+
+def dict_get(dict, path, delimiter='/'):
+    path_deque = deque(path.strip().split(delimiter))
+    return _get(dict, path_deque)
+
+def _get(object, path_deque):
+    if len(path_deque) == 0:
+        return object
+    dest = path_deque.popleft()
+    while dest == '':
+        dest = path_deque.popleft()
+    key = int(dest) if dest.isnumeric() else dest
+    return _get(object[key], path_deque)
 
 logger = logging.getLogger("gizmoLogger")
 

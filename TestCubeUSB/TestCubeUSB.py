@@ -138,8 +138,9 @@ class TestCubeUSB(
             self.send(updates=d)
 
     async def heartbeat(self):
-        if await self.getFirmwareVersion():
-            return True
+        for i in range(3):
+            if await self.getFirmwareVersion():
+                return True
         return False
 
     def rec_usb(self, msg):

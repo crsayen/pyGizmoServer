@@ -3,8 +3,7 @@ import json
 import asyncio
 import threading
 from typing import Dict, List, Any, Set
-from dpath.util import get
-from pyGizmoServer.utility import debug
+from pyGizmoServer.utility import debug, dict_get
 
 
 class SubscriptionServer:
@@ -60,24 +59,17 @@ class SubscriptionServer:
             update {Dict} -- path/data update from the controller
         """
         debug(f"{update}")
-        path = update.get("path")
+        path = update.dict_get("path")
         for con, sub in [
             connection
             for connection in self.connected
             if path in connection[1] or path == connection[1]
         ]:
             if path != sub:
-                # checks if we are looking up array index - breaks dpath.util.get
-                if sub[len(path) :][1].isnumeric():
-                    data = {
-                        "path": sub,
-                        "value": get(update["value"], sub[len(path) :]),
-                    }
-                else:
-                    data = {
-                        "path": sub,
-                        "value": get(update["value"], sub[len(path) :]),
-                    }
+                data = {
+                    "path": sub,
+                    "value": dict_get(update["value"], sub[len(path) :]),
+                }
             else:
                 data = update
             debug(f"sending ws on: {data}")
