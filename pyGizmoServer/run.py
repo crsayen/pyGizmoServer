@@ -28,7 +28,7 @@ bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
 if sys.platform == "win32":
     if bundle_dir.split("\\")[-1].upper() == "PYGIZMOSERVER":
         bundle_dir = PureWindowsPath(bundle_dir).parent
-elif sys.platform == "linux":
+else:
     if bundle_dir.split('/')[-1].upper() == "PYGIZMOSERVER":
         bundle_dir = PurePosixPath(bundle_dir).parent
 

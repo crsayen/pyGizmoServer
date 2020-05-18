@@ -39,7 +39,7 @@ class Controller(object):
                 )
             with open(f"{bundle_dir}\\schema.json") as f:
                 self.i_schema = json.load(f)
-        elif sys.platform = "linux":
+        else:
             if bundle_dir.spit('/')[-1].upper() == "PYGIZMOSERVER":
                 bundle_dir = (
                     f"{PurePosixPath(bundle_dir).parent}/{self.__class__.__name__}"
