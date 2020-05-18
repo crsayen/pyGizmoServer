@@ -2,13 +2,14 @@ import yaml
 import copy
 import logging
 import sys
+from sys import platform
 import aiohttp
 import time
 import json
 from typing import Dict, List, Union, Any
 import os
 from os import path
-from pathlib import Path, PureWindowsPath
+from pathlib import Path, PureWindowsPath, PurePosixPath
 
 logger = logging.getLogger("gizmoLogger")
 
@@ -117,30 +118,46 @@ def loadconfig(filename: str):
         DotDict -- A dict which provides a means to lookup configuration
             information.
     """
-    bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
-    if bundle_dir.split("\\")[-1] == "pyGizmoServer":
-        bundle_dir = PureWindowsPath(bundle_dir).parent
-    if filename == "production":
-        return DotDict(
-            {
-                "tcp": {"ip": "0.0.0.0", "port": 36364},
-                "ws": {"ip": "0.0.0.0", "port": 11111, "url": "ws://localhost"},
-                "controller": "TestCubeUSB",
-                "logging": {
-                    "file": {"loglevel": "INFO", "filename": "gizmo.production.log"},
-                    "console": {"loglevel": "INFO"},
-                },
+    default = DotDict(
+        {
+            "tcp": {"ip": "0.0.0.0", "port": 36364},
+            "ws": {"ip": "0.0.0.0", "port": 11111, "url": "ws://localhost"},
+            "controller": "TestCubeUSB",
+            "logging": {
+                "file": {"loglevel": "INFO", "filename": "gizmo.production.log"},
+                "console": {"loglevel": "INFO"},
             }
-        )
-    try:
-        with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
-            return DotDict(yaml.load(f, Loader=yaml.CLoader))
-    except Exception:
-        with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
-            return DotDict(yaml.load(f, Loader=yaml.FullLoader))
-    except Exception as e:
-        print(f"{e}")
-        return None
+        }
+    )
+    bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
+    if sys.platform == "win32":
+        if bundle_dir.split("\\")[-1] == "pyGizmoServer":
+            bundle_dir = PureWindowsPath(bundle_dir).parent
+        if filename == "production":
+            return default
+        try:
+            with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
+                return DotDict(yaml.load(f, Loader=yaml.CLoader))
+        except Exception:
+            with open(f"{bundle_dir}\\config\\{filename}.yml", "r") as f:
+                return DotDict(yaml.load(f, Loader=yaml.FullLoader))
+        except Exception as e:
+            print(f"{e}")
+            return None
+    else:
+        if bundle_dir.split("/")[-1] == "pyGizmoServer":
+            bundle_dir = PurePosixPath(bundle_dir).parent
+        if filename == "production":
+            return default
+        try:
+            with open(f"{bundle_dir}/config/{filename}.yml", "r") as f:
+                return DotDict(yaml.load(f, Loader=yaml.CLoader))
+        except Exception:
+            with open(f"{bundle_dir}/config/{filename}.yml", "r") as f:
+                return DotDict(yaml.load(f, Loader=yaml.FullLoader))
+        except Exception as e:
+            print(f"{e}")
+            return None
 
 
 def ensurelist(item: Union[Any, List[Any]]) -> List[Any]:
